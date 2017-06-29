@@ -1,0 +1,112 @@
+body {
+    background-color: #EBEBEB;
+    /*font-family: 'Raleway', sans-serif;*/
+}
+/* Remove the navbar's default margin-bottom and rounded borders */
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+.row.content {height: 450px}
+
+/* Set black background color, white text and some padding */
+footer {
+    position: fixed;
+    width: 100vw;
+    bottom: 0px;
+    background-color: #cccccc;
+    color: white;
+    padding: 15px;
+}
+
+.navbar-toggle {
+    border: 0px;
+}
+
+.navbar-toggle {
+    background-color: #FF7C7C;
+}
+
+.btn-primary, .btn-primary:focus, .btn-primary:hover:active, .btn-primary:hover {
+    background-color: rgba(0,0,0,0.1);
+    border: 0px;
+}
+
+.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.form-control {
+    /*border-radius: 13px;*/
+    border: 0px solid lightgrey;
+}
+
+.login-form {
+    display: inline-block;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+}
+
+.push-buttom {
+    margin-bottom: 20px;
+}
+
+.bordered {
+    border: 1px solid lightgrey;
+}
+
+.signup-form {
+    text-align: center;
+    margin: auto;
+    width: 500px;
+    margin-top: 100px;
+}
+
+.signup-title {
+    color: #FF7C7C;
+    font-size: 40px;
+}
+
+.btn-normal {
+    background-color: #FF7C7C;
+}
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
+    .login-container {
+        display: block;
+        align-items: center;
+    }
+
+    .login-form {
+        display: block;
+    }
+
+    .row.content {height:auto;}
+
+    .login-form form div input{
+        margin: auto;
+    }
+
+    .push-buttom-s {
+        margin-bottom: 10px;
+    }
+
+    .input-login {
+        width: 80%;
+    }
+
+    .signup-form {
+        width: 90%;
+        margin-top: 39px;
+    }
+
+    .signup-title {
+        font-size: 6vw;
+    }
+}
