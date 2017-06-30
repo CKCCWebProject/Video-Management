@@ -76,8 +76,21 @@ footer {
     background-color: #FF7C7C;
 }
 
+.toggler {
+    font-size: 30px;
+    color: white;
+}
+
+nav {
+    z-index: 10001;
+}
+
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
+    nav {
+        z-index: 9999;
+    }
+
     .login-container {
         display: block;
         align-items: center;
@@ -108,5 +121,41 @@ footer {
 
     .signup-title {
         font-size: 6vw;
+    }
+
+    .blocker {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 10;
+        opacity: 0;
+        animation-duration: 200ms;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        z-index: 1000;
+    }
+
+    to {
+        opacity: 0;
+        z-index: -1000;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        z-index: -1000;
+    }
+
+    to {
+        opacity: 1;
+        z-index: 1000;
     }
 }

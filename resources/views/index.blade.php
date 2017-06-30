@@ -1,121 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Bootstrap Example</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            background-color: #EBEBEB;
-            font-family: 'Raleway', sans-serif;
-        }
-
-        .folder {
-            width: 150px;
-            height: 105px;
-            margin: 0 auto;
-            margin-top: 50px;
-            position: relative;
-            background-color: #f7f193;
-            border-radius: 0 6px 6px 6px;
-            box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
-        }
-
-        .folder:before {
-            content: '';
-            width: 50%;
-            height: 12px;
-            border-radius: 0 20px 0 0;
-            background-color: #F7F193;
-            position: absolute;
-            top: -12px;
-            left: 0px;
-        }
-
-        .playlist {
-            width: 150px;
-            height: 105px;
-            margin: 0 auto;
-            margin-top: 50px;
-            position: relative;
-            background-color: #9A3D3D;
-            border-radius: 0 6px 6px 6px;
-            box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
-        }
-
-        .playlist:before {
-            content: '';
-            width: 50%;
-            height: 12px;
-            border-radius: 0 20px 0 0;
-            background-color: #9A3D3D;
-            position: absolute;
-            top: -12px;
-            left: 0px;
-        }
-
-        .lesson {
-            width: 150px;
-            height: 105px;
-            margin: 0 auto;
-            margin-top: 50px;
-            position: relative;
-            background-color: #586BCE;
-            border-radius: 0 6px 6px 6px;
-            box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
-        }
-
-        .lesson:before {
-            content: '';
-            width: 50%;
-            height: 12px;
-            border-radius: 0 20px 0 0;
-            background-color: #586BCE;
-            position: absolute;
-            top: -12px;
-            left: 0px;
-        }
-
-        .arrow-right {
-            width: 0;
-            height: 0;
-            border-top: 30px solid transparent;
-            border-bottom: 30px solid transparent;
-            border-left: 50px solid green;
-        }
-
-        .arrow-right:hover {
-            width: 0;
-            height: 0;
-            border-top: 40vw solid transparent;
-            border-bottom: 40px solid transparent;
-            border-left: 60px solid green;
-        }
-    </style>
-</head>
+@include('include')
 <body>
 
-<div class="folder">
+@include('nav')
 
-</div>
-<div class="playlist">
-    <div class="arrow-right">
+<div id="wrapper">
 
+<!-- Sidebar -->
+    @include('sidebar')
+<!-- /#sidebar-wrapper -->
+
+<!-- Blocker -->
+    <div class="blocker visible-xs animated">
     </div>
-</div>
-<div class="lesson">
+<!-- /#Blocker -->
+
+<!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    {{--<a href="#menu-toggle" class="btn toggler" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>--}}
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /#page-content-wrapper -->
 
 </div>
 
-{{--<footer class="container-fluid text-center">--}}
-{{--<p>Footer Text</p>--}}
-{{--</footer>--}}
+<!-- Menu Toggle Script -->
+<script>
 
+    $("#menu-toggle, .blocker").click(function(e) {
+        e.preventDefault();
+        toggleSidebar();
+    });
+
+    $(document).on("swipeleft",function(){
+        if ($("#wrapper").hasClass("toggled")) {
+            toggleSidebar();
+        }
+    });
+
+    $(document).on("swiperight",function(){
+        if (!$("#wrapper").hasClass("toggled")) {
+            toggleSidebar();
+        }
+    });
+
+    var toggleSidebar = function () {
+        $("#wrapper").toggleClass("toggled");
+        if (!$(".blocker").hasClass("fadeIn") && !$(".blocker").hasClass("fadeOut")) {
+            $(".blocker").toggleClass("fadeIn");
+        } else {
+            $(".blocker").toggleClass("fadeIn");
+            $(".blocker").toggleClass("fadeOut");
+        }
+    }
+</script>
 </body>
 </html>
