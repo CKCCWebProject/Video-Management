@@ -82,13 +82,109 @@ footer {
 }
 
 nav {
-    z-index: 10001;
+    z-index: 1001;
+}
+
+.profile-preview {
+    /*background-image: ;*/
+    background-repeat: no-repeat;
+    background-position: center;
+    -webkit-background-size: cover;
+    background-size: cover;
+}
+
+.search-box {
+    margin: auto;
+    width: 100%;
+    font-size: 16px;
+    background-color: #FFC3C3;
+    background-image: url('../img/searchIcon.svg');
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    padding: 12px 5px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+.search-box::-webkit-input-placeholder {
+    color: white;
+}
+
+.search-box:-moz-placeholder {
+    color: white;
+    opacity:  1;
+}
+
+.search-box::-moz-placeholder {
+    color: white;
+    opacity:  1;
+}
+
+.search-box:-ms-input-placeholder {
+    color: white;
+}
+
+.search-box::-ms-input-placeholder {
+    color: white;
+}
+
+.search-box:focus {
+    width: 100%;
+    background-color: #FFC3C3;
+}
+
+.search-container {
+    width: 400px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: auto;
+}
+
+.search-container form {
+    margin-bottom: 0px;
+}
+
+.user-display {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.display-profile {
+    width: 120px;
+    height: 120px;
+    margin: auto;
+    border-radius: 60px;
+}
+
+.display-name {
+    margin: auto;
+    font-size: 24px;
+    color: black;
+    text-align: center;
+    padding: 3px;
+}
+
+.btn-edit {
+}
+
+.icon {
+    width: 60px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.count-gift {
+    background-color: #e80000;
+    color: white;
+    padding: 0px 5px 0px 5px;
+    border-radius: 2px;
+    margin-left: 5px;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     nav {
-        z-index: 9999;
+        z-index: 999;
     }
 
     .login-container {
@@ -134,6 +230,19 @@ nav {
         opacity: 0;
         animation-duration: 200ms;
     }
+
+    .search-container {
+        margin-right: 0px;
+        margin-left: auto;
+        width: calc(100% - 80px);
+    }
+
+    .search-box {
+        background-color: transparent;
+        width: 40px;
+        margin-right: 5px;
+        margin-left: auto;
+    }
 }
 
 @keyframes fadeOut {
@@ -151,7 +260,7 @@ nav {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        z-index: -1000;
+        z-index: 1000;
     }
 
     to {

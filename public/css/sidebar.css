@@ -37,6 +37,7 @@ body {
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+    padding-bottom: 50px;
 }
 
 #wrapper.toggled #sidebar-wrapper {
@@ -70,6 +71,13 @@ body {
 .sidebar-nav li {
     text-indent: 20px;
     line-height: 40px;
+    display: block;
+    text-decoration: none;
+    color: #777777;
+}
+
+.side-space {
+    height: 40px;
 }
 
 .sidebar-nav li a {
@@ -89,20 +97,20 @@ body {
     text-decoration: none;
 }
 
-.sidebar-nav > .sidebar-brand {
-    height: 65px;
-    font-size: 18px;
-    line-height: 60px;
-}
+/*.sidebar-nav > .sidebar-brand {*/
+    /*height: 65px;*/
+    /*font-size: 18px;*/
+    /*line-height: 60px;*/
+/*}*/
 
-.sidebar-nav > .sidebar-brand a {
-    color: #999999;
-}
+/*.sidebar-nav > .sidebar-brand a {*/
+    /*color: #999999;*/
+/*}*/
 
-.sidebar-nav > .sidebar-brand a:hover {
-    color: #000000;
-    background: none;
-}
+/*.sidebar-nav > .sidebar-brand a:hover {*/
+    /*color: #000000;*/
+    /*background: none;*/
+/*}*/
 
 @media(min-width:768px) {
 
@@ -115,6 +123,7 @@ body {
     }
 
     #sidebar-wrapper {
+        z-index: 1000;
         width: 0;
         margin-top: 50px;
     }

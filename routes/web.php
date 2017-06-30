@@ -16,4 +16,4 @@ Route::post('welcome', function () {
 });
 
 Route::get('/', 'PageController@signup');
-Route::get('index', 'PageController@index');
+Route::get('home', 'PageController@home');
