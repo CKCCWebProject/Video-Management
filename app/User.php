@@ -16,7 +16,7 @@ class User extends Model
             $user -> email,
             $user -> password
         );
-        DB::insert('INSERT INTO users(username, email, password) VALUES (?,?,?,?)', $data);
+        DB::insert('INSERT INTO users(created_at, updated_at, username, email, password) VALUES (?,?,?,?,?)', $data);
     }
 
 

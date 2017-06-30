@@ -38,7 +38,7 @@
     <div class="row content">
         <div class="col-sm-12 text-left">
             <div class="signup-form">
-                <form method="post" action="{{url('welcome')}}">
+                <form method="post" action="{{view('index')}}">
                     {{csrf_field()}}
                     <div class="signup-title" style="margin: 20px 20px;">
                         Create new account

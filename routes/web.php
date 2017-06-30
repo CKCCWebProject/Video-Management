@@ -11,8 +11,8 @@
 |
 */
 
-Route::post('welcome', function () {
-    return view('welcome');
+Route::post('index', function () {
+    return view('index');
 });
 
 Route::get('/', 'PageController@signup');
