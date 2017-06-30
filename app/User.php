@@ -2,28 +2,22 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+use DateTime;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use Notifiable;
+    public static function createUser($user){
+        $data = array(
+            new DateTime(),
+            new DateTime(),
+            $user -> username,
+            $user -> email,
+            $user -> password
+        );
+        DB::insert('INSERT INTO users(username, email, password) VALUES (?,?,?,?)', $data);
+    }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
 }

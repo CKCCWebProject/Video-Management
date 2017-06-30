@@ -13,13 +13,14 @@
 
             </div>
             <ul class="nav navbar-nav navbar-right login-container">
-                <form action="#" style="margin-bottom: 0px">
+                <form method="post" action="#" style="margin-bottom: 0px">
+                    {{csrf_field()}}
                     <div class="login-form col-xs-12 col-sm-10">
                         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7 push-buttom-s">
-                            <input class="form-control input-login" style="width: 100%;" type="text" placeholder="Your e-mail">
+                            <input class="form-control input-login" style="width: 100%;" type="text" name="email" placeholder="Your e-mail">
                         </div>
                         <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 push-buttom-s">
-                            <input class="form-control input-login" style="width: 100%;" type="password" placeholder="Your password">
+                            <input class="form-control input-login" style="width: 100%;" type="password" name="password" placeholder="Your password">
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2" style="text-align: center">
@@ -37,15 +38,16 @@
     <div class="row content">
         <div class="col-sm-12 text-left">
             <div class="signup-form">
-                <form action="#">
+                <form method="post" action="{{url('welcome')}}">
+                    {{csrf_field()}}
                     <div class="signup-title" style="margin: 20px 20px;">
                         Create new account
                     </div>
-                    <input type="text" class="form-control push-buttom bordered" placeholder="Username">
-                    <input type="text" class="form-control push-buttom bordered" placeholder="E-mail">
-                    <input type="text" class="form-control push-buttom bordered" placeholder="Password">
-                    <input type="text" class="form-control push-buttom bordered" placeholder="Confirm password">
-                    <button class="btn btn-normal" style="margin-top: 20px; color: white">Sign up</button>
+                    <input type="text" class="form-control push-buttom bordered" name="signup_username" placeholder="Username">
+                    <input type="text" class="form-control push-buttom bordered" name="signup_email" placeholder="E-mail">
+                    <input type="text" class="form-control push-buttom bordered" name="signup_password" placeholder="Password">
+                    <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password">
+                    <button type="submit" class="btn btn-normal" style="color: white">Sign up</button>
                 </form>
             </div>
         </div>
