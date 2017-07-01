@@ -47,3 +47,32 @@
             </li>
         </ul>
     </div>
+
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            toggleSidebar();
+        });
+
+        $(document).on("swipeleft",function(){
+            if ($("#wrapper").hasClass("toggled")) {
+                toggleSidebar();
+            }
+        });
+
+        $(document).on("swiperight",function(){
+            if (!$("#wrapper").hasClass("toggled")) {
+                toggleSidebar();
+            }
+        });
+
+        var toggleSidebar = function () {
+            $("#wrapper").toggleClass("toggled");
+            if (!$(".blocker").hasClass("fadeIn") && !$(".blocker").hasClass("fadeOut")) {
+                $(".blocker").toggleClass("fadeIn");
+            } else {
+                $(".blocker").toggleClass("fadeIn");
+                $(".blocker").toggleClass("fadeOut");
+            }
+        }
+    </script>

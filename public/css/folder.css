@@ -1,15 +1,10 @@
-body {
-    background-color: #EBEBEB;
-    font-family: 'Raleway', sans-serif;
-}
-
 .folder {
     width: 150px;
     height: 105px;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 0px;
     position: relative;
-    background-color: #f7f193;
+    background-color: #ecd66f;
     border-radius: 0 6px 6px 6px;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
 }
@@ -19,7 +14,7 @@ body {
     width: 50%;
     height: 12px;
     border-radius: 0 20px 0 0;
-    background-color: #F7F193;
+    background-color: #ecd66f;
     position: absolute;
     top: -12px;
     left: 0px;
@@ -29,7 +24,7 @@ body {
     width: 150px;
     height: 105px;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 0px;
     position: relative;
     background-color: #9A3D3D;
     border-radius: 0 6px 6px 6px;
@@ -51,7 +46,7 @@ body {
     width: 150px;
     height: 105px;
     margin: 0 auto;
-    margin-top: 50px;
+    margin-top: 0px;
     position: relative;
     background-color: #586BCE;
     border-radius: 0 6px 6px 6px;
@@ -83,4 +78,21 @@ body {
     border-top: 40vw solid transparent;
     border-bottom: 40px solid transparent;
     border-left: 60px solid green;
+}
+
+.folder, .playlist, .lesson {
+    transform: scale(0.8);
+}
+
+@media screen and (max-width: 992px){
+    .folder, .playlist, .lesson {
+        transform: scale(0.6);
+    }
+}
+
+/* On small screens*/
+@media screen and (max-width: 767px) {
+    .folder, .playlist, .lesson {
+        transform: scale(0.4);
+    }
 }
