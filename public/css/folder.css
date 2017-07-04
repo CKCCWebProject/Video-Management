@@ -76,14 +76,26 @@
     top: -9.6px;
 }
 
+.playlist:hover, .lesson:hover, .folder:hover {
+    cursor: pointer;
+}
+
+.playlist:hover .click-play {
+    transform: scale(0.9);
+}
+
+.lesson:hover .click-play {
+    transform: scale(0.9);
+}
+
 .click-play {
     transform: scale(0.8);
 }
 
-.click-play:hover {
-    cursor: pointer;
-    transform: scale(0.9);
-}
+/*.click-play:hover {*/
+    /*cursor: pointer;*/
+    /*transform: scale(0.9);*/
+/*}*/
 
 
 .btn-play {
@@ -108,11 +120,13 @@
         transform: scale(0.6);
     }
 
-    .click-play:hover {
-        cursor: pointer;
+    .playlist:hover .click-play {
         transform: scale(0.7);
     }
 
+    .lesson:hover .click-play {
+        transform: scale(0.7);
+    }
 
     .btn-play {
         top: 2px;
@@ -138,8 +152,11 @@
         transform: scale(0.4);
     }
 
-    .click-play:hover {
-        cursor: pointer;
+    .playlist:hover .click-play {
+        transform: scale(0.5);
+    }
+
+    .lesson:hover .click-play {
         transform: scale(0.5);
     }
 

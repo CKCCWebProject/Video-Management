@@ -1,6 +1,6 @@
 
 
-    <div id="sidebar-wrapper">
+    <div class="mediumScroll" id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand" style="text-indent: 0px">
                 <div class="user-display">

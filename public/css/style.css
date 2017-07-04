@@ -1,6 +1,7 @@
 body {
     background-color: #EBEBEB;
     /*font-family: 'Raleway', sans-serif;*/
+    color: #4a4a4a;
 }
 /* Remove the navbar's default margin-bottom and rounded borders */
 .navbar {
@@ -19,6 +20,10 @@ footer {
     background-color: #cccccc;
     color: white;
     padding: 15px;
+}
+
+.top-margin {
+    margin-top: 50px;
 }
 
 .navbar-toggle {
@@ -327,12 +332,32 @@ nav {
     margin-right: 0px;
     margin-left: auto;
     font-size: 35px;
+    text-align: center;
+}
+
+.folder-setting:hover {
+    cursor: pointer;
+}
+
+.tree-dots {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .each-folder {
     margin: auto;
     margin-top: 80px;
     max-width: 1400px;
+}
+
+.setting-option {
+    left: -150px;
+    top: -30px;
+    padding: 0px;
+}
+
+.set-opt {
+    padding-left: 0px !important;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
@@ -423,6 +448,10 @@ nav {
     .folder-setting {
         font-size: 20px;
     }
+
+    .each-folder {
+        margin-top: 50px;
+    }
 }
 
 @keyframes fadeOut {
@@ -465,4 +494,40 @@ nav {
 {
     border-radius: 20px;
     background-color: #858585;
+}
+
+.mediumScroll::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0);
+    background-color: transparent;
+}
+
+.mediumScroll::-webkit-scrollbar
+{
+    width: 7px;
+    background-color: transparent;
+}
+
+.mediumScroll::-webkit-scrollbar-thumb
+{
+    border-radius: 20px;
+    background-color: #a1a1a1;
+}
+
+.bigScroll::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0);
+    background-color: transparent;
+}
+
+.bigScroll::-webkit-scrollbar
+{
+    width: 9px;
+    background-color: transparent;
+}
+
+.bigScroll::-webkit-scrollbar-thumb
+{
+    border-radius: 20px;
+    background-color: #a1a1a1;
 }

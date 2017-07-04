@@ -1,5 +1,5 @@
 @include('include')
-<body>
+<body class="bigScroll">
 
 @include('nav')
 
