@@ -64,35 +64,88 @@
     left: 0px;
 }
 
-.arrow-right {
-    width: 0;
-    height: 0;
-    border-top: 30px solid transparent;
-    border-bottom: 30px solid transparent;
-    border-left: 50px solid green;
-}
-
-.arrow-right:hover {
-    width: 0;
-    height: 0;
-    border-top: 40vw solid transparent;
-    border-bottom: 40px solid transparent;
-    border-left: 60px solid green;
-}
-
 .folder, .playlist, .lesson {
+    width: 120px;
+    height: 84px;
+    border-radius: 0 4.8px 4.8px 4.8px;
+}
+
+.folder:before, .playlist:before, .lesson:before {
+    height: 9.6px;
+    border-radius: 0 16px 0 0;
+    top: -9.6px;
+}
+
+.click-play {
     transform: scale(0.8);
+}
+
+.click-play:hover {
+    cursor: pointer;
+    transform: scale(0.9);
+}
+
+
+.btn-play {
+    top: 13px;
+    margin-left: 41px;
 }
 
 @media screen and (max-width: 992px){
     .folder, .playlist, .lesson {
+        width: 90px;
+        height: 63px;
+        border-radius: 0 3.6px 3.6px 3.6px;
+    }
+
+    .folder:before, .playlist:before, .lesson:before {
+        height: 7.2px;
+        border-radius: 0 12px 0 0;
+        top: -7.2px;
+    }
+
+    .click-play {
         transform: scale(0.6);
+    }
+
+    .click-play:hover {
+        cursor: pointer;
+        transform: scale(0.7);
+    }
+
+
+    .btn-play {
+        top: 2px;
+        margin-left: 23px;
     }
 }
 
 /* On small screens*/
 @media screen and (max-width: 767px) {
     .folder, .playlist, .lesson {
+        width: 60px;
+        height: 42px;
+        border-radius: 0 2.4px 2.4px 2.4px;
+    }
+
+    .folder:before, .playlist:before, .lesson:before {
+        height: 4.8px;
+        border-radius: 0 8px 0 0;
+        top: -4.8px;
+    }
+
+    .click-play {
         transform: scale(0.4);
+    }
+
+    .click-play:hover {
+        cursor: pointer;
+        transform: scale(0.5);
+    }
+
+
+    .btn-play {
+        top: -10px;
+        margin-left: 6px;
     }
 }

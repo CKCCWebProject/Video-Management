@@ -1,12 +1,9 @@
-<div class="create-folder" style="text-align: center; margin: auto">
-    <div class="new newfolder col-xs-4">
-        + new folder
-    </div>
-    <div class="new newplaylist col-xs-4">
-        + new playlist
-    </div>
-    <div class="new newlesson col-xs-4">
-        + new lesson
-    </div>
-    <div style="clear: both"></div>
+<div class="dropdown create-folder" style="text-align: center; margin: auto">
+        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Create
+            <span class="caret"></span></button>
+        <ul class="dropdown-menu" style="left: 60px">
+            <li class="fd">+ Create folder</li>
+            <li class="pl">+ Create playlist</li>
+            <li class="ls">+ Create lesson</li>
+        </ul>
 </div>

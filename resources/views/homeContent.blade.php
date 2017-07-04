@@ -7,18 +7,38 @@
 <div class="row">
     @include('createFolder')
 </div>
-<div class="row" style="display: flex; align-items: center">
-    <div class="row">
-        <div style="float: left">
+<div class="row">
+    <div class="row each-folder" style="display: flex; align-items: center;">
+        <div style="float: left;">
             @include('playList')
         </div>
-        <div style="float: left; color: black">
-            <div class="row">
-                Play list name
+        <div class="fold-text" style="float: left; color: black;">
+            <div class="fold-name">
+                Play list name hello world is the new word
             </div>
-            <div class="row">
+            <div class="fold-info">
                 information
             </div>
+        </div>
+        <div class="folder-setting">
+            <i class="fa fa-ellipsis-v"></i>
+        </div>
+    </div>
+
+    <div class="row each-folder" style="display: flex; align-items: center;">
+        <div style="float: left;">
+            @include('folder')
+        </div>
+        <div class="fold-text" style="float: left; color: black;">
+            <div class="fold-name">
+                Play list name hello world is the new word
+            </div>
+            <div class="fold-info">
+                information
+            </div>
+        </div>
+        <div class="folder-setting">
+            <i class="fa fa-ellipsis-v"></i>
         </div>
     </div>
 </div>

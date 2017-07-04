@@ -181,11 +181,6 @@ nav {
     margin-left: 5px;
 }
 
-.click-play:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-}
-
 .home-nav {
     list-style: none;
     color: grey;
@@ -272,22 +267,66 @@ nav {
     color: white;
 }
 
-.new {
-    border: 1px solid grey;
-    padding: 4px 8px 4px 8px;
-    border-radius: 20px;
+.dropdown-menu {
+    padding: 0px;
 }
 
-.newfolder {
-    background-color: #e5d799;
+.dropdown-menu li {
+    padding: 5px;
+    padding-left: 20px;
 }
 
-.newplaylist {
-    background-color: #d9b6b6;
+.dropdown-menu .fd {
+    background-color: #d6d081;
 }
 
-.newlesson {
-    background-color: #9faacc;
+.dropdown-menu .pl {
+    background-color: #9a3d3d;
+}
+
+.dropdown-menu .ls {
+    background-color: #586bce;
+}
+
+.dropdown-menu .fd:hover {
+    background-color: #aba667;
+}
+
+.dropdown-menu .pl:hover {
+    background-color: #6a2b2b;
+}
+
+.dropdown-menu .ls:hover {
+    background-color: #44539f;
+}
+
+.fold-text {
+    margin-left: 30px;
+}
+
+.fold-name {
+    color: #4a4a4a;
+    font-weight: bolder;
+    font-size: 25px;
+}
+
+.fold-info {
+    color: #c4c4c4;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.folder-setting {
+    float: right;
+    color: grey;
+    margin-right: 0px;
+    margin-left: auto;
+    font-size: 35px;
+}
+
+.each-folder {
+    margin: 20px;
+    margin-top: 80px;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
@@ -360,6 +399,23 @@ nav {
 
     .search-box:focus {
         cursor: text;
+    }
+
+    .fold-text {
+        margin-left: 20px;
+        word-wrap: break-word;
+    }
+
+    .fold-name {
+        font-size: 16px;
+    }
+
+    .fold-info {
+        font-size: 13px;
+    }
+
+    .folder-setting {
+        font-size: 20px;
     }
 }
 
