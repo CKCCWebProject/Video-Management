@@ -276,16 +276,20 @@ nav {
     padding-left: 20px;
 }
 
+.dropdown-menu li:hover {
+    cursor: pointer;
+}
+
 .dropdown-menu .fd {
-    background-color: #d6d081;
+    background-color: #eee78f;
 }
 
 .dropdown-menu .pl {
-    background-color: #9a3d3d;
+    background-color: #f46161;
 }
 
 .dropdown-menu .ls {
-    background-color: #586bce;
+    background-color: #657bec;
 }
 
 .dropdown-menu .fd:hover {
@@ -293,7 +297,7 @@ nav {
 }
 
 .dropdown-menu .pl:hover {
-    background-color: #6a2b2b;
+    background-color: #af4747;
 }
 
 .dropdown-menu .ls:hover {
@@ -306,11 +310,12 @@ nav {
 
 .fold-name {
     color: #4a4a4a;
-    font-weight: bolder;
+    font-weight: normal;
     font-size: 25px;
 }
 
 .fold-info {
+    font-weight: lighter;
     color: #c4c4c4;
     font-size: 20px;
     margin-left: 10px;
@@ -325,8 +330,9 @@ nav {
 }
 
 .each-folder {
-    margin: 20px;
+    margin: auto;
     margin-top: 80px;
+    max-width: 1400px;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
