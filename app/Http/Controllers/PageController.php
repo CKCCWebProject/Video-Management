@@ -10,10 +10,18 @@ class PageController extends Controller
         return view('signup');
     }
 
-    public function home() {
+    public function home($tab) {
         $data = array(
-            'activeNav' => 2,
-            'position' => 1
+            'activeNav' => $tab,
+            'position' => 'home'
+        );
+        return view ('home', $data);
+    }
+
+    public function nav($nav) {
+        $data = array(
+            'activeNav' => 'management',
+            'position' => $nav
         );
         return view ('home', $data);
     }

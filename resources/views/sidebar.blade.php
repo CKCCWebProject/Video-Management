@@ -12,7 +12,7 @@
                 </div>
             </li>
             <li>
-                <a {{$position==1?'class=active':''}} href="#">
+                <a {{$position=='home'?'class=active':''}} href="{{url('home/management')}}">
                     <i class="fa fa-home icon"> </i>
                     <span> Home</span>
                 </a>
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li>
-                <a {{$position==3?'class=active':''}} href="#">
+                <a {{$position=='connection'?'class=active':''}} href="{{url('/connection')}}">
                     <i class="fa fa-chain icon"> </i>
                     <span> Your connections</span>
                 </a>
@@ -34,13 +34,13 @@
 
             </li>
             <li>
-                <a href="#">
+                <a {{$position=='about'?'class=active':''}} href="{{url('/about')}}">
                     <i class="fa fa-info icon"> </i>
                     <span> About</span>
                 </a>
             </li>
             <li>
-                <a {{$position==5?'class=active':''}} href="#">
+                <a {{$position=='setting'?'class=active':''}} href="{{url('/setting')}}">
                     <i class="fa fa-cog icon"> </i>
                     <span> Settings</span>
                 </a>

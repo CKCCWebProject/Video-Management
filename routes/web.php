@@ -21,12 +21,16 @@ Route::group(['middleware' => ['web']], function (){
 
     Route::post('/home', 'UserController@signin');
 
-    Route::get('homepage', 'PageController@home');
+//    Route::get('homepage', 'PageController@home');
 
     Route::get('signout', 'UserController@signout');
 
-    Route::get('/home',[
-       'uses' => 'UserController@goToHome',
-        'middleware' => 'auth'
-    ]);
+//    Route::get('/home',[
+//       'uses' => 'UserController@goToHome',
+//        'middleware' => 'auth'
+//    ]);
 });
+
+
+Route::get('/home/{tab}', 'PageController@home');
+Route::get('/{nav}', 'PageController@nav');
