@@ -13,14 +13,14 @@
 
             </div>
             <ul class="nav navbar-nav navbar-right login-container">
-                <form method="post" action="" style="margin-bottom: 0px">
+                <form method="post" action="{{url('home')}}" style="margin-bottom: 0px">
                     {{csrf_field()}}
                     <div class="login-form col-xs-12 col-sm-10">
                         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7 push-buttom-s">
-                            <input class="form-control input-login" style="width: 100%;" type="text" name="email" placeholder="Your e-mail">
+                            <input class="form-control input-login" style="width: 100%;" type="text" name="email" placeholder="Your e-mail" required>
                         </div>
                         <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 push-buttom-s">
-                            <input class="form-control input-login" style="width: 100%;" type="password" name="password" placeholder="Your password">
+                            <input class="form-control input-login" style="width: 100%;" type="password" name="password" placeholder="Your password" required>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2" style="text-align: center">
@@ -44,10 +44,15 @@
                     <div class="signup-title" style="margin: 20px 20px;">
                         Create new account
                     </div>
-                    <input type="text" class="form-control push-buttom bordered" name="signup_username" placeholder="Username">
-                    <input type="text" class="form-control push-buttom bordered" name="signup_email" placeholder="E-mail">
-                    <input type="text" class="form-control push-buttom bordered" name="signup_password" placeholder="Password">
-                    <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password">
+                    <div style="color: red;">
+                        @if(isset($existed))
+                            <span>{{$existed}}</span>
+                        @endif
+                    </div>
+                    <input type="text" class="form-control push-buttom bordered" name="signup_username" placeholder="Username" required>
+                    <input type="text" class="form-control push-buttom bordered" name="signup_email" placeholder="E-mail" required>
+                    <input type="text" class="form-control push-buttom bordered" name="signup_password" placeholder="Password" required>
+                    <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password" required>
                     <button type="submit" class="btn btn-normal" style="color: white">Sign up</button>
 
                     <input type="hidden" name="_token" value="{{Session::token()}}">
