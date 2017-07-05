@@ -13,7 +13,7 @@
 
             </div>
             <ul class="nav navbar-nav navbar-right login-container">
-                <form method="post" action="#" style="margin-bottom: 0px">
+                <form method="post" action="" style="margin-bottom: 0px">
                     {{csrf_field()}}
                     <div class="login-form col-xs-12 col-sm-10">
                         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7 push-buttom-s">
@@ -28,6 +28,7 @@
                             <span class="fa fa-sign-in"></span>&nbsp; Log in
                         </button>
                     </div>
+                    <input type="hidden" name="_token" value="{{Session::token()}}">
                 </form>
             </ul>
         </div>
@@ -38,7 +39,7 @@
     <div class="row content">
         <div class="col-sm-12 text-left">
             <div class="signup-form">
-                <form method="get" action="{{url('home')}}">
+                <form method="post" action="{{url('home')}}">
                     {{csrf_field()}}
                     <div class="signup-title" style="margin: 20px 20px;">
                         Create new account
@@ -48,6 +49,8 @@
                     <input type="text" class="form-control push-buttom bordered" name="signup_password" placeholder="Password">
                     <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password">
                     <button type="submit" class="btn btn-normal" style="color: white">Sign up</button>
+
+                    <input type="hidden" name="_token" value="{{Session::token()}}">
                 </form>
             </div>
         </div>

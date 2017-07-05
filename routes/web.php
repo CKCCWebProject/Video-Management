@@ -11,9 +11,11 @@
 |
 */
 
-Route::post('index', function () {
-    return view('index');
-});
 
-Route::get('/', 'PageController@signup');
-Route::get('home', 'PageController@home');
+Route::group(['middleware' => ['web']], function (){
+    Route::get('/', function (){
+        return view('signup');
+    });
+
+   Route::post('/home', 'UserController@signup');
+});
