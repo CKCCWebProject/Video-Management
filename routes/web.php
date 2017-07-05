@@ -17,11 +17,16 @@ Route::group(['middleware' => ['web']], function (){
         return view('signup');
     });
 
-   Route::post('/home', 'UserController@signup');
+    Route::post('/home', 'UserController@signup');
 
-   Route::post('/home', 'UserController@signin');
+    Route::post('/home', 'UserController@signin');
 
-//   Route::get('home', 'UserController@goToHome');
+    Route::get('homepage', 'PageController@home');
+
+    Route::get('signout', 'UserController@signout');
+
+    Route::get('/home',[
+       'uses' => 'UserController@goToHome',
+        'middleware' => 'auth'
+    ]);
 });
-
-Route::get('homepage', 'PageController@home');

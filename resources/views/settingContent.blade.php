@@ -28,7 +28,7 @@
         </tbody>
     </table>
     <div class="row" style="text-align: center;">
-        <button class="btn btn-danger logout">Log out</button>
+        <a href="{{url('signout')}}"><button class="btn btn-danger logout">Log out</button></a>
     </div>
     <div class="suicide row" style="margin-top: 60px;">
         <a href="#">Delete account</a>

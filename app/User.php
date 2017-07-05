@@ -21,6 +21,7 @@ class User extends Model implements Authenticatable
         );
         DB::insert('INSERT INTO users(created_at, updated_at, username, email, password) VALUES (?,?,?,?,?)', $data);
     }
+
     public static function checkExistedUser($email){
         $check = DB::table('users')->where('email', $email)->get();
         if(count($check) > 0){

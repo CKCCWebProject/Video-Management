@@ -12,8 +12,8 @@ class PageController extends Controller
 
     public function home() {
         $data = array(
-            'activeNav' => 1,
-            'position' => 5
+            'activeNav' => 2,
+            'position' => 1
         );
         return view ('home', $data);
     }
