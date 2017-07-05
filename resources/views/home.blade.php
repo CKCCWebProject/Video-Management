@@ -19,7 +19,20 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    @include('homeContent')
+
+                    <div class="top-margin"></div>
+
+                    <div class="row" style="margin-bottom: 10px">
+                        @include('homeNavigation')
+                    </div>
+
+                    @if($activeNav == 3)
+                        @include('homeHelp')
+                    @elseif($activeNav == 2)
+                        @include('homeFavorite')
+                    @else
+                        @include('homeContent')
+                    @endif
                 </div>
             </div>
         </div>

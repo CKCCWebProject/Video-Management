@@ -19,3 +19,5 @@ Route::group(['middleware' => ['web']], function (){
 
    Route::post('/home', 'UserController@signup');
 });
+
+Route::get('homepage', 'PageController@home');

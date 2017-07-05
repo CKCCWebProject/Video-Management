@@ -346,8 +346,19 @@ nav {
 
 .each-folder {
     margin: auto;
-    margin-top: 80px;
     max-width: 1400px;
+}
+
+.folder-group {
+    padding-left: 0px;
+}
+
+.folder-group > li {
+    padding: 40px;
+}
+
+.folder-group > li:hover {
+    background-color: #dddddd;
 }
 
 .setting-option {
@@ -358,6 +369,39 @@ nav {
 
 .set-opt {
     padding-left: 0px !important;
+}
+
+.select-all {
+    font-size: 18px;
+    font-weight: lighter;
+}
+
+.favorite-thumbnail {
+    width: 80px;
+    height: 55px;
+    margin-left: 20px;
+}
+
+.fav-title {
+    font-size: 19px;
+}
+
+.fav-dir {
+    font-weight: lighter;
+    color: grey;
+    font-size: 15px;
+}
+
+.fav-text {
+    margin-left: 30px;
+}
+
+.list-favorite li {
+    padding: 15px;
+}
+
+.list-favorite li:hover {
+    background-color: #e3e3e3;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
@@ -450,7 +494,29 @@ nav {
     }
 
     .each-folder {
-        margin-top: 50px;
+        margin-top: 0px;
+    }
+
+    .folder-group > li {
+        padding: 20px;
+    }
+
+    .favorite-thumbnail {
+        width: 40px;
+        height: 30px;
+        margin-left: 10px;
+    }
+
+    .fav-title {
+        font-size: 14px;
+    }
+
+    .fav-dir {
+        font-size: 12px;
+    }
+
+    .fav-text {
+        margin-left: 15px;
     }
 }
 
@@ -492,7 +558,7 @@ nav {
 
 .thinScroll::-webkit-scrollbar-thumb
 {
-    border-radius: 20px;
+    /*border-radius: 20px;*/
     background-color: #858585;
 }
 
@@ -510,7 +576,7 @@ nav {
 
 .mediumScroll::-webkit-scrollbar-thumb
 {
-    border-radius: 20px;
+    /*border-radius: 20px;*/
     background-color: #a1a1a1;
 }
 
@@ -528,6 +594,6 @@ nav {
 
 .bigScroll::-webkit-scrollbar-thumb
 {
-    border-radius: 20px;
+    /*border-radius: 20px;*/
     background-color: #a1a1a1;
 }
