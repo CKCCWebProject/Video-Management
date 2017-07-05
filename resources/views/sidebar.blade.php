@@ -12,7 +12,7 @@
                 </div>
             </li>
             <li>
-                <a href="#">
+                <a {{$position==1?'class=active':''}} href="#">
                     <i class="fa fa-home icon"> </i>
                     <span> Home</span>
                 </a>
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a {{$position==3?'class=active':''}} href="#">
                     <i class="fa fa-chain icon"> </i>
                     <span> Your connections</span>
                 </a>
@@ -40,7 +40,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a {{$position==5?'class=active':''}} href="#">
                     <i class="fa fa-cog icon"> </i>
                     <span> Settings</span>
                 </a>

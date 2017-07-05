@@ -22,16 +22,19 @@
 
                     <div class="top-margin"></div>
 
-                    <div class="row" style="margin-bottom: 10px">
-                        @include('homeNavigation')
-                    </div>
+                    @if($position == 1)
 
-                    @if($activeNav == 3)
-                        @include('homeHelp')
-                    @elseif($activeNav == 2)
-                        @include('homeFavorite')
-                    @else
-                        @include('homeContent')
+                        <div class="row" style="margin-bottom: 10px">
+                            @include('homeNavigation')
+                        </div>
+
+                        @if($activeNav == 3)
+                            @include('homeHelp')
+                        @elseif($activeNav == 2)
+                            @include('homeFavorite')
+                        @else
+                            @include('homeContent')
+                        @endif
                     @endif
                 </div>
             </div>

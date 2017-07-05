@@ -97,6 +97,11 @@ body {
     text-decoration: none;
 }
 
+.sidebar-nav li > .active {
+    color: #000000;
+    background: rgba(175, 175, 175, 0.2);
+}
+
 /*.sidebar-nav > .sidebar-brand {*/
     /*height: 65px;*/
     /*font-size: 18px;*/
