@@ -18,4 +18,8 @@ Route::group(['middleware' => ['web']], function (){
     });
 
    Route::post('/home', 'UserController@signup');
+
+   Route::post('/home', 'UserController@signin');
+
+//   Route::get('home', 'UserController@goToHome');
 });

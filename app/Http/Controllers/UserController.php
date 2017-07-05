@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function goToHome(){
+        return view('home');
+    }
+
     public function signup(Request $request){
         $email = $request->signup_email;
         $username = $request->signup_username;
@@ -23,19 +27,30 @@ class UserController extends Controller
                 return view('home');
             }
             else{
-                "email already exist";
+                $data = array(
+                    'existed' => "Email is already existed!!"
+                );
+                return view('signup', $data);
             }
         }
         else{
-            echo "Password not match";
+            $data = array(
+                'existed' => "Password is not match!!"
+            );
+            return view('signup', $data);
         }
     }
 
-    public function SignIn(Request $request){
+    public function signin(Request $request){
         //try to log in
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             return view('home');
         }
-        return view('signup');
+//        $email = $request->email;
+//        $password = $request->password;
+//        if((User::checkExistedUser($email)) == true){
+//
+//            return view('signup');
+//        }
     }
 }
