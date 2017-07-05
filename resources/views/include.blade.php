@@ -13,6 +13,7 @@
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{asset('css/overrideBootstrap.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/folder.css')}}">
     <link rel="stylesheet" href="{{asset('css/sidebar.css')}}">

@@ -35,6 +35,10 @@
                         @else
                             @include('homeContent')
                         @endif
+                    @elseif($position == 3)
+                        @include('connectionContent')
+                    @elseif($position == 5)
+                        @include('settingContent')
                     @endif
                 </div>
             </div>

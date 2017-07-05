@@ -404,6 +404,33 @@ nav {
     background-color: #e3e3e3;
 }
 
+.setting-container {
+    max-width: 1000px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    padding: 50px;
+    margin: auto;
+}
+
+.setting-table {
+    font-weight: lighter;
+    max-width: 800px;
+    margin: auto;
+    font-size: 1.5em;
+}
+
+.suicide {
+    padding-left: 0px;
+}
+
+.logout {
+    font-size: 1.5em;
+    font-weight: lighter;
+    padding: 4px;
+    margin-top: 20px;
+}
+
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     nav {
@@ -517,6 +544,23 @@ nav {
 
     .fav-text {
         margin-left: 15px;
+    }
+
+    .setting-container {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .setting-table {
+        font-size: 1em;
+    }
+
+    .suicide {
+        padding-left: 30px;
+    }
+
+    .logout {
+        font-size: 1em;
     }
 }
 
