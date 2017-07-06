@@ -18,5 +18,8 @@
     <link rel="stylesheet" href="{{asset('css/folder.css')}}">
     <link rel="stylesheet" href="{{asset('css/sidebar.css')}}">
     <link rel="stylesheet" href="{{asset('css/info.css')}}">
+    <link rel="stylesheet" href="{{asset('css/circle.css')}}">
+    <link rel="stylesheet" href="{{asset('css/playSong.css')}}">
+    <link rel="stylesheet" href="{{asset('css/playLesson.css')}}">
 
 </head>

@@ -1,4 +1,7 @@
 <div>
+    <div class="row" style="text-align: center; font-size: 60px; font-family: raleway">
+        Creators
+    </div>
     <div class="row person-row">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 person-div profile-preview" style="background-image: url({{asset('img/nimol.svg')}})">
         </div>
@@ -7,7 +10,7 @@
                 Sar Channimol
             </h1>
             <p>
-                Girl of the team, <br>design the Test layout,<br> the Test Page and test the pages
+                Srey sart
             </p>
         </div>
     </div>
@@ -18,7 +21,7 @@
                 S&acirc;r Thyrith
             </h1>
             <p>
-                Animator, cartoonizer, <br>created the Home Page and this page
+                Pros akrok
             </p>
         </div>
 

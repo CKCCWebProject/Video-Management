@@ -52,7 +52,7 @@ class UserController extends Controller
         $email=$request->email;
         $password=$request->password;
         if(Auth::attempt(['email' => $email, 'password' => $password])){
-            $request->session()->set('id',Auth::id());
+//            $request->session()->set('id',Auth::id());
             return redirect('home');
         }
         else{
@@ -68,8 +68,12 @@ class UserController extends Controller
     }
 
     public function signout(Request $request){
-        $request->session()->flush();
+//        $request->session()->flush();
         Auth::logout();
         return redirect('/');
+    }
+
+    public function isLoggedIn(){
+        return true;
     }
 }

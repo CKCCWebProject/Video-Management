@@ -17,10 +17,10 @@
             </div>
             <div class="fold-text" style="float: left; color: black;">
                 <div class="fold-name">
-                    Play list name hello world is the new word
+                    Playlist
                 </div>
                 <div class="fold-info">
-                    information
+                    Information
                 </div>
             </div>
             <div class="folder-setting dropdown">
@@ -42,7 +42,7 @@
             </div>
             <div class="fold-text" style="float: left; color: black;">
                 <div class="fold-name">
-                    Play list name hello world is the new word
+                    Folder
                 </div>
                 <div class="fold-info">
                     information
@@ -67,7 +67,7 @@
             </div>
             <div class="fold-text" style="float: left; color: black;">
                 <div class="fold-name">
-                    Play list name hello world is the new word
+                    Lesson
                 </div>
                 <div class="fold-info">
                     information
