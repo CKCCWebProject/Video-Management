@@ -25,4 +25,19 @@ class PageController extends Controller
         );
         return view ('home', $data);
     }
+
+    public function playLesson($id) {
+        return view('playLesson');
+    }
+
+    public function playSong($id) {
+        return view('playSong');
+    }
+
+    public function edit($id) {
+        $data = array (
+            'type' => 'lesson'
+        );
+        return view('edit');
+    }
 }

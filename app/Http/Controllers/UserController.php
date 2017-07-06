@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-
-
     public function signupScreenWithMessage($message){
         return view('signup', ['message'=> $message]);
     }
@@ -68,5 +66,9 @@ class UserController extends Controller
     public function signout(){
 //        $request->session()->flush();
         return redirect('/');
+    }
+
+    public function isLoggedIn(){
+        return true;
     }
 }

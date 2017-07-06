@@ -1,3 +1,27 @@
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.table > tbody > tr {
+    border-top: 2px solid #ddd;
+}
+
+.table > tbody > tr:first-child {
+    border-top: none;
+}
+
+.modal-header {
+    background-color: white;
+}
+
+.modal-title {
+    color: white;
+}
+
+.modal-body {
+    background-color: #ededed;
+}
+
+.modal-footer {
+    background-color: #ededed;
 }

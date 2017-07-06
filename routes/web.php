@@ -13,7 +13,6 @@
 
 
 Route::group(['middleware' => ['web']], function (){
-
     Route::get('/', function (){
         return redirect('signup');
     });
@@ -30,13 +29,14 @@ Route::group(['middleware' => ['web']], function (){
 
         Route::get('signout', 'UserController@signout');
 
-        Route::get('/home/{tab}', 'PageController@home');
-        Route::get('/{nav}', 'PageController@nav');
 
 
 
 });
-Route::group(['middleware' => 'guest'], function (){
-    return view('signup');
-});
 
+
+Route::get('/home/{tab}', 'PageController@home');
+Route::get('/{nav}', 'PageController@nav');
+Route::get('/home/management/playLesson/{id}', 'PageController@playLesson');
+Route::get('/home/management/playSong/{id}', 'PageController@playSong');
+Route::get('/home/management/edit/{id}', 'PageController@edit');

@@ -1,0 +1,148 @@
+.song-playlist-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.song-close {
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    font-size: 40px;
+    z-index: 9;
+}
+
+.song-main {
+    background-color: #fbfbfb;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0px;
+}
+
+.song-view {
+    margin: auto;
+}
+
+.song-play-favorite {
+    margin-top: 30px;
+    font-family: raleway;
+    font-weight: lighter;
+}
+
+.song-video {
+    width: 660px;
+    height: 400px;
+    margin-top: 20px;
+    margin-buttom: 20px;
+}
+
+.song-play-sequence {
+    font-family: raleway;
+    font-weight: lighter;
+}
+
+.song-sequence-list-container {
+    text-align: center;
+}
+
+.song-sequence-list {
+    list-style: none;
+    padding-left: 0px;
+    display: flex;
+    margin: auto;
+    justify-content: center;
+}
+
+.song-sequence-list > li {
+    margin: 15px;
+    display: inline;
+}
+
+.song-list {
+    background-color: #acacac;
+    height: 100vh;
+    overflow: scroll;
+}
+
+.songs {
+    list-style: none;
+    padding-left: 0px;
+}
+
+.each-song {
+    display: flex;
+    align-items: center;
+}
+
+.heart {
+    color: white;
+}
+
+.video-thumbnail {
+    width: 55px;
+    height: 40px;
+    margin: 10px;
+}
+
+.song-text {
+
+}
+
+.song-title {
+    font-family: raleway;
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.song-info {
+    font-size: 15px;
+}
+
+@media only screen and (max-width : 1200px) {
+    .song-video {
+        width: 450px;
+        height: 300px;
+    }
+}
+
+@media only screen and (max-width : 979px) {
+    .song-video {
+        width: 360px;
+        height: 280px;
+    }
+}
+
+@media only screen and (max-width : 767px) {
+    .song-video {
+        width: 440px;
+        height: 300px;
+    }
+
+    .song-main {
+        height: 430px;
+    }
+
+    .song-list {
+        height: calc(100vh - 430px);
+    }
+
+    .song-close {
+        top: -5px;
+        left: 10px;
+    }
+}
+
+@media only screen and (max-width : 480px) {
+    .song-video {
+        width: 95vw;
+        height: 250px;
+    }
+
+    .song-main {
+        height: 400px;
+    }
+
+    .song-list {
+        height: calc(100vh - 400px);
+    }
+}
