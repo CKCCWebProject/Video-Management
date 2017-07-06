@@ -13,7 +13,7 @@
 
             </div>
             <ul class="nav navbar-nav navbar-right login-container">
-                <form method="post" action="{{url('/home')}}" style="margin-bottom: 0px">
+                <form method="post" action="{{url('signin')}}" style="margin-bottom: 0px">
                     {{csrf_field()}}
                     <div class="login-form col-xs-12 col-sm-10">
                         <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7 push-buttom-s">
@@ -39,7 +39,7 @@
     <div class="row content">
         <div class="col-sm-12 text-left">
             <div class="signup-form">
-                <form method="post" action="{{url('/home')}}">
+                <form method="post" action="{{url('/signup')}}">
                     {{csrf_field()}}
                     <div class="signup-title" style="margin: 20px 20px;">
                         Create new account
@@ -58,4 +58,12 @@
 </div>
 
 </body>
+
+    <script>
+
+        @if(isset($message))
+            alert('{{$message}}');
+        @endif
+    </script>
+
 </html>

@@ -8,26 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function goToHome(){
-        $data = array(
-           'position' => 5,
-            'activeNav' => 1
-        );
-        return view('home', $data);
+    public function signupScreenWithMessage($message){
+        return view('signup', ['message'=> $message]);
     }
 
     public function signup(Request $request){
-        $this->validate($request, [
-           'email' => 'required|email|unique:users',
-            'username' => 'required|max:120',
-            'password' => 'required|min:6'
-        ]);
+//        $this->validate($request, [
+//           'email' => 'required|email|unique:users',
+//            'username' => 'required|max:120',
+//            'password' => 'required|min:6'
+//        ]);
         $email = $request->signup_email;
         $username = $request->signup_username;
         $password = $request->signup_password;
         $confirmPassword = $request->signup_confirmpassword;
-//        echo $password;
-//        echo "/n".$confirmPassword;
+
         if($password == $confirmPassword){
             if((User::checkExistedUser($email)) == false){
                 $user = new User();
@@ -37,22 +32,18 @@ class UserController extends Controller
                 User::createUser($user);
 
                 Auth::login($user);
-                return $this->goToHome();
+//                Auth::id();
+                return redirect('home');
             }
             else{
 //                echo "already existed";
-                $data = array(
-                    'existed' => "Email is already existed!!"
-                );
-                return view('signup', $data);
+                return $this->signupScreenWithMessage("Email is already existed!!");
+//                return redirect('connection');
             }
         }
         else{
 //            echo "<script>alert('password not match');</script>";
-            $data = array(
-                'existed' => "Password is not match!!"
-            );
-            return view('signup', $data);
+            return $this->signupScreenWithMessage("Password is not match!!");
         }
     }
 
@@ -61,14 +52,23 @@ class UserController extends Controller
         $email=$request->email;
         $password=$request->password;
         if(Auth::attempt(['email' => $email, 'password' => $password])){
+            $request->session()->set('id',Auth::id());
             return redirect('home');
         }
         else{
-            return view('welcome');
+//            echo "Ah neng sign in te";
+            return redirect()->guest('signup') ;
         }
     }
 
-    public function signout(){
+    public function loginProcess(){
+        if(Auth::check()){
+
+        }
+    }
+
+    public function signout(Request $request){
+        $request->session()->flush();
         Auth::logout();
         return redirect('/');
     }

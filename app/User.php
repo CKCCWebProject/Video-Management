@@ -30,5 +30,7 @@ class User extends Model implements Authenticatable
         else return false;
     }
 
-
+    public function hasFolders(){
+        return $this->hasMany('App\Folder');
+    }
 }

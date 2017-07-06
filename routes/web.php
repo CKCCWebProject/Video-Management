@@ -14,21 +14,21 @@
 
 Route::group(['middleware' => ['web']], function (){
     Route::get('/', function (){
+        return redirect('signup');
+    });
+
+    Route::get('signup', function (){
         return view('signup');
     });
 
-    Route::post('/home', 'UserController@signup');
+    Route::post('/signup', 'UserController@signup');
 
-    Route::post('/home', 'UserController@signin');
+    Route::post('/signin', 'UserController@signin');
 
 //    Route::get('homepage', 'PageController@home');
 
     Route::get('signout', 'UserController@signout');
 
-//    Route::get('/home',[
-//       'uses' => 'UserController@goToHome',
-//        'middleware' => 'auth'
-//    ]);
 });
 
 
