@@ -28,7 +28,7 @@
                             <span class="fa fa-sign-in"></span>&nbsp; Log in
                         </button>
                     </div>
-                    <input type="hidden" name="_token" value="{{Session::token()}}">
+                    {{--<input type="hidden" name="_token" value="{{Session::token()}}">--}}
                 </form>
             </ul>
         </div>
@@ -50,7 +50,7 @@
                     <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password" required>
                     <button type="submit" class="btn btn-normal" style="color: white">Sign up</button>
 
-                    <input type="hidden" name="_token" value="{{Session::token()}}">
+                    {{--<input type="hidden" name="_token" value="{{Session::token()}}">--}}
                 </form>
             </div>
         </div>

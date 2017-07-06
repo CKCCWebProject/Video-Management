@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+
+
     public function signupScreenWithMessage($message){
         return view('signup', ['message'=> $message]);
     }
@@ -31,8 +33,7 @@ class UserController extends Controller
                 $user->password = bcrypt($password);
                 User::createUser($user);
 
-                Auth::login($user);
-//                Auth::id();
+                $request->session()->regenerate();
                 return redirect('home');
             }
             else{
@@ -51,25 +52,21 @@ class UserController extends Controller
         //try to log in
         $email=$request->email;
         $password=$request->password;
-        if(Auth::attempt(['email' => $email, 'password' => $password])){
-            $request->session()->set('id',Auth::id());
+
+        $currentUser = User::login($email, $password);
+        if($currentUser == null) {
+            //error
+            return redirect('login');
+        }else{
+            $id = User::getUserId($email, $password);
+            $request->session()->put('id', $id);
             return redirect('home');
         }
-        else{
-//            echo "Ah neng sign in te";
-            return redirect()->guest('signup') ;
-        }
     }
 
-    public function loginProcess(){
-        if(Auth::check()){
 
-        }
-    }
-
-    public function signout(Request $request){
-        $request->session()->flush();
-        Auth::logout();
+    public function signout(){
+//        $request->session()->flush();
         return redirect('/');
     }
 }

@@ -30,6 +30,10 @@ class User extends Model implements Authenticatable
         else return false;
     }
 
+    public static function getUserId($email, $password){
+        $id = DB::table('users')->select('id')->where('email', $email)->where('password',$password )->get();
+    }
+
     public function hasFolders(){
         return $this->hasMany('App\Folder');
     }
