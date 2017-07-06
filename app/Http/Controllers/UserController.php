@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    var $email = 'nimol@gmail.com';
+    var $password = '4567';
+
     public function signupScreenWithMessage($message){
         return view('signup', ['message'=> $message]);
     }
@@ -51,10 +54,10 @@ class UserController extends Controller
         $email=$request->email;
         $password=$request->password;
 
-        $currentUser = User::login($email, $password);
+        $currentUser = User::validSignIn($email, $password);
         if($currentUser == null) {
             //error
-            return redirect('login');
+            return redirect('signup');
         }else{
             $id = User::getUserId($email, $password);
             $request->session()->put('id', $id);

@@ -14,7 +14,7 @@ class CreateSendToTable extends Migration
     public function up()
     {
         Schema::create('send_tos', function (Blueprint $table) {
-            $table->increments('g_id');
+            $table->integer('g_id');
             $table->timestamps();
             $table->integer('receiver_id');
         });

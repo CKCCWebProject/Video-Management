@@ -14,7 +14,7 @@ class CreateSequencesTable extends Migration
     public function up()
     {
         Schema::create('sequences', function (Blueprint $table) {
-            $table->increments('sq_id');
+            $table->integer('sq_id');
             $table->timestamps();
         });
     }
