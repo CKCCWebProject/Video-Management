@@ -30,6 +30,10 @@ class User extends Model implements Authenticatable
         else return false;
     }
 
+    public static function validSignIn($email, $password){
+        $id = DB::table('users')->where('email', $email)->where('password',$password )->get();
+    }
+
     public static function getUserId($email, $password){
         $id = DB::table('users')->select('id')->where('email', $email)->where('password',$password )->get();
     }
