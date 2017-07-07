@@ -70,7 +70,7 @@ class PageController extends Controller
             array_unshift($directories, $folder_i[0]);
         } while ($folder_i[0]->folderName != 'home' || $folder_i[0]->if_deletable != false);
 
-        $folders = Folder::where('u_id', User::currentUser()->id)->where('parent_id', $id)->get();
+        $folders = Folder::where('u_id', User::currentUser()->id)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
         $songPlaylists = SongPlaylist::where('u_id', User::currentUser()->id)->where('f_id', $id)->get();
         $lessonPlaylists = LessonPlaylist::where('u_id', User::currentUser()->id)->where('f_id', $id)->get();
         $data = array (
