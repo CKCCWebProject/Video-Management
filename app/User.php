@@ -31,11 +31,13 @@ class User extends Model implements Authenticatable
     }
 
     public static function validSignIn($email, $password){
-        $id = DB::table('users')->where('email', $email)->where('password',$password )->get();
+        $user = DB::table('users')->where('email', $email)->where('password',$password )->get();
+        return $user;
     }
 
     public static function getUserId($email, $password){
         $id = DB::table('users')->select('id')->where('email', $email)->where('password',$password )->get();
+        return $id;
     }
 
     public function hasFolders(){

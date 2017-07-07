@@ -52,7 +52,7 @@ class UserController extends Controller
     public function signin(Request $request){
         //try to log in
         $email=$request->email;
-        $password=$request->password;
+        $password=bcrypt($request->password);
 
         $currentUser = User::validSignIn($email, $password);
         if($currentUser == null) {
