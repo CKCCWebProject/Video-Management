@@ -3,8 +3,8 @@
 
     <div class="lesson-container">
         {{--close--}}
-        <div class="lesson-close">
-            &times;
+        <div class="song-close">
+            <a href="{{url('home/management/'.$parentId)}}">&times;</a>
         </div>
         {{--main--}}
         <div class="lesson-main">

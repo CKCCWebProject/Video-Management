@@ -4,10 +4,10 @@
 <div class="song-playlist-container">
     {{--close--}}
     <div class="song-close">
-        &times;
+        <a href="{{url('home/management/'.$parentId)}}">&times;</a>
     </div>
     {{--main--}}
-    <div class="song-main col-lg-7 col-md-6 col-sm-6 col-xs-12">
+    <div class="song-main col-lg-8 col-md-6 col-sm-6 col-xs-12">
         <div class="song-view">
             {{--play favorite--}}
             <div class="song-play-favorite">
@@ -16,7 +16,7 @@
             </div>
             {{--video--}}
             <div class="song-video">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/jaSDeu1RakI" frameborder="0" allowfullscreen></iframe>
+                <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/jaSDeu1RakI?rel=0" frameborder="0" allowfullscreen></iframe>
             </div>
             {{--play sequence--}}
             <div class="song-play-sequence">
@@ -48,23 +48,25 @@
         </div>
     </div>
     {{--list--}}
-    <div class="mediumScroll song-list col-lg-5 col-md-6 col-sm-6 col-xs-12">
+    <div class="mediumScroll song-list col-lg-4 col-md-6 col-sm-6 col-xs-12">
         <ul class="songs">
-            <li>
-                <div class="each-song">
-                    <div class="heart">
-                        <i class="fa fa-heart"></i>
-                    </div>
-                    <div class="video-thumbnail profile-preview" style="background-image: url('https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg')"></div>
-                    <div class="song-text">
-                        <div class="song-title">
-                            My song
+            <li style="border: 1px solid red">
+                <a href="" id="play-video">
+                    <div class="each-song">
+                        <div class="heart">
+                            <i class="fa fa-heart"></i>
                         </div>
-                        <div class="song-info">
-                            2:30
+                        <div class="video-thumbnail profile-preview" style="background-image: url('https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg')"></div>
+                        <div class="song-text">
+                            <div class="song-title">
+                                My song
+                            </div>
+                            <div class="song-info">
+                                2:30
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </li>
 
 
@@ -481,6 +483,15 @@
         </ul>
     </div>
 </div>
+
+<script>
+    $('#play-video').on('click', function(ev) {
+
+        $("#video")[0].src += "&autoplay=1";
+        ev.preventDefault();
+
+    });
+</script>
 
 </body>
 </html>

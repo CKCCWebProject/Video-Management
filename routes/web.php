@@ -36,7 +36,12 @@ Route::group(['middleware' => ['web']], function (){
 
 
 Route::get('/home/{tab}', 'PageController@home');
+Route::get('/home/management/{id}', 'PageController@folder');
 Route::get('/{nav}', 'PageController@nav');
 Route::get('/home/management/playLesson/{id}', 'PageController@playLesson');
 Route::get('/home/management/playSong/{id}', 'PageController@playSong');
 Route::get('/home/management/edit/{id}', 'PageController@edit');
+
+Route::post('/folders', 'AdminController@insertFolder');
+Route::post('/playlists', 'AdminController@insertPlaylist');
+Route::post('/lessons', 'AdminController@insertLesson');

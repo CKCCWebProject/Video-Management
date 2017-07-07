@@ -51,22 +51,26 @@
 </div>
 
 
+@if($position == 'home' && $activeNav == 'management') {
+
 <div id="createFolder" class="modal fade" role="dialog" style="z-index: 1050">
     <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
-            <form action="" style="margin-bottom: 0px">
+            <form method="post" action="{{url('folders')}}" style="margin-bottom: 0px">
+                {{csrf_field()}}
+                <input name="currentFolder" type="hidden" value="{{$pwd}}">
                 <div class="modal-header"  style="background-color: #c3ac38">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                     <h4 class="modal-title">Enter new folder name</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" placeholder="New folder">
+                    <input name="folderName" type="text" class="form-control" placeholder="New folder">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-default" value="Ok">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -79,17 +83,19 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <form action="" style="margin-bottom: 0px">
+            <form method="post" action="{{url('playlists')}}" style="margin-bottom: 0px">
+                {{csrf_field()}}
+                <input name="currentFolder" type="hidden" value="{{$pwd}}">
                 <div class="modal-header"  style="background-color: #c44e4e">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                     <h4 class="modal-title">Enter new song playlist name</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" placeholder="New song playlist">
+                    <input name="playlistName"  type="text" class="form-control" placeholder="New song playlist">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-default" value="Ok">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -102,17 +108,19 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <form action="" style="margin-bottom: 0px">
+            <form method="post" action="{{url('lessons')}}" style="margin-bottom: 0px">
+                {{csrf_field()}}
+                <input name="currentFolder" type="hidden" value="{{$pwd}}">
                 <div class="modal-header"  style="background-color: #4453a1">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                     <h4 class="modal-title">Enter new lesson playlist name</h4>
                 </div>
                 <div class="modal-body">
-                    <input type="text" class="form-control" placeholder="New lesson playlist">
+                    <input  name="lessonName"  type="text" class="form-control" placeholder="New lesson playlist">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-default" value="Ok">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </form>
         </div>
@@ -120,6 +128,7 @@
     </div>
 </div>
 
+@endif
 
 
 <!-- Menu Toggle Script -->

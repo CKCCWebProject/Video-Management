@@ -18,8 +18,7 @@ class CreateFoldersTable extends Migration
             $table->timestamps();
             $table->integer('u_id');
             $table->string("folderName");
-            $table->integer('sp_id');
-            $table->integer('lp_id');
+            $table->int("parent_id");
             $table->boolean('if_deletable');
             $table->boolean('if_public');
         });

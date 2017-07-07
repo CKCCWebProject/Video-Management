@@ -37,4 +37,13 @@ class User extends Model implements Authenticatable
     public function hasFolders(){
         return $this->hasMany('App\Folder');
     }
+
+    public static function currentUser() {
+        $nimol = new User();
+        $nimol->id = 1;
+        $nimol->username = 'nimol';
+        $nimol->email = 'nimol@gmail.com';
+        $nimol->password = '1234';
+        return $nimol;
+    }
 }

@@ -10,8 +10,4 @@ class Folder extends Model
     {
         return $this->belongsTo('App\User');
     }
-
-   public static function createFolder(){
-
-   }
 }

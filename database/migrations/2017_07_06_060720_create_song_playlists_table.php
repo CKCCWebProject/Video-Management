@@ -14,7 +14,7 @@ class CreateSongPlaylistsTable extends Migration
     public function up()
     {
         Schema::create('song_playlists', function (Blueprint $table) {
-            $table->integer('sp_id');
+            $table->increments('sp_id');
             $table->timestamps();
             $table->string('sp_name');
             $table->integer('u_id');

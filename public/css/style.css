@@ -608,7 +608,7 @@ nav {
 @keyframes fadeOut {
     from {
         opacity: 1;
-        z-index: 1000;
+        z-index: 2000;
     }
 
     to {
@@ -620,12 +620,12 @@ nav {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        z-index: 1000;
+        z-index: 2000;
     }
 
     to {
         opacity: 1;
-        z-index: 1000;
+        z-index: 2000;
     }
 }
 
