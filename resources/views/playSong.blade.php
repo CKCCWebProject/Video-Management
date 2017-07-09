@@ -9,42 +9,52 @@
     {{--main--}}
     <div class="song-main col-lg-8 col-md-7 col-sm-6 col-xs-12">
         <div class="song-view">
-            {{--play favorite--}}
-            <div class="song-play-favorite">
-                <input type="checkbox" id="play-favorite">
-                <label for="play-favorite">Play only favorites</label>
-            </div>
-            {{--video--}}
-            <div class="song-video">
-                <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/jaSDeu1RakI?rel=0" frameborder="0" allowfullscreen></iframe>
-            </div>
-            {{--play sequence--}}
-            <div class="song-play-sequence">
-                <div class="song-sequence-list-container">
-                    <ul class="song-sequence-list">
-                        {{--repeat all--}}
-                        <li>
-                            <input type="radio" name="sequence" value="repeat_all" id="repeat_all" checked>
-                            <label for="repeat_all"> Repeat all</label>
-                        </li>
-                        {{--repeat one--}}
-                        <li>
-                            <input type="radio" name="sequence" value="repeat_one" id="repeat_one" checked>
-                            <label for="repeat_one"> Repeat one</label>
-                        </li>
-                        {{--random--}}
-                        <li>
-                            <input type="radio" name="sequence" value="random" id="random" checked>
-                            <label for="random"> Random</label>
-                        </li>
-                        {{--none--}}
-                        <li>
-                            <input type="radio" name="sequence" value="none" id="none" checked>
-                            <label for="none"> None</label>
-                        </li>
-                    </ul>
+
+            @if(count($videos))
+                {{--play favorite--}}
+                <div class="song-play-favorite">
+                    <input type="checkbox" id="play-favorite">
+                    <label for="play-favorite">Play only favorites</label>
                 </div>
-            </div>
+                {{--video--}}
+                <div class="song-video">
+                    <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/{{$currentVideo->url}}{{$autoplay?'/?rel=0&autoplay=1':''}}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                {{--play sequence--}}
+                <div class="song-play-sequence">
+                    <div class="song-sequence-list-container">
+                        <ul class="song-sequence-list">
+                            {{--repeat all--}}
+                            <li>
+                                <input type="radio" name="sequence" value="repeat_all" id="repeat_all" checked>
+                                <label for="repeat_all"> Repeat all</label>
+                            </li>
+                            {{--repeat one--}}
+                            <li>
+                                <input type="radio" name="sequence" value="repeat_one" id="repeat_one" checked>
+                                <label for="repeat_one"> Repeat one</label>
+                            </li>
+                            {{--random--}}
+                            <li>
+                                <input type="radio" name="sequence" value="random" id="random" checked>
+                                <label for="random"> Random</label>
+                            </li>
+                            {{--none--}}
+                            <li>
+                                <input type="radio" name="sequence" value="none" id="none" checked>
+                                <label for="none"> None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            @else
+                <div style="height: 100%; font-size: 4vw; display: flex; align-items: center;">
+                    <div style="width: 100%; text-align: center;">
+                        Don't have any videos yet
+                    </div>
+                </div>
+            @endif
+
         </div>
     </div>
     {{--list--}}
@@ -55,29 +65,33 @@
             </button>
         </div>
         <ul class="songs">
-            <li>
-                <div class="each-song">
-                    <div class="heart">
-                        <i class="fa fa-heart"></i>
-                    </div>
-                    <div class="video-thumbnail profile-preview" style="background-image: url('https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg')"></div>
-                    <div class="song-text">
-                        <div class="song-title">
-                            My song
+            @foreach($videos as $key=>$video)
+                <li id="index{{$key}}" class="{{$video->s_id==$currentVideo->s_id?'playing':''}}">
+                    <div class="each-song">
+                        <div class="heart" onclick="return favorite({{$video->s_id}})">
+                            <i id="heart{{$video->s_id}}" style="color: {{$video->if_favorite?'red':'white'}}" class="fa fa-heart"></i>
                         </div>
-                        <div class="song-info">
-                            2:30
+                        <a href="{{url('home/management/playSong/'.$currentPlaylist.'/'.$video->s_id)}}" style="display: flex; align-items: center; width: 90%">
+                            <div class="video-thumbnail profile-preview" style="background-image: url('https://img.youtube.com/vi/{{$video->url}}/mqdefault.jpg')"></div>
+                            <div class="song-text">
+                                <div class="song-title">
+                                    {{$video->title}}
+                                </div>
+                                <div class="song-info">
+                                    {{sprintf('%02d:%02d:%02d', floor($duration / 3600), floor($duration / 60 % 60), floor($duration % 60))}}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="folder-setting dropdown">
+                            <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
+                            <ul class="dropdown-menu setting-option" style="top: 0px">
+                                <li class="set-opt"><a href="#">rename</a></li>
+                                <li class="set-opt delete-color"><a href="#">delete</a></li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="folder-setting dropdown">
-                        <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
-                        <ul class="dropdown-menu setting-option" style="top: 0px">
-                            <li class="set-opt"><a href="#">rename</a></li>
-                            <li class="set-opt delete-color"><a href="#">delete</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </li>
+                </li>
+            @endforeach
 
         </ul>
     </div>
@@ -88,15 +102,21 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <form method="post" action="{{url('folders')}}" style="margin-bottom: 0px">
+            <form method="post" action="{{url('addSong')}}" style="margin-bottom: 0px">
                 {{csrf_field()}}
-                <input name="currentFolder" type="hidden" value="{{--{{$pwd}}--}}">
-                <div class="modal-header"  style="background-color: #c3ac38">
+                <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
+                <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
+                <div class="modal-header"  style="background-color: #5d6fc2">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
-                    <h4 class="modal-title">Enter new folder name</h4>
+                    <h4 class="modal-title">Enter youtube URL</h4>
                 </div>
                 <div class="modal-body">
-                    <input name="folderName" type="text" class="form-control" placeholder="New folder">
+                    <div style="margin-bottom: 10px">
+                        <input name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
+                    </div>
+                    <div>
+                        <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-default" value="Ok">
@@ -108,13 +128,42 @@
     </div>
 </div>
 
+@if($message != '')
+    <div class="show" id="snackbar">{{$message}}</div>
+@endif
+
 <script>
+
+    @if($message != '')
+        $(window).on('load', function () {
+        var x = document.getElementById("snackbar");
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    });
+    @endif
+
     $('#play-video').on('click', function(ev) {
 
         $("#video")[0].src += "&autoplay=1";
         ev.preventDefault();
 
     });
+
+    function favorite($id) {
+        $.ajax({
+            url: "{{url('/home/management/playLesson/favorite')}}",
+            type: 'post',
+            data: 'id='+$id+'&_token='+'{{csrf_token()}}',
+            dataType: 'text',
+            success: function( _response ){
+                $("#heart"+$id).css('color', _response);
+//                alert(_response)
+            },
+            error: function( _response ){
+            }
+        });
+        return false;
+    }
 </script>
 
 </body>

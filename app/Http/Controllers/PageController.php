@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Folder;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\Song;
 use App\SongPlaylist;
 use App\User;
 use DateInterval;
 use Illuminate\Http\Request;
+use DB;
+use Illuminate\Database\Query\Builder;
 
 class PageController extends Controller
 {
@@ -25,6 +28,10 @@ class PageController extends Controller
             'activeNav' => $tab,
             'position' => 'home'
         );
+        if ($tab == 'favorite') {
+            $favoriteVideos = DB::table('songs')->join('song_playlists', 'songs.sp_id', '=', 'song_playlists.sp_id')->where('u_id', User::currentUser()->id)->where('if_favorite', true)->get();
+            $data['favoriteVideos'] = $favoriteVideos;
+        }
         return view ('home', $data);
     }
 
@@ -65,9 +72,34 @@ class PageController extends Controller
         return view('playLesson', $data);
     }
 
-    public function playSong($id) {
+    public function playSong($id, $vid = null, $message = '') {
+//        $data = array(
+//            'currentPlaylist' => $id,
+//            'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
+//        );
+//        return view('playSong', $data);
+        $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
+        if (count($videos) > 0) {
+            if ($vid == null) {
+                $currentVideo = $videos[0];
+            } else {
+                $currentVideo = Song::find($vid);
+            }
+            $duration = PageController::duration(PageController::getInfoFromId($currentVideo->url)['items'][0]['contentDetails']['duration']);
+        } else {
+            $currentVideo = null;
+            $duration = 0;
+        }
+
+
+
         $data = array(
+            'message' => $message,
+            'currentVideo' => $currentVideo,
+            'videos' => $videos,
+            'duration' => $duration,
             'currentPlaylist' => $id,
+            'autoplay' => $vid == null?false:true,
             'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
         );
         return view('playSong', $data);
@@ -130,7 +162,7 @@ class PageController extends Controller
           )             # End path alternatives.
         )               # End host alternatives.
         ([\w-]{10,12})  # Allow 10-12 for 11 char youtube id.
-        (&.=[0-9a-z]+)?$%x'
+        .*$%x'
         ;
         $result = preg_match($pattern, $url, $matches);
         if ($result) {
@@ -181,5 +213,20 @@ class PageController extends Controller
         $totalSec+=$di->s;
 
         return $totalSec;
+    }
+
+    public static function songDirectory($parentId) {
+        $playlist = SongPlaylist::find($parentId);
+        $directory = $playlist->sp_name.'/';
+        $now = $playlist->f_id;
+        do {
+            $folder_i = Folder::find($now);
+            if ($folder_i == null) {
+                return redirect('invalid_folder');
+            }
+            $directory = $folder_i->folderName.'/'.$directory;
+            $now = $folder_i->parent_id;
+        } while ($folder_i->folderName != 'home' || $folder_i->if_deletable != false);
+        return $directory;
     }
 }

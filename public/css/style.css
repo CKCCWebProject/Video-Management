@@ -400,6 +400,7 @@ nav {
 
 .favorite-thumbnail {
     width: 80px;
+    min-width: 80px;
     height: 55px;
     margin-left: 20px;
 }
@@ -420,12 +421,24 @@ nav {
     margin-left: 30px;
 }
 
+.list-favorite {
+    padding-left: 10px;
+}
+
 .list-favorite li {
     padding: 15px;
 }
 
 .list-favorite li:hover {
     background-color: #e3e3e3;
+}
+
+.each-fav {
+    width: 100%;
+}
+
+.each-fav > a {
+    text-decoration: none;
 }
 
 .setting-container {
@@ -600,6 +613,7 @@ nav {
 
     .favorite-thumbnail {
         width: 40px;
+        min-width: 40px;
         height: 30px;
         margin-left: 10px;
     }

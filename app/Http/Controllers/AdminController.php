@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Folder;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\Song;
 use App\SongPlaylist;
 use App\User;
 use Illuminate\Http\Request;
@@ -93,12 +94,54 @@ class AdminController extends Controller
         }
     }
 
+    public function insertSongVideo(Request $request) {
+        $videoUrl = $request->videoURL;
+        $videoTitle = $request->videoTitle;
+        $songPlaylist = $request->currentPlaylist;
+        if (PageController::validYoutubeUrl($videoUrl)) {
+            $id = PageController::getYoutubeId($videoUrl);
+//            echo $id;
+            $song = new Song();
+            $song->created_at = new DateTime();
+            $song->updated_at = new DateTime();
+            $song->title =($videoTitle != '')?($videoTitle):
+                (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
+            $song->sp_id = $songPlaylist;
+            $song->url = $id;
+            $song->if_favorite = false;
+            $song->save();
+            $data = array (
+                'message' => "New video added"
+            );
+            return redirect('home/management/playSong/'.$songPlaylist);
+        } else {
+            $data = array (
+                'message' => "URL invalid"
+            );
+            return redirect('home/management/playSong/'.$songPlaylist);
+        }
+    }
+
     public function editNote(Request $request) {
         $id = $request->id;
         $note = $request->note;
         $video = Lesson::find($id);
         $video->note = $note;
         $video->save();
-        return response()->json(['return' => 'some data']);
+//        return response()->json(['return' => 'some data']);
+    }
+
+    public function favorite(Request $request) {
+        $id = $request->id;
+        $video = Song::find($id);
+        if ($video->if_favorite == true) {
+            $video->if_favorite = false;
+            $video->save();
+            return 'white';
+        } else {
+            $video->if_favorite = true;
+            $video->save();
+            return 'red';
+        }
     }
 }

@@ -17,30 +17,22 @@
         </div>
         <div class="row">
             <ul class="list-favorite">
-                <li class="each-fav row" style="display: flex; align-items: center">
-                    <input class="check-fav checkbox checkbox-primary" type="checkbox" id="select-all">
-                    <div class="favorite-thumbnail profile-preview" style="background-image: url('https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg')"></div>
-                    <div class="fav-text">
-                        <div class="fav-title">
-                            My lovely owl
-                        </div>
-                        <div class="fav-dir">
-                            home/animals
-                        </div>
-                    </div>
-                </li>
-                <li class="each-fav row" style="display: flex; align-items: center">
-                    <input class="check-fav checkbox checkbox-primary" type="checkbox" id="select-all">
-                    <div class="favorite-thumbnail profile-preview" style="background-image: url('https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg')"></div>
-                    <div class="fav-text">
-                        <div class="fav-title">
-                            My lovely owl
-                        </div>
-                        <div class="fav-dir">
-                            home/animals
-                        </div>
-                    </div>
-                </li>
+                @foreach($favoriteVideos as $favoriteVideo)
+                    <li class="each-fav row" style="display: flex; align-items: center">
+                        <a href="" style="display: flex; align-items: center; color: black">
+                            <input class="check-fav checkbox checkbox-primary" type="checkbox" id="select-all">
+                            <div class="favorite-thumbnail profile-preview" style="background-image: url('https://img.youtube.com/vi/{{$favoriteVideo->url}}/mqdefault.jpg')"></div>
+                            <div class="fav-text">
+                                <div class="fav-title">
+                                    {{$favoriteVideo->title}}
+                                </div>
+                                <div class="fav-dir">
+                                    {{\App\Http\Controllers\PageController::songDirectory($favoriteVideo->sp_id)}}
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </form>
