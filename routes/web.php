@@ -39,7 +39,9 @@ Route::get('/home/{tab}', 'PageController@home');
 Route::get('/home/management/{id}', 'PageController@folder');
 Route::get('/{nav}', 'PageController@nav');
 Route::get('/home/management/playLesson/{id}', 'PageController@playLesson');
-Route::get('/home/management/playSong/{id}', 'PageController@playSong');
+Route::get('/home/management/playLesson/{id}/{vid}', 'PageController@playLesson');
+Route::get('/home/management/playSong/{id}', 'PageController@playFirstSong');
+Route::get('/home/management/playSong/{id}/{vid}', 'PageController@playSong');
 Route::get('/home/management/edit/{id}', 'PageController@edit');
 
 Route::post('/folders', 'AdminController@insertFolder');

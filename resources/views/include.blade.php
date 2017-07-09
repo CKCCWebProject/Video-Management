@@ -14,6 +14,7 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{asset('css/note.css')}}">
+    <link rel="stylesheet" href="{{asset('css/snackbar.css')}}">
     <link rel="stylesheet" href="{{asset('css/overrideBootstrap.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <link rel="stylesheet" href="{{asset('css/folder.css')}}">

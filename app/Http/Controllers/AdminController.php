@@ -69,6 +69,7 @@ class AdminController extends Controller
         $lessonPlaylist = $request->currentPlaylist;
         if (PageController::validYoutubeUrl($videoUrl)) {
             $id = PageController::getYoutubeId($videoUrl);
+//            echo $id;
             $lesson = new Lesson();
             $lesson->created_at = new DateTime();
             $lesson->updated_at = new DateTime();

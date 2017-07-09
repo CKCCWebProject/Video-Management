@@ -100,7 +100,7 @@
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
-  background-color: #515151; /*circle background*/
+  background-color: #000000; /*circle background*/
   width: 0.84em;
   height: 0.84em;
   -webkit-transition-property: all;

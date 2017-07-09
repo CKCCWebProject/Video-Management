@@ -38,15 +38,28 @@ class PageController extends Controller
         return view ('home', $data);
     }
 
-    public function playLesson($id) {
+    public static function playLesson($id, $vid = null, $message = '') {
 //        $json_output = self::getInfoFromId('tq3itlILfn4');
 //        echo $json_output['items'][0]['contentDetails']['duration'];
 //        echo $json_output['items'][0]['snippet']['title'];
 
         $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
+        if (count($videos) > 0) {
+            if ($vid == null) {
+                $currentVideo = $videos[0];
+            } else {
+                $currentVideo = Lesson::find($vid);
+            }
+        } else {
+            $currentVideo = null;
+        }
+
         $data = array(
+            'message' => $message,
+            'currentVideo' => $currentVideo,
             'videos' => $videos,
             'currentPlaylist' => $id,
+            'autoplay' => $vid == null?false:true,
             'parentId' => LessonPlaylist::where('l_id', $id)->get()[0]->f_id
         );
         return view('playLesson', $data);
@@ -117,11 +130,15 @@ class PageController extends Controller
           )             # End path alternatives.
         )               # End host alternatives.
         ([\w-]{10,12})  # Allow 10-12 for 11 char youtube id.
-        $%x'
+        (&.=[0-9a-z]+)?$%x'
         ;
         $result = preg_match($pattern, $url, $matches);
         if ($result) {
-            return $matches[1];
+            $answer = $matches[1];
+//            if (strlen($answer) > 11) {
+//                $answer = substr($answer, 0, 10);
+//            }
+            return $answer;
         }
         return false;
     }
@@ -138,6 +155,17 @@ class PageController extends Controller
         $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet,contentDetails,statistics,status";
         $json_source = file_get_contents($jsonUrl,true);
         return json_decode($json_source,true);
+    }
+
+    public static function valideId($id) {
+        $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet,contentDetails,statistics,status";
+        $json_source = file_get_contents($jsonUrl,true);
+        $result = json_decode($json_source,true);
+        if ($result['pageInfo']['totalResults'] == 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static function duration($ytDuration) {
