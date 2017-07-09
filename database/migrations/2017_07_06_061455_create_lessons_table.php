@@ -19,8 +19,9 @@ class CreateLessonsTable extends Migration
             $table->string('title');
             $table->integer('lp_id');
             $table->string('url');
-            $table->string('start_time');
-            $table->string('end_time');
+            $table->integer('start_time');
+            $table->integer('end_time');
+            $table->text('note');
         });
     }
 

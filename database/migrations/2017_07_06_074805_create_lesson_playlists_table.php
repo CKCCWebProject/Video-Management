@@ -31,6 +31,6 @@ class CreateLessonPlaylistsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('LessonPlaylists');
+        Schema::dropIfExists('lesson_playlists');
     }
 }

@@ -3,6 +3,15 @@
     height: 100vh;
 }
 
+.song-close > a {
+    color: #515151;
+}
+
+.song-close > a:hover {
+    text-decoration: none;
+    color: #000000;
+}
+
 .song-close {
     position: absolute;
     top: 12px;
@@ -12,7 +21,7 @@
 }
 
 .song-main {
-    background-color: #fbfbfb;
+    background-color: #e3e3e3;
     height: 100%;
     display: flex;
     align-items: center;
@@ -25,8 +34,15 @@
 
 .song-play-favorite {
     margin-top: 30px;
+    margin-right: 20px;
     font-family: raleway;
-    font-weight: lighter;
+    font-weight: bolder;
+    text-align: right;
+}
+
+.song-play-favorite > label{
+    font-weight: bold;
+    font-size: 15px;
 }
 
 .song-video {
@@ -58,15 +74,31 @@
     display: inline;
 }
 
+.song-sequence-list > li > label{
+    font-weight: bold;
+    font-size: 15px;
+}
+
 .song-list {
-    background-color: #acacac;
+    background-color: #3b3b3b;
     height: 100vh;
     overflow: scroll;
+    padding: 0px;
 }
 
 .songs {
     list-style: none;
     padding-left: 0px;
+}
+
+.songs > li {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.songs > li:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.43);
 }
 
 .each-song {
@@ -85,23 +117,24 @@
 }
 
 .song-text {
-
+    color: white;
 }
 
 .song-title {
     font-family: raleway;
-    font-weight: bolder;
-    font-size: 18px;
+    font-weight: bold;
+    font-size: 15px;
 }
 
 .song-info {
-    font-size: 15px;
+    font-size: 13px;
+    font-weight: lighter;
 }
 
 @media only screen and (max-width : 1200px) {
     .song-video {
-        width: 450px;
-        height: 300px;
+        width: 55vw;
+        height: 35vw;
     }
 }
 
@@ -114,7 +147,7 @@
 
 @media only screen and (max-width : 767px) {
     .song-video {
-        width: 440px;
+        width: 470px;
         height: 300px;
     }
 
@@ -130,6 +163,14 @@
         top: -5px;
         left: 10px;
     }
+
+    .song-title {
+        font-size: 13px;
+    }
+
+    .song-info {
+        font-size: 10px;
+    }
 }
 
 @media only screen and (max-width : 480px) {
@@ -144,5 +185,13 @@
 
     .song-list {
         height: calc(100vh - 400px);
+    }
+
+    .song-title {
+        font-size: 13px;
+    }
+
+    .song-info {
+        font-size: 10px;
     }
 }

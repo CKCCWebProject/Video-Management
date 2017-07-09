@@ -27,8 +27,9 @@
                 <div class="folder-setting dropdown">
                     <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                     <ul class="dropdown-menu setting-option">
+                        <li class="set-opt"><a href="#">rename</a></li>
                         <li class="set-opt"><a href="#">share setting</a></li>
-                        <li class="set-opt"><a href="#">delete</a></li>
+                        <li class="set-opt delete-color"><a href="#">delete</a></li>
                     </ul>
                 </div>
             </li>
@@ -58,9 +59,9 @@
             <div class="folder-setting dropdown">
                 <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                 <ul class="dropdown-menu setting-option">
-                    <li class="set-opt"><a href="#">edit</a></li>
+                    <li class="set-opt"><a href="#">rename</a></li>
                     <li class="set-opt"><a href="#">share setting</a></li>
-                    <li class="set-opt"><a href="#">delete</a></li>
+                    <li class="set-opt delete-color"><a href="#">delete</a></li>
                 </ul>
             </div>
         </li>
@@ -88,9 +89,9 @@
             <div class="folder-setting dropdown">
                 <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                 <ul class="dropdown-menu setting-option">
-                    <li class="set-opt"><a href="#">edit</a></li>
+                    <li class="set-opt"><a href="#">rename</a></li>
                     <li class="set-opt"><a href="#">share setting</a></li>
-                    <li class="set-opt"><a href="#">delete</a></li>
+                    <li class="set-opt delete-color"><a href="#">delete</a></li>
                 </ul>
             </div>
         </li>

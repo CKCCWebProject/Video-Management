@@ -5,7 +5,7 @@
             <li class="sidebar-brand" style="text-indent: 0px">
                 <div class="user-display">
                     <div class="profile-preview display-profile" style="background-image: url('{{asset('img/giphy.gif')}}')"></div>
-                    <div class="display-name">Sar Channimol</div>
+                    <div class="display-name" style="font-weight: bold">Sar Channimol</div>
                     <div class="btn-edit">
                         <a href=""><i class="fa fa-edit"> </i> edit</a>
                     </div>

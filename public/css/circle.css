@@ -46,7 +46,7 @@
   border-radius: 50%;
   float: left;
   margin: 0 0.1em 0.1em 0;
-  background-color: #cccccc;
+  background-color: #d62929;
 }
 .c100 *, .c100 *:before, .c100 *:after {
   -webkit-box-sizing: content-box;
@@ -100,7 +100,7 @@
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
-  background-color: whitesmoke;
+  background-color: #515151; /*circle background*/
   width: 0.84em;
   height: 0.84em;
   -webkit-transition-property: all;

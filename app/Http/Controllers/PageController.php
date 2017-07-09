@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Folder;
+use App\Lesson;
 use App\LessonPlaylist;
 use App\SongPlaylist;
 use App\User;
+use DateInterval;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -37,7 +39,14 @@ class PageController extends Controller
     }
 
     public function playLesson($id) {
+//        $json_output = self::getInfoFromId('tq3itlILfn4');
+//        echo $json_output['items'][0]['contentDetails']['duration'];
+//        echo $json_output['items'][0]['snippet']['title'];
+
+        $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
         $data = array(
+            'videos' => $videos,
+            'currentPlaylist' => $id,
             'parentId' => LessonPlaylist::where('l_id', $id)->get()[0]->f_id
         );
         return view('playLesson', $data);
@@ -45,6 +54,7 @@ class PageController extends Controller
 
     public function playSong($id) {
         $data = array(
+            'currentPlaylist' => $id,
             'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
         );
         return view('playSong', $data);
@@ -84,5 +94,64 @@ class PageController extends Controller
         );
 
         return view('home', $data);
+    }
+
+//    public static function getYoutubeId ($url) {
+////        $url = "http://www.youtube.com/watch?v=C4kxS1ksqtw&feature=relate";
+//        parse_str( parse_url( $url, PHP_URL_QUERY ), $my_array_of_vars );
+//        return $my_array_of_vars['v'];
+//    }
+
+    public static function getYoutubeId($url) {
+        $pattern =
+            '%^# Match any youtube URL
+        (?:https?://)?  # Optional scheme. Either http or https
+        (?:www\.)?      # Optional www subdomain
+        (?:             # Group host alternatives
+          youtu\.be/    # Either youtu.be,
+        | youtube\.com  # or youtube.com
+          (?:           # Group path alternatives
+            /embed/     # Either /embed/
+          | /v/         # or /v/
+          | /watch\?v=  # or /watch\?v=
+          )             # End path alternatives.
+        )               # End host alternatives.
+        ([\w-]{10,12})  # Allow 10-12 for 11 char youtube id.
+        $%x'
+        ;
+        $result = preg_match($pattern, $url, $matches);
+        if ($result) {
+            return $matches[1];
+        }
+        return false;
+    }
+
+
+    public static function validYoutubeUrl($url) {
+        $rx = '~^(?:https?://)?(?:www[.])?(?:youtube[.]com/watch[?]v=|youtu[.]be/)([^&]{11})~x';
+
+        $has_match = preg_match($rx, $url, $matches);
+        return $has_match;
+    }
+
+    public static function getInfoFromId ($id) {
+        $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet,contentDetails,statistics,status";
+        $json_source = file_get_contents($jsonUrl,true);
+        return json_decode($json_source,true);
+    }
+
+    public static function duration($ytDuration) {
+        $di = new DateInterval($ytDuration);
+
+        $totalSec = 0;
+        if ($di->h > 0) {
+            $totalSec+=$di->h*3600;
+        }
+        if ($di->i > 0) {
+            $totalSec+=$di->i*60;
+        }
+        $totalSec+=$di->s;
+
+        return $totalSec;
     }
 }

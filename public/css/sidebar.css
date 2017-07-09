@@ -84,6 +84,8 @@ body {
     display: block;
     text-decoration: none;
     color: #777777;
+    font-family: raleway;
+    font-size: 15px;
 }
 
 .sidebar-nav li a:hover {

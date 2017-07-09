@@ -1,71 +1,177 @@
 @include('include')
-<body class="bigScroll">
-
+<body class="bigScroll lesson-body">
     <div class="lesson-container">
         {{--close--}}
-        <div class="song-close">
+        <div class="lesson-close">
             <a href="{{url('home/management/'.$parentId)}}">&times;</a>
         </div>
         {{--main--}}
-        <div class="lesson-main">
-            {{--top--}}
-            <div  class="lesson-top">
-                {{--video--}}
-                <div class="lesson-video">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/yDD8MN8nDT4" frameborder="0" allowfullscreen></iframe>
+        @if(count($videos) > 0)
+            <div class="lesson-main">
+                {{--top--}}
+                <div  class="lesson-top">
+                    {{--video--}}
+                    <div class="lesson-video-container">
+                        <iframe class="lesson-video" src="https://www.youtube.com/embed/{{$videos[0]->url}}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    {{--note--}}
+                    <div id="note" class="notepaper lesson-note mediumScroll overlay" contenteditable="true" onkeyup="return editNote({{$videos[0]->l_id}})">
+                        {{$videos[0]->note}}
+                    </div>
                 </div>
-                {{--note--}}
-                <div class="lesson-note">
+            </div>
+            <div class="row" style="text-align: center; padding-bottom: 10px">
+                <button class="btn btn-primary" data-toggle="collapse" data-target="#lesson-info">View playlist information</button>
+            </div>
+            {{--right side--}}
+            <div id="lesson-info" class="lesson-info collapse">
+                <div class="lesson-progress">
+                    <div class="clearfix">
+
+                        <div class="c100 p50 big green">
+                            <span>50%</span>
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="c100 p25 green">
+                            <span>25%</span>
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="c100 p12 small green">
+                            <span>12%</span>
+                            <div class="slice">
+                                <div class="bar"></div>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="lesson-record">
 
                 </div>
             </div>
-            {{--list--}}
-            <div class="lesson-list">
-                <ul class="lessons">
-                    <li>
+        @else
+            <div>
+                Click the button below to add a new video
+            </div>
+        @endif
 
+        {{--list--}}
+        <div class="lesson-list">
+            <div class="row" style="text-align: center">
+                <button class="btn btn-default" data-toggle="modal" data-target="#add-lesson">
+                    Add a new video
+                </button>
+            </div>
+            <ul class="lessons">
+                @foreach($videos as $key=>$video)
+                    <li id="lesson{{$key}}" class="each-lesson">
+                        <div class="lesson-i">
+                            <div class="lesson-watched">
+                                @if($video->end_time - $video->start_time < 5)
+                                    <i class="fa fa-check"></i>
+                                @endif
+                            </div>
+                            <div class="lesson-thumbnail profile-preview" style="background-image: url('https://img.youtube.com/vi/{{$video->url}}/mqdefault.jpg')">
+
+                            </div>
+                            <div class="lesson-text">
+                                <div class="lesson-title">
+                                    {{$video->title}}
+                                </div>
+                                <div class="lesson-note-short">
+                                    {{substr($video->note, 20)}}
+                                </div>
+                                <div class="lesson-duration">
+                                    {{sprintf('%02d:%02d:%02d', floor($video->end_time / 3600), floor($video->end_time / 60 % 60), floor($video->end_time % 60))}}
+                                </div>
+                            </div>
+                            <div class="folder-setting dropdown">
+                                <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
+                                <ul class="dropdown-menu setting-option" style="top: 0px">
+                                    <li class="set-opt"><a href="#">rename</a></li>
+                                    <li class="set-opt delete-color"><a href="#">delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </li>
-                </ul>
-            </div>
+                @endforeach
+            </ul>
         </div>
-        {{--right side--}}
-        <div class="lesson-info">
-            {{--progress--}}
-            <div class="lesson-progress">
-                <div class="clearfix">
+    </div>
 
-                    <div class="c100 p50 big green">
-                        <span>50%</span>
-                        <div class="slice">
-                            <div class="bar"></div>
-                            <div class="fill"></div>
+    <div id="add-lesson" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('addLesson')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
+                    <div class="modal-header"  style="background-color: #5d6fc2">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        <h4 class="modal-title">Enter youtube URL</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 10px">
+                            <input name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
+                        </div>
+                        <div>
+                            <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
                         </div>
                     </div>
-
-                    <div class="c100 p25 green">
-                        <span>25%</span>
-                        <div class="slice">
-                            <div class="bar"></div>
-                            <div class="fill"></div>
-                        </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-default" value="Ok">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
-
-                    <div class="c100 p12 small green">
-                        <span>12%</span>
-                        <div class="slice">
-                            <div class="bar"></div>
-                            <div class="fill"></div>
-                        </div>
-                    </div>
-
-                </div>
+                </form>
             </div>
-            {{--record--}}
-            <div class="lesson-record">
 
-            </div>
         </div>
     </div>
 
 </body>
+
+<script>
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    function openNav() {
+//        document.getElementById("myNav").style.width = "100%";
+        $(".overlay").css('width', '100%');
+    }
+
+    function closeNav() {
+//        document.getElementById("myNav").style.width = "0%";
+        $(".overlay").css('width', '0%');
+    }
+
+    function editNote($id) {
+        var data = 'id='+$id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
+        $.ajax({
+            url: "{{url('/home/management/playLesson/editNote')}}",
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            success: function( _response ){
+            },
+            error: function( _response ){
+            }
+        });
+        return false;
+    }
+</script>
+
 </html>

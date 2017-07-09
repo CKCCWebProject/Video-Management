@@ -45,3 +45,5 @@ Route::get('/home/management/edit/{id}', 'PageController@edit');
 Route::post('/folders', 'AdminController@insertFolder');
 Route::post('/playlists', 'AdminController@insertPlaylist');
 Route::post('/lessons', 'AdminController@insertLesson');
+Route::post('/addLesson', 'AdminController@insertLessonVideo');
+Route::post('/home/management/playLesson/editNote', 'AdminController@editNote');

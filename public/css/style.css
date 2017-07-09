@@ -1,6 +1,6 @@
 body {
-    background-color: #EBEBEB;
-    /*font-family: 'Raleway', sans-serif;*/
+    background-color: #ebebeb;
+    font-family: 'raleway', sans-serif;
     color: #4a4a4a;
 }
 /* Remove the navbar's default margin-bottom and rounded borders */
@@ -24,6 +24,11 @@ footer {
 
 .top-margin {
     margin-top: 50px;
+}
+
+.delete-color {
+    background-color: #b80000;
+
 }
 
 .navbar-toggle {
@@ -290,8 +295,22 @@ nav {
     cursor: pointer;
 }
 
+.dropdown-menu > li > a {
+    font-size: 15px;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: rgba(0, 0, 0, 0.17);
+}
+
+.dropdown-menu > li > a:focus {
+    background-color: rgba(0, 0, 0, 0.17);
+}
+
 .dropdown-menu .fd, .dropdown-menu .pl, .dropdown-menu .ls {
     background-color: rgba(129, 129, 129, 0.39);
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .dropdown-menu .fd:hover {
@@ -312,15 +331,17 @@ nav {
 
 .fold-name {
     color: #4a4a4a;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: normal;
     font-size: 25px;
 }
 
 .fold-info {
     font-weight: lighter;
-    color: #c4c4c4;
-    font-size: 20px;
-    margin-left: 10px;
+    color: #7d7d7d;
+    font-size: 18px;
+    margin-top: 15px;
+    margin-left: 1px;
 }
 
 .folder-setting {
@@ -364,6 +385,10 @@ nav {
     padding: 0px;
 }
 
+.setting-option > li {
+
+}
+
 .set-opt {
     padding-left: 0px !important;
 }
@@ -381,12 +406,14 @@ nav {
 
 .fav-title {
     font-size: 19px;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .fav-dir {
     font-weight: lighter;
     color: grey;
     font-size: 15px;
+    margin-top: 5px;
 }
 
 .fav-text {
@@ -430,6 +457,7 @@ nav {
 
 .setting-title {
     font-weight: normal;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .each-connection {
@@ -555,6 +583,7 @@ nav {
 
     .fold-info {
         font-size: 13px;
+        margin-top: 5px;
     }
 
     .folder-setting {

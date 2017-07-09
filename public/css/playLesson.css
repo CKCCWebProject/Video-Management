@@ -1,35 +1,102 @@
-.lesson-container {
+html {
+    background-color: #ebebeb;
+}
 
+.lesson-body {
+    background-color: #d5d5d5;
+}
+
+.lesson-close > a {
+    color: #ececec;
+}
+
+.lesson-close > a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.lesson-container {
+    background-color: #000000;
 }
 
 .lesson-close {
-
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    font-size: 40px;
+    z-index: 9;
+    text-decoration: none;
 }
 
 .lesson-main {
-
+    padding-top: 50px;
 }
 
 .lesson-top {
+    display: flex;
+}
+
+.lesson-video-container {
+    align-items: center;
 
 }
 
 .lesson-video {
+    width: 60vw;
+    height: 37vw;
+    margin: 10px;
 
 }
 
 .lesson-note {
-
+    background-color: #fff8e1;
+    width: 35vw;
+    height: 37vw;
+    max-width: 35vw;
+    max-height: 37vw;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: auto;
+    padding: 20px;
+    padding-left: 35px;
+    padding-top: 30px;
+    font-family: raleway;
+    font-size: 20px;
+    font-weight: lighter;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.62);
+    word-wrap: break-word;
+    cursor: text;
 }
 
-.lesson-list {
-
+.lesson-note:after{
+    content: "Note";
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    left: 0px;
 }
 
-.lessons {
-
+.overlay {
+    height: 37vw;
+    width: 35vw;
+    position: relative;
+    z-index: 0;
+    top: auto;
+    left: auto;
+    background-color: #fff8e1;
+    background-color: #fff8e1;
+    overflow-x: hidden;
+    transition: 0s;
 }
 
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+/*overlay*/
 .lesson-info {
 
 }
@@ -39,5 +106,147 @@
 }
 
 .lesson-record {
+
+}
+
+.lesson-list {
+    background-color: #d5d5d5;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.lessons {
+    margin: 20px;
+    list-style: none;
+    padding-left: 0px;
+}
+
+.each-lesson {
+    background-color: rgb(250, 250, 250);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.29);
+    margin-bottom: 10px;
+}
+
+.each-lesson:hover {
+    cursor: pointer;
+}
+
+.each-lesson:hover, .each-lesson:focus, .each-lesson:active {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.82);
+}
+
+.lesson-i {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.lesson-watched {
+    font-size: 30px;
+    color: green;
+    width: 30px;
+}
+
+.lesson-thumbnail {
+    width: 100px;
+    height: 70px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.lesson-text {
+    color: black;
+    font-family: raleway;
+}
+
+.lesson-title {
+    font-weight: bolder;
+    font-size: 16px;
+}
+
+.lesson-note-short {
+    font-weight: lighter;
+    font-size: 15px;
+}
+
+.lesson-duration {
+    font-weight: lighter;
+    font-size: 12px;
+}
+
+@media only screen and (max-width : 1200px) {
+
+}
+
+@media only screen and (max-width : 979px) {
+
+}
+
+@media only screen and (max-width : 767px) {
+    .lesson-close {
+        top: 10px;
+        left: 10px;
+    }
+
+    .lesson-video {
+        width: 90vw;
+        height: 55vw;
+        margin: 5px;
+    }
+
+    .lesson-top {
+        display: block;
+    }
+
+    .lesson-video-container {
+        text-align: center;
+        margin: auto;
+    }
+
+    .lesson-note {
+        display: none;
+    }
+
+    .overlay {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0, 0.9);
+        overflow-x: hidden;
+        transition: 0.5s;
+    }
+
+    .overlay .closebtn {
+        font-size: 40px;
+        top: 15px;
+        right: 35px;
+    }
+
+    .lesson-watched {
+        font-size: 20px;
+        color: green;
+        width: 20px;
+    }
+
+    .lesson-thumbnail {
+        width: 60px;
+        height: 40px;
+        margin-left: 5px;
+        margin-right: 10px;
+    }
+
+    .each-lesson {
+        padding-left: 0px;
+    }
+}
+
+@media only screen and (max-width : 480px) {
 
 }
