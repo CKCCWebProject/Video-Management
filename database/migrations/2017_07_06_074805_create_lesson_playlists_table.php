@@ -19,7 +19,7 @@ class CreateLessonPlaylistsTable extends Migration
             $table->string('l_name');
             $table->integer('u_id');
             $table->integer('f_id');
-            $table->string('record');
+            $table->text('record');
             $table->boolean('if_public');
         });
     }

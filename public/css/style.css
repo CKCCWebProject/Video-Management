@@ -174,7 +174,9 @@ nav {
     padding: 3px;
 }
 
-.btn-edit {
+.btn-edit a {
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bolder;
 }
 
 .icon {
@@ -196,6 +198,7 @@ nav {
     color: grey;
     padding: 0px;
     text-align: center;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .home-nav li {
@@ -395,6 +398,7 @@ nav {
 
 .select-all {
     font-size: 18px;
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: lighter;
 }
 
@@ -457,6 +461,10 @@ nav {
     font-size: 1.5em;
 }
 
+.setting-table tbody tr td {
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .suicide {
     padding-left: 0px;
 }
@@ -469,8 +477,8 @@ nav {
 }
 
 .setting-title {
-    font-weight: normal;
     font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bolder;
 }
 
 .each-connection {
@@ -579,6 +587,7 @@ nav {
         width: 40px;
         margin-right: 5px;
         margin-left: auto;
+        font-weight: bold;
     }
 
     .search-box:focus {
@@ -724,4 +733,22 @@ nav {
 {
     /*border-radius: 20px;*/
     background-color: rgba(0, 0, 0, 0.45);
+}
+
+.wmediumScroll::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0);
+    background-color: transparent;
+}
+
+.wmediumScroll::-webkit-scrollbar
+{
+    width: 7px;
+    background-color: transparent;
+}
+
+.wmediumScroll::-webkit-scrollbar-thumb
+{
+    /*border-radius: 20px;*/
+    background-color: rgba(255, 255, 255, 0.28);
 }

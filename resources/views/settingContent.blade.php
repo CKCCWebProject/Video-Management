@@ -38,7 +38,7 @@
     <div class="row" style="text-align: center;">
         <a href="{{url('signout')}}"><button class="btn btn-danger logout">Log out</button></a>
     </div>
-    <div class="suicide row" style="margin-top: 60px;">
+    <div class="suicide row" style="margin-top: 60px; font-weight: bolder">
         <a href="#">Delete account</a>
     </div>
 </div>

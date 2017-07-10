@@ -57,3 +57,4 @@ Route::post('changePlayFavorite', 'AdminController@changePlayFavorite');
 Route::post('changeSequence', 'AdminController@changeSequence');
 Route::post('home/favorite/removeFavorite', 'AdminController@removeFavorite');
 Route::post('deleteFolder', 'AdminController@deleteFolder');
+Route::post('updateTime', 'AdminController@updateTime');

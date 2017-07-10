@@ -25,3 +25,7 @@
 .modal-footer {
     background-color: #ededed;
 }
+
+.btn {
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

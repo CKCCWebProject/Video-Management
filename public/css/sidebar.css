@@ -88,6 +88,10 @@ body {
     font-size: 15px;
 }
 
+.sidebar-nav li a span{
+    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .sidebar-nav li a:hover {
     text-decoration: none;
     color: #000000;
