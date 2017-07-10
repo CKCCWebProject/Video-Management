@@ -9,7 +9,12 @@
                     <div class="profile-preview display-profile" style="background-image: url('{{asset('img/giphy.gif')}}')"></div>
                     <div class="display-name" style="font-weight: bold">Sar Channimol</div>
                     <div class="btn-edit">
-                        <a href=""><i class="fa fa-edit"> </i> edit</a>
+                        <form enctype="multipart/form-data" method="post" action="/uploadProfile">
+                            {{csrf_field()}}
+                            <a href=""><i class="fa fa-edit"> </i> edit</a>
+                            <input type="file" name="imageProfile">
+                            <input type="submit">Upload
+                        </form>
                     </div>
                 </div>
             </li>

@@ -27,9 +27,9 @@ Route::group(['middleware' => ['web']], function (){
 
 //    Route::get('homepage', 'PageController@home');
 
-        Route::get('signout', 'UserController@signout');
+    Route::get('signout', 'UserController@signout');
 
-
+    Route::post('/uploadProfile', 'UserController@uploadProfile');
 
 
 });

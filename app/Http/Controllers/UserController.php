@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Folder;
+use App\Setting;
 use App\User;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Auth;
+use Image;
+use Session;
 class UserController extends Controller
 {
     public function signupScreenWithMessage($message){
@@ -33,9 +35,9 @@ class UserController extends Controller
                 $user->password = bcrypt($password);
                 User::createUser($user);
 
-                $request->session()->put('user', $username);
-
                 $uid = User::where('email', $email)->get()[0]->id;
+
+                $request->session()->put('id', $uid);
 
                 $home = new Folder();
                 $home->created_at = new DateTime();
@@ -51,6 +53,24 @@ class UserController extends Controller
                 $home1 = Folder::find($homeId);
                 $home1->parent_id = $homeId;
                 $home1->save();
+
+                $setting = new Setting();
+                $setting->created_at = new DateTime();
+                $setting->updated_at = new DateTime();
+                $setting->u_id = $uid;
+                $setting->play_favorite = false;
+                $setting->sq_id = 1;
+                $setting->save();
+
+                $gift = new Folder();
+                $gift->created_at = new DateTime();
+                $gift->updated_at = new DateTime();
+                $gift->u_id = $uid;
+                $gift->folderName = 'gift';
+                $gift->if_deletable = false;
+                $gift->if_public = false;
+                $gift->parent_id = $homeId;
+                $gift->save();
 
                 return redirect('home');
             }
@@ -76,15 +96,38 @@ class UserController extends Controller
             //error
             return redirect('signup');
         }else{
-            $id = User::getUserId($email, $password);
+            $uid = User::where('email', $email)->get()[0]->id;
+            if($request->has('id', $uid)){
+                $request->get('id');
+            }
+
 //            $request->session()->put('id', $id);
             return redirect('home');
         }
     }
+//upload file
+    public function uploadProfile(Request $request){
+        $user = User::currentUser();
+        $uid = User::where('email', $user->email)->get()[0]->id;
 
+        if($request->hasFile('imageProfile')){
+            $this->validate($request, [
+                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+            $profile = $request->file('imageProfile');
+            $profilePath = $profile->move('img', time()."id".$uid.".".$profile->getClientOriginalExtension());
+
+//            $filename = time().'.'.$profile->getClientOriginalName();
+//            $image = Image::make($profile)->resize(300,300)->save(public_path('img'.$filename));
+
+
+            $user = User::where('email', $user->email)->update(['profile' => $profilePath]);
+        }
+    }
 
     public function signout(){
-//        $request->session()->flush();
+//        User::currentUser();
+        session()->forget('id');
         return redirect('/');
     }
 
