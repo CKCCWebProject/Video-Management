@@ -117,7 +117,9 @@ class UserController extends Controller
                 'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
             $profile = $request->file('imageProfile');
+
             $image = Image::make($profile)->resize(300,500);//try this
+
             $filename = time()."id".$uid.".".$profile->getClientOriginalExtension();
             $profilePath = $profile->move('img', $filename);
 
