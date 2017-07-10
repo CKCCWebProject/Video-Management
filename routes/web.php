@@ -51,3 +51,7 @@ Route::post('/addLesson', 'AdminController@insertLessonVideo');
 Route::post('/addSong', 'AdminController@insertSongVideo');
 Route::post('/home/management/playLesson/editNote', 'AdminController@editNote');
 Route::post('/home/management/playLesson/favorite', 'AdminController@favorite');
+Route::post('/home/management/playSong/changePlayFavorite', 'AdminController@changePlayFavorite');
+Route::post('/home/management/playSong/changeSequence', 'AdminController@changeSequence');
+Route::post('home/favorite/removeFavorite', 'AdminController@removeFavorite');
+Route::post('deleteFolder', 'AdminController@deleteFolder');

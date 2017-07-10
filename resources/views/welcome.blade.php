@@ -28,6 +28,7 @@
             .flex-center {
                 align-items: center;
                 display: flex;
+                display: flex;
                 justify-content: center;
             }
 

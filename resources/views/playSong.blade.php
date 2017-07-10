@@ -12,8 +12,8 @@
 
             @if(count($videos))
                 {{--play favorite--}}
-                <div class="song-play-favorite">
-                    <input type="checkbox" id="play-favorite">
+                <div class="song-play-favorite" onchange="return changePlayFavorite()">
+                    <input type="checkbox" id="play-favorite" {{$setting->play_favorite==true?'checked':''}}>
                     <label for="play-favorite">Play only favorites</label>
                 </div>
                 {{--video--}}
@@ -23,25 +23,25 @@
                 {{--play sequence--}}
                 <div class="song-play-sequence">
                     <div class="song-sequence-list-container">
-                        <ul class="song-sequence-list">
+                        <ul class="song-sequence-list" onchange="return changeSequence()">
                             {{--repeat all--}}
                             <li>
-                                <input type="radio" name="sequence" value="repeat_all" id="repeat_all" checked>
+                                <input type="radio" name="sequence" value="4" id="repeat_all" {{$setting->sq_id==4?'checked':''}}>
                                 <label for="repeat_all"> Repeat all</label>
                             </li>
                             {{--repeat one--}}
                             <li>
-                                <input type="radio" name="sequence" value="repeat_one" id="repeat_one" checked>
+                                <input type="radio" name="sequence" value="3" id="repeat_one" {{$setting->sq_id==3?'checked':''}}>
                                 <label for="repeat_one"> Repeat one</label>
                             </li>
                             {{--random--}}
                             <li>
-                                <input type="radio" name="sequence" value="random" id="random" checked>
+                                <input type="radio" name="sequence" value="2" id="random" {{$setting->sq_id==2?'checked':''}}>
                                 <label for="random"> Random</label>
                             </li>
                             {{--none--}}
                             <li>
-                                <input type="radio" name="sequence" value="none" id="none" checked>
+                                <input type="radio" name="sequence" value="1" id="none" {{$setting->sq_id==1?'checked':''}}>
                                 <label for="none"> None</label>
                             </li>
                         </ul>
@@ -60,7 +60,7 @@
     {{--list--}}
     <div class="mediumScroll song-list col-lg-4 col-md-5 col-sm-6 col-xs-12">
         <div class="row" style="text-align: center; padding: 10px">
-            <button class="btn btn-default" data-toggle="modal" data-target="#add-video">
+            <button class="btn btn-default" data-toggle="modal" data-target="#add-video" onclick="focusUrl()">
                 Add a new video
             </button>
         </div>
@@ -106,13 +106,13 @@
                 {{csrf_field()}}
                 <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
                 <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
-                <div class="modal-header"  style="background-color: #5d6fc2">
+                <div class="modal-header"  style="background-color: #bf2f34">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                     <h4 class="modal-title">Enter youtube URL</h4>
                 </div>
                 <div class="modal-body">
                     <div style="margin-bottom: 10px">
-                        <input name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
+                        <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
                     </div>
                     <div>
                         <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
@@ -163,6 +163,71 @@
             }
         });
         return false;
+    }
+
+    function changeSequence() {
+        $sequence = $("input[name=sequence]:checked").val();
+        $.ajax({
+            url: "{{url('/home/management/playSong/changeSequence')}}",
+            type: 'post',
+            data: 'sequence='+$sequence+'&_token='+'{{csrf_token()}}',
+            dataType: 'text',
+            success: function( _response ){
+//                $("#heart"+$id).css('color', _response);
+//                alert(_response)
+            },
+            error: function( _response ){
+            }
+        });
+        return false;
+    }
+
+    function changePlayFavorite() {
+        $checked = $('#play-favorite').is(":checked");
+        $.ajax({
+            url: "{{url('/home/management/playSong/changePlayFavorite')}}",
+            type: 'post',
+            data: 'checked='+$checked+'&_token='+'{{csrf_token()}}',
+            dataType: 'text',
+            success: function( _response ){
+//                alert(_response)
+            },
+            error: function( _response ){
+            }
+        });
+        return false;
+    }
+
+    function focusUrl() {
+        setTimeout(function () {
+            $("#input-url").focus();
+        }, 500);
+    }
+
+    // create youtube player
+    var player;
+    function onYouTubePlayerAPIReady() {
+        player = new YT.Player('player', {
+            height: '390',
+            width: '640',
+            videoId: '{{$currentVideo->url}}',
+            events: {
+                onReady: onPlayerReady,
+                onStateChange: onPlayerStateChange
+            }
+        });
+    }
+
+    // autoplay video
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    // when video ends
+    function onPlayerStateChange(event) {
+        if(event.data === 0) {
+            alert('done');
+        }
     }
 </script>
 

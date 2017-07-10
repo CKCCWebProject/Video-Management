@@ -2,7 +2,8 @@
     <hr/>
 </div>
 <div class="favorite-list">
-    <form action="">
+    <form method="post" action="{{url('home/favorite/removeFavorite')}}">
+        {{csrf_field()}}
         <div class="row" style="color: grey; display: flex; align-items: center; margin-bottom: 40px;">
             <div>
                 <input type="checkbox" id="select-all">
@@ -19,8 +20,8 @@
             <ul class="list-favorite">
                 @foreach($favoriteVideos as $favoriteVideo)
                     <li class="each-fav row" style="display: flex; align-items: center">
-                        <a href="" style="display: flex; align-items: center; color: black">
-                            <input class="check-fav checkbox checkbox-primary" type="checkbox" id="select-all">
+                        <a href="{{url('/home/management/playSong/'.$favoriteVideo->sp_id.'/'.$favoriteVideo->s_id)}}" style="display: flex; align-items: center; color: black">
+                            <input name="favorite[]" value="{{$favoriteVideo->s_id}}" class="check-fav checkbox checkbox-primary" type="checkbox" id="select-all">
                             <div class="favorite-thumbnail profile-preview" style="background-image: url('https://img.youtube.com/vi/{{$favoriteVideo->url}}/mqdefault.jpg')"></div>
                             <div class="fav-text">
                                 <div class="fav-title">
@@ -46,4 +47,6 @@
             $(".check-fav").prop("checked", false);
         }
     });
+
+
 </script>

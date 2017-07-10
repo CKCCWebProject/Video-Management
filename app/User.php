@@ -12,6 +12,13 @@ class User extends Model implements Authenticatable
     use \Illuminate\Auth\Authenticatable;
 
     public static function createUser($user){
+
+        ////sequence
+        //create a user
+        //create a home folder
+        //create gift in home
+        //create a setting
+
         $data = array(
             new DateTime(),
             new DateTime(),

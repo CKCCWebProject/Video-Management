@@ -1,4 +1,6 @@
-
+<?php
+    $gifts = \App\Http\Controllers\AdminController::Gift();
+?>
 
     <div class="mediumScroll" id="sidebar-wrapper">
         <ul class="sidebar-nav">
@@ -21,7 +23,7 @@
                 <a href="#">
                     <i class="fa fa-gift icon"> </i>
                     <span> Gift box</span>
-                    <span class="count-gift">10</span>
+                    <span class="count-gift">{{count($gifts)}}</span>
                 </a>
             </li>
             <li>

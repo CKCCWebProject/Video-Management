@@ -15,7 +15,7 @@ class CreateSequencesTable extends Migration
     {
         Schema::create('sequences', function (Blueprint $table) {
             $table->integer('sq_id');
-            $table->timestamps();
+            $table->string('sequence_type', 10);
         });
     }
 

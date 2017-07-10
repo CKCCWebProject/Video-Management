@@ -11,6 +11,7 @@
     <script src="{{asset('js/jquery-3.2.1.js')}}"></script>
     <script src="{{asset('js/jquery.mobile-1.5.0-alpha.1.js')}}"></script>
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
+    <script src="http://www.youtube.com/player_api"></script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{asset('css/note.css')}}">

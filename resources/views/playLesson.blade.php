@@ -74,7 +74,7 @@
         {{--list--}}
         <div class="lesson-list">
             <div class="row" style="text-align: center">
-                <button class="btn btn-default" data-toggle="modal" data-target="#add-lesson">
+                <button class="btn btn-default" data-toggle="modal" data-target="#add-lesson" onclick="focusUrl()">
                     Add a new video
                 </button>
             </div>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="modal-body">
                         <div style="margin-bottom: 10px">
-                            <input name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
+                            <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL" required>
                         </div>
                         <div>
                             <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
@@ -162,7 +162,7 @@
         $(window).on('load', function () {
             var x = document.getElementById("snackbar");
             x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
         });
     @endif
 
@@ -195,6 +195,12 @@
             }
         });
         return false;
+    }
+
+    function focusUrl() {
+        setTimeout(function () {
+            $("#input-url").focus();
+        }, 500);
     }
 </script>
 

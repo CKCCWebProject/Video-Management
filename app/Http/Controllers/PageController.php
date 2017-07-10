@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Folder;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\Setting;
 use App\Song;
 use App\SongPlaylist;
 use App\User;
@@ -91,9 +92,10 @@ class PageController extends Controller
             $duration = 0;
         }
 
-
+        $setting = Setting::where('u_id', User::currentUser()->id)->get()[0];
 
         $data = array(
+            'setting' => $setting,
             'message' => $message,
             'currentVideo' => $currentVideo,
             'videos' => $videos,

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Folder;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\SendTo;
+use App\Setting;
 use App\Song;
 use App\SongPlaylist;
 use App\User;
@@ -90,7 +92,9 @@ class AdminController extends Controller
             $data = array (
                 'message' => "URL invalid"
             );
+//            $message = "URL invalid";
             return redirect('home/management/playLesson/'.$lessonPlaylist);
+//            return PageController::playLesson($lessonPlaylist, null, $message);
         }
     }
 
@@ -144,4 +148,102 @@ class AdminController extends Controller
             return 'red';
         }
     }
+
+    public function changePlayFavorite(Request $request) {
+        $checked = $request->checked;
+        $setting = Setting::find(User::currentUser()->id);
+        $setting->play_favorite = $checked?1:0;
+        $setting->save();
+//        echo $checked;
+    }
+
+    public function changeSequence(Request $request) {
+        $sequence = $request->sequence;
+        $setting = Setting::find(User::currentUser()->id);
+        $setting->sq_id = $sequence;
+        $setting->save();
+        echo $sequence;
+    }
+
+    public function removeFavorite(Request $request) {
+        $checked = $request->favorite;
+        if (isset($checked)) {
+            foreach ($checked as $noFav) {
+                $video = Song::find($noFav);
+                $video->if_favorite = false;
+                $video->save();
+            }
+        }
+        return redirect('home/favorite');
+    }
+
+    public function deleteFolder(Request $request) {
+        $currentFolder = $request->currentFolder;
+        $type = $request->type;
+        $id = $request->id;
+        if($type == 'folder') {
+            $this->deleteFD($id);
+        } elseif ($type == 'song') {
+            $this->deleteSP($id);
+        } elseif ($type == 'lesson') {
+            $this->deleteLP($id);
+        } else {
+            echo "having problem"; //error
+        }
+
+        return redirect('home/management/'.$currentFolder);
+    }
+
+    private function deleteSP($id) {
+        $songs = Song::where('sp_id', $id)->get();
+        foreach ($songs as $song) {
+            $s = Song::find($song->s_id);
+            $s->delete();
+        }
+        SongPlaylist::find($id)->delete();
+    }
+
+    private function deleteLP($id) {
+        $lessons = Lesson::where('lp_id', $id)->get();
+        foreach ($lessons as $lesson) {
+            $l = Lesson::find($lesson->l_id);
+            $l->delete();
+        }
+        LessonPlaylist::find($id)->delete();
+    }
+
+    private function deleteFD($id) {
+        $fs = Folder::where('parent_id', $id)->get();
+        $ss = SongPlaylist::where('f_id', $id)->get();
+        $ls = LessonPlaylist::where('f_id', $id)->get();
+        if(count($fs)==0) {
+            $reach = Folder::find($id);
+            $reach->delete();
+            if(count($ss) == 0 && count($ls) == 0) {
+                return;
+            }
+        } else {
+            foreach ($fs as $f) {
+                $this->deleteFD($f->f_id);
+                $fs1 = Folder::where('parent_id', $id)->get();
+                if(count($fs1) == 0) {
+                    $reach1 = Folder::find($id);
+                    $reach1->delete();
+                }
+            }
+        }
+        foreach ($ss as $s) {
+            $this->deleteSP($s->sp_id);
+        }
+        foreach ($ls as $l) {
+            $this->deleteLP($l->l_id);
+        }
+    }
+
+    public static function Gift() {
+        $gifts = SendTo::where('receiver_id', User::currentUser()->id)->get();
+        return $gifts;
+    }
+
+
 }

@@ -46,8 +46,8 @@
                     </div>
                     <input type="text" class="form-control push-buttom bordered" name="signup_username" placeholder="Username" required>
                     <input type="text" class="form-control push-buttom bordered" name="signup_email" placeholder="E-mail" required>
-                    <input type="text" class="form-control push-buttom bordered" name="signup_password" placeholder="Password" required>
-                    <input type="text" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password" required>
+                    <input type="password" class="form-control push-buttom bordered" name="signup_password" placeholder="Password" required>
+                    <input type="password" class="form-control push-buttom bordered" name="signup_confirmpassword" placeholder="Confirm password" required>
                     <button type="submit" class="btn btn-normal" style="color: white">Sign up</button>
 
                     {{--<input type="hidden" name="_token" value="{{Session::token()}}">--}}

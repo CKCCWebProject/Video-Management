@@ -29,7 +29,9 @@
                     <ul class="dropdown-menu setting-option">
                         <li class="set-opt"><a href="#">rename</a></li>
                         <li class="set-opt"><a href="#">share setting</a></li>
-                        <li class="set-opt delete-color"><a href="#">delete</a></li>
+                        @if($folder->if_deletable)
+                            <li class="set-opt delete-color"><a data-toggle="modal" data-target="#deleteFolder" onclick="formDelete('folder', '{{$folder->f_id}}')">delete</a></li>
+                        @endif
                     </ul>
                 </div>
             </li>
@@ -61,7 +63,7 @@
                 <ul class="dropdown-menu setting-option">
                     <li class="set-opt"><a href="#">rename</a></li>
                     <li class="set-opt"><a href="#">share setting</a></li>
-                    <li class="set-opt delete-color"><a href="#">delete</a></li>
+                    <li class="set-opt delete-color"><a data-toggle="modal" data-target="#deleteFolder" onclick="formDelete('song', '{{$playlist->sp_id}}')">delete</a></li>
                 </ul>
             </div>
         </li>
@@ -91,7 +93,7 @@
                 <ul class="dropdown-menu setting-option">
                     <li class="set-opt"><a href="#">rename</a></li>
                     <li class="set-opt"><a href="#">share setting</a></li>
-                    <li class="set-opt delete-color"><a href="#">delete</a></li>
+                    <li class="set-opt delete-color"><a data-toggle="modal" data-target="#deleteFolder" onclick="formDelete('lesson', '{{$lesson->l_id}}')">delete</a></li>
                 </ul>
             </div>
         </li>

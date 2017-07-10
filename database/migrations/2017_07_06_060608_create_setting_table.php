@@ -17,6 +17,7 @@ class CreateSettingTable extends Migration
             $table->timestamps();
             $table->integer('u_id');
             $table->boolean('play_favorite');
+            $table->integer('sq_id');
         });
     }
 
