@@ -73,7 +73,7 @@ class PageController extends Controller
         return view('playLesson', $data);
     }
 
-    public function playSong($id, $vid = null, $message = '') {
+    public static function playSong($id, $vid = null, $message = '') {
 //        $data = array(
 //            'currentPlaylist' => $id,
 //            'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id

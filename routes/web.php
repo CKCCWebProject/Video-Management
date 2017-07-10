@@ -43,15 +43,17 @@ Route::get('/home/management/playLesson/{id}/{vid}', 'PageController@playLesson'
 Route::get('/home/management/playSong/{id}', 'PageController@playSong');
 Route::get('/home/management/playSong/{id}/{vid}', 'PageController@playSong');
 Route::get('/home/management/edit/{id}', 'PageController@edit');
+Route::get('/deletesong/{id}/{vid}', 'AdminController@deleteSong');
+Route::get('/deletelesson/{id}/{vid}', 'AdminController@deleteLesson');
 
 Route::post('/folders', 'AdminController@insertFolder');
 Route::post('/playlists', 'AdminController@insertPlaylist');
 Route::post('/lessons', 'AdminController@insertLesson');
-Route::post('/addLesson', 'AdminController@insertLessonVideo');
-Route::post('/addSong', 'AdminController@insertSongVideo');
-Route::post('/home/management/playLesson/editNote', 'AdminController@editNote');
-Route::post('/home/management/playLesson/favorite', 'AdminController@favorite');
-Route::post('/home/management/playSong/changePlayFavorite', 'AdminController@changePlayFavorite');
-Route::post('/home/management/playSong/changeSequence', 'AdminController@changeSequence');
+Route::post('/home/management/playLesson/{id}', 'AdminController@insertLessonVideo');
+Route::post('/home/management/playSong/{id}', 'AdminController@insertSongVideo');
+Route::post('editNote', 'AdminController@editNote');
+Route::post('favorite', 'AdminController@favorite');
+Route::post('changePlayFavorite', 'AdminController@changePlayFavorite');
+Route::post('changeSequence', 'AdminController@changeSequence');
 Route::post('home/favorite/removeFavorite', 'AdminController@removeFavorite');
 Route::post('deleteFolder', 'AdminController@deleteFolder');

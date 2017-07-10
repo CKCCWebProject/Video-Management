@@ -108,7 +108,7 @@
                                     <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                                     <ul class="dropdown-menu setting-option" style="top: 0px">
                                         <li class="set-opt"><a href="#">rename</a></li>
-                                        <li class="set-opt delete-color"><a href="#">delete</a></li>
+                                        <li class="set-opt delete-color"><a href="{{url('deletelesson/'.$currentPlaylist.'/'.$video->l_id)}}">delete</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -124,10 +124,12 @@
 
             <!-- Modal content-->
             <div class="modal-content">
-                <form method="post" action="{{url('addLesson')}}" style="margin-bottom: 0px">
+                <form method="post" action="{{url('/home/management/playLesson/'.$currentPlaylist)}}" style="margin-bottom: 0px">
                     {{csrf_field()}}
                     <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
-                    <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
+                    @if(count($videos) > 0)
+                        <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
+                    @endif
                     <div class="modal-header"  style="background-color: #5d6fc2">
                         <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                         <h4 class="modal-title">Enter youtube URL</h4>
@@ -185,7 +187,7 @@
     function editNote($id) {
         var data = 'id='+$id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
         $.ajax({
-            url: "{{url('/home/management/playLesson/editNote')}}",
+            url: "{{url('editNote')}}",
             type: 'post',
             data: data,
             dataType: 'json',
