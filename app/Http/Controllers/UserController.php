@@ -105,12 +105,15 @@ class UserController extends Controller
             return redirect('home');
         }
     }
-
+//upload file
     public function uploadProfile(Request $request){
         $user = User::currentUser();
         $uid = User::where('email', $user->email)->get()[0]->id;
 
         if($request->hasFile('imageProfile')){
+            $this->validate($request, [
+                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
             $profile = $request->file('imageProfile');
             $profilePath = $profile->move('img', time()."id".$uid.".".$profile->getClientOriginalExtension());
 
@@ -120,7 +123,6 @@ class UserController extends Controller
 
             $user = User::where('email', $user->email)->update(['profile' => $profilePath]);
         }
-
     }
 
     public function signout(){
