@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Folder;
 use App\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    var $email = 'nimol@gmail.com';
-    var $password = '4567';
-
     public function signupScreenWithMessage($message){
         return view('signup', ['message'=> $message]);
     }
@@ -34,7 +33,25 @@ class UserController extends Controller
                 $user->password = bcrypt($password);
                 User::createUser($user);
 
-                $request->session()->regenerate();
+                $request->session()->put('user', $username);
+
+                $uid = User::where('email', $email)->get()[0]->id;
+
+                $home = new Folder();
+                $home->created_at = new DateTime();
+                $home->updated_at = new DateTime();
+                $home->u_id = $uid;
+                $home->folderName = "home";
+                $home->if_deletable = false;
+                $home->if_public = false;
+                $home->parent_id = 0;
+                $home->save();
+
+                $homeId = Folder::where('folderName', 'home')->where('u_id', $uid)->get()[0]->f_id;
+                $home1 = Folder::find($homeId);
+                $home1->parent_id = $homeId;
+                $home1->save();
+
                 return redirect('home');
             }
             else{
@@ -60,7 +77,7 @@ class UserController extends Controller
             return redirect('signup');
         }else{
             $id = User::getUserId($email, $password);
-            $request->session()->put('id', $id);
+//            $request->session()->put('id', $id);
             return redirect('home');
         }
     }
