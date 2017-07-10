@@ -21,7 +21,7 @@ class SessionController extends Controller
     //with put() method
     public function putSession(Request $request)
     {
-        $request->session()->put('sessionName', 'localhost:8000');
+        $request->session()->put('sessionName', 'nimol');
         echo "new data added to the session";
     }
 

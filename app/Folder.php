@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Folder extends Model
 {
@@ -11,4 +12,5 @@ class Folder extends Model
     {
         return $this->belongsTo('App\User');
     }
+
 }
