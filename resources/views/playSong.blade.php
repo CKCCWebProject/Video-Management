@@ -18,7 +18,7 @@
                 </div>
                 {{--video--}}
                 <div class="song-video">
-                    <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/{{$currentVideo->url}}{{$autoplay?'/?rel=0&autoplay=1':''}}" frameborder="0" allowfullscreen></iframe>
+                    <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/{{$currentVideo->url}}?enablejsapi=1{{--{{$autoplay?'/?rel=0&autoplay=1':''}}--}}" frameborder="0" allowfullscreen></iframe>
                 </div>
                 {{--play sequence--}}
                 <div class="song-play-sequence">
@@ -217,14 +217,11 @@
     }
 
     // create youtube player
-    var player;
 
     @if(count($videos) > 0)
+        var player;
         function onYouTubePlayerAPIReady() {
-            player = new YT.Player('player', {
-                height: '390',
-                width: '640',
-                videoId: '{{$currentVideo->url}}',
+            player = new YT.Player('video' /*ifameId*/, {
                 events: {
                     onReady: onPlayerReady,
                     onStateChange: onPlayerStateChange
@@ -234,14 +231,40 @@
 
         // autoplay video
         function onPlayerReady(event) {
-//            event.target.playVideo();
-            alert("hello")
+            event.target.playVideo();
+//            alert("hello")
         }
 
-        // when video ends
+        // state change
         function onPlayerStateChange(event) {
-            if(event.data === 0) {
-                alert('done');
+            var arrays = [@foreach($videos as $video){{$video->s_id}},@endforeach];
+            var now = {{$currentVideo->s_id}};
+            var pos = arrays.indexOf(now);
+            switch(event.data) {
+                case 0: //video ended
+                    if (document.getElementById('none').checked) {
+                        if (pos < arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
+                        }
+                    } else if (document.getElementById('random').checked) {
+                        var next = Math.floor(Math.random()*arrays.length);
+                        if (next == arrays.length) {
+                            next = 0;
+                        }
+                        window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[next];
+                    } else if (document.getElementById('repeat_one').checked) {
+                        event.target.playVideo();
+                    } else if (document.getElementById('repeat_all').checked) {
+                        if (pos < arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
+                        } else if (pos == arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[0];
+                        }
+                    }
+                    break;
+                case 1: //video playing from player.getCurrentTime()
+                    break;
+                case 2: //video paused at player.getCurrentTime()
             }
         }
     @endif
