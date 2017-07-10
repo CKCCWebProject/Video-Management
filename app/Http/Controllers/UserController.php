@@ -7,7 +7,6 @@ use App\Setting;
 use App\User;
 use DateTime;
 use Illuminate\Http\Request;
-use Auth;
 use Image;
 use Session;
 class UserController extends Controller
@@ -17,15 +16,17 @@ class UserController extends Controller
     }
 
     public function signup(Request $request){
-//        $this->validate($request, [
-//           'email' => 'required|email|unique:users',
-//            'username' => 'required|max:120',
-//            'password' => 'required|min:6'
-//        ]);
         $email = $request->signup_email;
         $username = $request->signup_username;
         $password = $request->signup_password;
         $confirmPassword = $request->signup_confirmpassword;
+
+//        $this->validate($request, [
+//            'email' => 'required|email|unique:users',
+//            'username' => 'required|max:120',
+//            'password' => 'required|min:6',
+//            'confirmpassword' => 'require|same:password',
+//        ]);
 
         if($password == $confirmPassword){
             if((User::checkExistedUser($email)) == false){
@@ -97,9 +98,10 @@ class UserController extends Controller
             return redirect('signup');
         }else{
             $uid = User::where('email', $email)->get()[0]->id;
-            if($request->has('id', $uid)){
-                $request->get('id');
+            if($request->session()->has('id', $uid)){
+                $request->session()->get('id');
             }
+            else $request->session()->put('id', $uid);
 
 //            $request->session()->put('id', $id);
             return redirect('home');
@@ -115,13 +117,12 @@ class UserController extends Controller
                 'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
             $profile = $request->file('imageProfile');
-            $profilePath = $profile->move('img', time()."id".$uid.".".$profile->getClientOriginalExtension());
-
-//            $filename = time().'.'.$profile->getClientOriginalName();
-//            $image = Image::make($profile)->resize(300,300)->save(public_path('img'.$filename));
-
+            $image = Image::make($profile)->resize(300,500);//try this
+            $filename = time()."id".$uid.".".$profile->getClientOriginalExtension();
+            $profilePath = $profile->move('img', $filename);
 
             $user = User::where('email', $user->email)->update(['profile' => $profilePath]);
+            echo "<img src='img/$filename'>";
         }
     }
 

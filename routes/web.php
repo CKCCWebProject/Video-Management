@@ -32,6 +32,7 @@ Route::group(['middleware' => ['web']], function (){
     Route::post('/uploadProfile', 'UserController@uploadProfile');
 
 
+
 });
 
 
