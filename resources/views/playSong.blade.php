@@ -18,12 +18,13 @@
                 </div>
                 {{--video--}}
                 <div class="song-video">
-                    <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/{{$currentVideo->url}}{{$autoplay?'/?rel=0&autoplay=1':''}}" frameborder="0" allowfullscreen></iframe>
+                    <iframe id="video" width="100%" height="100%" src="https://www.youtube.com/embed/{{$currentVideo->url}}?enablejsapi=1{{--{{$autoplay?'/?rel=0&autoplay=1':''}}--}}" frameborder="0" allowfullscreen></iframe>
                 </div>
                 {{--play sequence--}}
                 <div class="song-play-sequence">
                     <div class="song-sequence-list-container">
                         <ul class="song-sequence-list" onchange="return changeSequence()">
+                            <meta name="csrf-token" content="{{ csrf_token() }}">
                             {{--repeat all--}}
                             <li>
                                 <input type="radio" name="sequence" value="4" id="repeat_all" {{$setting->sq_id==4?'checked':''}}>
@@ -86,7 +87,7 @@
                             <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                             <ul class="dropdown-menu setting-option" style="top: 0px">
                                 <li class="set-opt"><a href="#">rename</a></li>
-                                <li class="set-opt delete-color"><a href="#">delete</a></li>
+                                <li class="set-opt delete-color"><a href="{{url('deletesong/'.$currentPlaylist.'/'.$video->s_id)}}">delete</a></li>
                             </ul>
                         </div>
                     </div>
@@ -102,10 +103,12 @@
 
         <!-- Modal content-->
         <div class="modal-content">
-            <form method="post" action="{{url('addSong')}}" style="margin-bottom: 0px">
+            <form method="post" action="{{url('/home/management/playSong/'.$currentPlaylist)}}" style="margin-bottom: 0px">
                 {{csrf_field()}}
                 <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
-                <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
+                @if(count($videos) > 0)
+                    <input name="currentVideo" type="hidden" value="{{$currentVideo}}">
+                @endif
                 <div class="modal-header"  style="background-color: #bf2f34">
                     <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
                     <h4 class="modal-title">Enter youtube URL</h4>
@@ -132,13 +135,16 @@
     <div class="show" id="snackbar">{{$message}}</div>
 @endif
 
+
+<script src="http://www.youtube.com/player_api"></script>
+
 <script>
 
     @if($message != '')
         $(window).on('load', function () {
         var x = document.getElementById("snackbar");
         x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     });
     @endif
 
@@ -149,9 +155,15 @@
 
     });
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     function favorite($id) {
         $.ajax({
-            url: "{{url('/home/management/playLesson/favorite')}}",
+            url: "{{url('favorite')}}",
             type: 'post',
             data: 'id='+$id+'&_token='+'{{csrf_token()}}',
             dataType: 'text',
@@ -168,7 +180,7 @@
     function changeSequence() {
         $sequence = $("input[name=sequence]:checked").val();
         $.ajax({
-            url: "{{url('/home/management/playSong/changeSequence')}}",
+            url: "{{url('changeSequence')}}",
             type: 'post',
             data: 'sequence='+$sequence+'&_token='+'{{csrf_token()}}',
             dataType: 'text',
@@ -185,7 +197,7 @@
     function changePlayFavorite() {
         $checked = $('#play-favorite').is(":checked");
         $.ajax({
-            url: "{{url('/home/management/playSong/changePlayFavorite')}}",
+            url: "{{url('changePlayFavorite')}}",
             type: 'post',
             data: 'checked='+$checked+'&_token='+'{{csrf_token()}}',
             dataType: 'text',
@@ -205,30 +217,57 @@
     }
 
     // create youtube player
-    var player;
-    {{--function onYouTubePlayerAPIReady() {--}}
-        {{--player = new YT.Player('player', {--}}
-            {{--height: '390',--}}
-            {{--width: '640',--}}
-            {{--videoId: '{{$currentVideo->url}}',--}}
-            {{--events: {--}}
-                {{--onReady: onPlayerReady,--}}
-                {{--onStateChange: onPlayerStateChange--}}
-            {{--}--}}
-        {{--});--}}
-    {{--}--}}
 
-    {{--// autoplay video--}}
-    {{--function onPlayerReady(event) {--}}
-        {{--event.target.playVideo();--}}
-    {{--}--}}
+    @if(count($videos) > 0)
+        var player;
+        function onYouTubePlayerAPIReady() {
+            player = new YT.Player('video' /*ifameId*/, {
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
+                }
+            });
+        }
 
-    {{--// when video ends--}}
-    {{--function onPlayerStateChange(event) {--}}
-        {{--if(event.data === 0) {--}}
-            {{--alert('done');--}}
-        {{--}--}}
-    {{--}--}}
+        // autoplay video
+        function onPlayerReady(event) {
+            event.target.playVideo();
+//            alert("hello")
+        }
+
+        // state change
+        function onPlayerStateChange(event) {
+            var arrays = [@foreach($videos as $video){{$video->s_id}},@endforeach];
+            var now = {{$currentVideo->s_id}};
+            var pos = arrays.indexOf(now);
+            switch(event.data) {
+                case 0: //video ended
+                    if (document.getElementById('none').checked) {
+                        if (pos < arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
+                        }
+                    } else if (document.getElementById('random').checked) {
+                        var next = Math.floor(Math.random()*arrays.length);
+                        if (next == arrays.length) {
+                            next = 0;
+                        }
+                        window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[next];
+                    } else if (document.getElementById('repeat_one').checked) {
+                        event.target.playVideo();
+                    } else if (document.getElementById('repeat_all').checked) {
+                        if (pos < arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
+                        } else if (pos == arrays.length - 1) {
+                            window.location = "{{url('home/management/playSong/'.$currentPlaylist)}}"+"/"+arrays[0];
+                        }
+                    }
+                    break;
+                case 1: //video playing from player.getCurrentTime()
+                    break;
+                case 2: //video paused at player.getCurrentTime()
+            }
+        }
+    @endif
 </script>
 
 </body>

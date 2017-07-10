@@ -84,17 +84,20 @@ class AdminController extends Controller
             $lesson->end_time = PageController::duration(PageController::getInfoFromId($id)['items'][0]['contentDetails']['duration']);
             $lesson->note = '';
             $lesson->save();
-            $data = array (
-                'message' => "New video added"
-            );
-            return redirect('home/management/playLesson/'.$lessonPlaylist);
+//            $data = array (
+//                'message' => "New video added"
+//            );
+//            return redirect('home/management/playLesson/'.$lessonPlaylist);
+            $message = "New video added";
+            return PageController::playLesson($lessonPlaylist, null, $message);
         } else {
             $data = array (
                 'message' => "URL invalid"
             );
 //            $message = "URL invalid";
-            return redirect('home/management/playLesson/'.$lessonPlaylist);
-//            return PageController::playLesson($lessonPlaylist, null, $message);
+            $message = "URL invalid";
+//            return redirect('home/management/playLesson/'.$lessonPlaylist);
+            return PageController::playLesson($lessonPlaylist, null, $message);
         }
     }
 
@@ -114,15 +117,19 @@ class AdminController extends Controller
             $song->url = $id;
             $song->if_favorite = false;
             $song->save();
-            $data = array (
-                'message' => "New video added"
-            );
-            return redirect('home/management/playSong/'.$songPlaylist);
+//            $data = array (
+//                'message' => "New video added"
+//            );
+//            return redirect('home/management/playSong/'.$songPlaylist);
+            $message = "New video added";
+            return PageController::playSong($songPlaylist, null, $message);
         } else {
-            $data = array (
-                'message' => "URL invalid"
-            );
-            return redirect('home/management/playSong/'.$songPlaylist);
+//            $data = array (
+//                'message' => "URL invalid"
+//            );
+//            return redirect('home/management/playSong/'.$songPlaylist);
+            $message = "URL invalid";
+            return PageController::playSong($songPlaylist, null, $message);
         }
     }
 
@@ -192,6 +199,18 @@ class AdminController extends Controller
         }
 
         return redirect('home/management/'.$currentFolder);
+    }
+
+    public function deleteSong($id, $vid) {
+        $song = Song::find($vid);
+        $song->delete();
+        return redirect('home/management/playSong/'.$id);
+    }
+
+    public function deleteLesson($id, $vid) {
+        $lesson = Lesson::find($vid);
+        $lesson->delete();
+        return redirect('home/management/playLesson/'.$id);
     }
 
     private function deleteSP($id) {
