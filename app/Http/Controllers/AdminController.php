@@ -213,6 +213,18 @@ class AdminController extends Controller
         return redirect('home/management/playLesson/'.$id);
     }
 
+    public function updateTime(Request $request) {
+        $time = $request->time;
+        $lessonId = $request->lessonId;
+        $lesson = Lesson::find($lessonId);
+        $lesson->start_time = $time;
+        $lesson->save();
+
+        $lp = LessonPlaylist::find($lesson->lp_id);
+        $lp->record = $request->record.$lp->record;
+        $lp->save();
+    }
+
     private function deleteSP($id) {
         $songs = Song::where('sp_id', $id)->get();
         foreach ($songs as $song) {

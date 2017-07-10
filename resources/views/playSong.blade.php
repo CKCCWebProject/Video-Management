@@ -263,6 +263,7 @@
                     }
                     break;
                 case 1: //video playing from player.getCurrentTime()
+
                     break;
                 case 2: //video paused at player.getCurrentTime()
             }

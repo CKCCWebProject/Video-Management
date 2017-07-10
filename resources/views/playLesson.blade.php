@@ -12,7 +12,7 @@
                 <div  class="lesson-top">
                     {{--video--}}
                     <div class="lesson-video-container">
-                        <iframe class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}{{$autoplay?'/?rel=0&autoplay=1':''}}" frameborder="0" allowfullscreen></iframe>
+                        <iframe id="video" class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
                     </div>
                     {{--note--}}
                     <div id="note" class="notepaper lesson-note mediumScroll overlay" contenteditable="true" onkeyup="return editNote({{$currentVideo->l_id}})">
@@ -26,30 +26,36 @@
             {{--right side--}}
             <div id="lesson-info" class="lesson-info collapse">
                 <div class="lesson-progress">
-                    <div class="clearfix">
+                    <div class="clearfix" style="margin: 5vw">
 
-                        <div class="c100 p50 big green">
-                            <span>50%</span>
+                        <div class="hidden-xs hidden-sm c100 p{{$percent}} big green">
+                            <span>{{$percent}}%</span>
                             <div class="slice">
                                 <div class="bar"></div>
                                 <div class="fill"></div>
                             </div>
                         </div>
 
-                        <div class="c100 p25 green">
-                            <span>25%</span>
+                        <div class="visible-sm c100 p{{$percent}} green">
+                            <span>{{$percent}}%</span>
                             <div class="slice">
                                 <div class="bar"></div>
                                 <div class="fill"></div>
                             </div>
                         </div>
 
-                        <div class="c100 p12 small green">
-                            <span>12%</span>
+                        <div class="visible-xs c100 p{{$percent}} small green">
+                            <span>{{$percent}}%</span>
                             <div class="slice">
                                 <div class="bar"></div>
                                 <div class="fill"></div>
                             </div>
+                        </div>
+
+                        <div class="wmediumScroll" id="lesson-record" style="color: white; width: 70%; float: right; border: 1px solid red">
+                            <?php
+                                echo $record;
+                            ?>
                         </div>
 
                     </div>
@@ -158,6 +164,8 @@
 
 </body>
 
+<script src="http://www.youtube.com/player_api"></script>
+
 <script>
 
     @if($message != '')
@@ -204,6 +212,72 @@
             $("#input-url").focus();
         }, 500);
     }
+
+    // create youtube player
+    @if(count($videos) > 0)
+        var player;
+        function onYouTubePlayerAPIReady() {
+            player = new YT.Player('video' /*ifameId*/, {
+                events: {
+                    onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange
+                }
+            });
+        }
+
+        // autoplay video
+        function onPlayerReady(event) {
+    //        event.target.playVideo();
+    //            alert("hello")
+        }
+
+        // state change
+        function onPlayerStateChange(event) {
+            var arrays = [@foreach($videos as $video){{$video->l_id}},@endforeach];
+            var now = {{$currentVideo->l_id}};
+            var pos = arrays.indexOf(now);
+            switch(event.data) {
+                case 0: //video ended
+                    updateTime('{{$currentVideo->end_time}}');
+                    if (pos < arrays.length - 1) {
+                        window.location = "{{url('home/management/playLesson/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
+                    }
+                case 1: //video playing from player.getCurrentTime()
+                    updateTime(player.getCurrentTime());
+                    break;
+                case 2: //video paused at player.getCurrentTime()
+                    updateTime(player.getCurrentTime());
+            }
+        }
+
+        function updateTime(time) {
+            $.ajax({
+                url: "{{url('updateTime')}}",
+                type: 'post',
+                data: 'lessonId='+'{{$currentVideo->l_id}}'+'&time='+Math.ceil(time)+'&record='+'{{date("F j, Y, g:i a")}}'+' - '+'<strong>{{strlen($currentVideo->title)>40?substr($currentVideo->title,0, 40).'...':$currentVideo->title}}</strong>'+' <i>'+(''+time).toHHMMSS()+'</i><br/>'+'&_token='+'{{csrf_token()}}',
+                dataType: 'text',
+                success: function( _response ){
+                },
+                error: function( _response ){
+                }
+            });
+        }
+    @endif
+
+
+    String.prototype.toHHMMSS = function () {
+        var sec_num = parseInt(this, 10); // don't forget the second param
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        if (seconds < 10) {seconds = "0"+seconds;}
+        return hours+':'+minutes+':'+seconds;
+    }
+
+
 </script>
 
 </html>

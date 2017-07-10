@@ -62,10 +62,22 @@ class PageController extends Controller
             $currentVideo = null;
         }
 
+        $total = 0;
+        $done = 0;
+
+        foreach ($videos as $video) {
+            $total += $video->end_time;
+            $done += $video->start_time;
+        }
+
+        $percent = ceil($done*100/$total);
+
         $data = array(
+            'record' => LessonPlaylist::find($id)->record,
             'message' => $message,
             'currentVideo' => $currentVideo,
             'videos' => $videos,
+            'percent' => $percent,
             'currentPlaylist' => $id,
             'autoplay' => $vid == null?false:true,
             'parentId' => LessonPlaylist::where('l_id', $id)->get()[0]->f_id
