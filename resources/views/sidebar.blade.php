@@ -56,22 +56,27 @@
     </div>
 
     <script>
+//        var smallScreenSize = window.matchMedia( "(max-width: 768px)" );
+
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             toggleSidebar();
         });
 
         $(document).on("swipeleft",function(){
-            if ($("#wrapper").hasClass("toggled")) {
-                toggleSidebar();
+//            if screen is small
+            if($(window).width()<769) {
+                if ($("#wrapper").hasClass("toggled")) {
+                    toggleSidebar();
+                }
             }
         });
 
-        $(document).on("swiperight",function(){
-            if (!$("#wrapper").hasClass("toggled")) {
-                toggleSidebar();
-            }
-        });
+//        $(document).on("swiperight",function(){
+//            if (!$("#wrapper").hasClass("toggled")) {
+//                toggleSidebar();
+//            }
+//        });
 
         var toggleSidebar = function () {
             $("#wrapper").toggleClass("toggled");

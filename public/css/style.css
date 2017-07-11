@@ -521,6 +521,11 @@ nav {
     font-size: 15px;
 }
 
+.lesson-record {
+    max-height: 250px;
+    overflow-y: scroll;
+}
+
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     nav {
@@ -654,6 +659,10 @@ nav {
 
     .logout {
         font-size: 1em;
+    }
+
+    .lesson-record {
+        max-height: 150px;
     }
 }
 

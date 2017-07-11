@@ -67,69 +67,83 @@ class AdminController extends Controller
     }
 
     public function insertLessonVideo(Request $request) {
-        $videoUrl = $request->videoURL;
-        $videoTitle = $request->videoTitle;
         $lessonPlaylist = $request->currentPlaylist;
-        if (PageController::validYoutubeUrl($videoUrl)) {
-            $id = PageController::getYoutubeId($videoUrl);
+        if (isset($request->allPlaylist)) {
+            $id = $request->playlistId;
+            $videos = $this->getVideosFromPlaylist($id);
+//            print_r($videos);
+            if($videos == false) {
+                $message = "URL invalid / playlist not exist";
+                return PageController::playLesson($lessonPlaylist, null, $message);
+            } else {
+                foreach ($videos as $video) {
+                    $this->addLesson('', $video, $lessonPlaylist);
+                }
+                $message = "New videos added";
+                return PageController::playLesson($lessonPlaylist, null, $message);
+            }
+        } else {
+            $videoUrl = $request->videoURL;
+            $videoTitle = $request->videoTitle;
+            if (PageController::validYoutubeUrl($videoUrl)) {
+                $id = PageController::getYoutubeId($videoUrl);
 //            echo $id;
-            $lesson = new Lesson();
-            $lesson->created_at = new DateTime();
-            $lesson->updated_at = new DateTime();
-            $lesson->title =($videoTitle != '')?($videoTitle):
-                (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
-            $lesson->lp_id = $lessonPlaylist;
-            $lesson->url = $id;
-            $lesson->start_time = 0;
-            $lesson->end_time = PageController::duration(PageController::getInfoFromId($id)['items'][0]['contentDetails']['duration']);
-            $lesson->note = '';
-            $lesson->save();
+                $this->addLesson($videoTitle, $id, $lessonPlaylist);
 //            $data = array (
 //                'message' => "New video added"
 //            );
 //            return redirect('home/management/playLesson/'.$lessonPlaylist);
-            $message = "New video added";
-            return PageController::playLesson($lessonPlaylist, null, $message);
-        } else {
-            $data = array (
-                'message' => "URL invalid"
-            );
+                $message = "New video added";
+                return PageController::playLesson($lessonPlaylist, null, $message);
+            } else {
+                $data = array(
+                    'message' => "URL invalid"
+                );
 //            $message = "URL invalid";
-            $message = "URL invalid";
+                $message = "URL invalid";
 //            return redirect('home/management/playLesson/'.$lessonPlaylist);
-            return PageController::playLesson($lessonPlaylist, null, $message);
+                return PageController::playLesson($lessonPlaylist, null, $message);
+            }
         }
     }
 
     public function insertSongVideo(Request $request) {
-        $videoUrl = $request->videoURL;
-        $videoTitle = $request->videoTitle;
         $songPlaylist = $request->currentPlaylist;
-        if (PageController::validYoutubeUrl($videoUrl)) {
-            $id = PageController::getYoutubeId($videoUrl);
+        if(isset($request->allPlaylist)) {
+            $id = $request->playlistId;
+            $videos = $this->getVideosFromPlaylist($id);
+//            print_r($videos);
+            if($videos == false) {
+                $message = "URL invalid / playlist not exist";
+                return PageController::playSong($songPlaylist, null, $message);
+            } else {
+                foreach ($videos as $video) {
+                    $this->addSong('', $video, $songPlaylist);
+                }
+                $message = "New videos added";
+                return PageController::playSong($songPlaylist, null, $message);
+            }
+        } else {
+            $videoUrl = $request->videoURL;
+            $videoTitle = $request->videoTitle;
+            if (PageController::validYoutubeUrl($videoUrl)) {
+                $id = PageController::getYoutubeId($videoUrl);
 //            echo $id;
-            $song = new Song();
-            $song->created_at = new DateTime();
-            $song->updated_at = new DateTime();
-            $song->title =($videoTitle != '')?($videoTitle):
-                (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
-            $song->sp_id = $songPlaylist;
-            $song->url = $id;
-            $song->if_favorite = false;
-            $song->save();
+                $this->addSong($videoTitle, $id, $songPlaylist);
 //            $data = array (
 //                'message' => "New video added"
 //            );
 //            return redirect('home/management/playSong/'.$songPlaylist);
-            $message = "New video added";
-            return PageController::playSong($songPlaylist, null, $message);
-        } else {
+                $message = "New video added";
+                return PageController::playSong($songPlaylist, null, $message);
+            } else {
 //            $data = array (
 //                'message' => "URL invalid"
 //            );
 //            return redirect('home/management/playSong/'.$songPlaylist);
-            $message = "URL invalid";
-            return PageController::playSong($songPlaylist, null, $message);
+                $message = "URL invalid";
+                return PageController::playSong($songPlaylist, null, $message);
+            }
         }
     }
 
@@ -159,9 +173,9 @@ class AdminController extends Controller
     public function changePlayFavorite(Request $request) {
         $checked = $request->checked;
         $setting = Setting::find(User::currentUser()->id);
-        $setting->play_favorite = $checked?1:0;
+        $setting->play_favorite = $checked;
         $setting->save();
-//        echo $checked;
+        echo $checked;
     }
 
     public function changeSequence(Request $request) {
@@ -276,5 +290,49 @@ class AdminController extends Controller
         return $gifts;
     }
 
+    private function getVideosFromPlaylist($playlistId) {
+//        https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=PLwAKR305CRO-Q90J---jXVzbOd4CDRbVx&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA
+        $api_key = 'AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA';
+        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlistId . '&key=' . $api_key;
+
+        $playlist = json_decode(file_get_contents($api_url));
+
+//        if (isset($playlist->error)) {
+//            echo 'what';
+//            return false;
+//        }
+
+        $list = [];
+        foreach ($playlist->items AS $item) {
+            array_push($list, $item->snippet->resourceId->videoId);
+        }
+        return $list;
+    }
+
+    private function addLesson($videoTitle, $id, $lessonPlaylist) {
+        $lesson = new Lesson();
+        $lesson->created_at = new DateTime();
+        $lesson->updated_at = new DateTime();
+        $lesson->title =($videoTitle != '')?($videoTitle):
+            (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
+        $lesson->lp_id = $lessonPlaylist;
+        $lesson->url = $id;
+        $lesson->start_time = 0;
+        $lesson->end_time = PageController::duration(PageController::getInfoFromId($id)['items'][0]['contentDetails']['duration']);
+        $lesson->note = '';
+        $lesson->save();
+    }
+
+    private function addSong($videoTitle, $id, $songPlaylist) {
+        $song = new Song();
+        $song->created_at = new DateTime();
+        $song->updated_at = new DateTime();
+        $song->title =($videoTitle != '')?($videoTitle):
+            (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
+        $song->sp_id = $songPlaylist;
+        $song->url = $id;
+        $song->if_favorite = false;
+        $song->save();
+    }
 
 }

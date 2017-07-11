@@ -115,7 +115,12 @@
                 </div>
                 <div class="modal-body">
                     <div style="margin-bottom: 10px">
-                        <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL">
+                        <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL" required oninput="checkPlaylist()" autocomplete="off">
+                        <div class="import-playlist-container" style="display: none">
+                            <input name="allPlaylist" id="import-playlist" type="checkbox">
+                            <label for="import-playlist">import all videos from playlist</label>
+                        </div>
+                        <input name="playlistId" type="hidden" id="playlist-id">
                     </div>
                     <div>
                         <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
@@ -196,6 +201,7 @@
 
     function changePlayFavorite() {
         $checked = $('#play-favorite').is(":checked");
+        $checked = $checked?1:0;
         $.ajax({
             url: "{{url('changePlayFavorite')}}",
             type: 'post',
@@ -214,6 +220,20 @@
         setTimeout(function () {
             $("#input-url").focus();
         }, 500);
+    }
+
+    function checkPlaylist() {
+        var a = $("#input-url").val().split("?list=")[1];
+        if (a == undefined) a = $("#input-url").val().split("&list=")[1];
+        if (a != undefined) {
+//            $("#import-playlist").prop('checked', true);
+            $(".import-playlist-container").css('display', 'block');
+            $("#playlist-id").val(a);
+        } else {
+//        alert("changed")
+            $("#import-playlist").prop('checked', false);
+            $(".import-playlist-container").css('display', 'none');
+        }
     }
 
     // create youtube player

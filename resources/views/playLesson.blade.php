@@ -12,7 +12,7 @@
                 <div  class="lesson-top">
                     {{--video--}}
                     <div class="lesson-video-container">
-                        <iframe id="video" class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}?enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+                        <iframe id="video" class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}?start={{$currentVideo->start_time==$currentVideo->end_time?0:$currentVideo->start_time}}&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
                     </div>
                     {{--note--}}
                     <div id="note" class="notepaper lesson-note mediumScroll overlay" contenteditable="true" onkeyup="return editNote({{$currentVideo->l_id}})">
@@ -52,7 +52,7 @@
                             </div>
                         </div>
 
-                        <div class="wmediumScroll" id="lesson-record" style="color: white; width: 70%; float: right; border: 1px solid red">
+                        <div class="wmediumScroll lesson-record" id="lesson-record" style="color: white; width: 70%; float: right; border: 1px solid red">
                             <?php
                                 echo $record;
                             ?>
@@ -142,8 +142,13 @@
                     </div>
                     <div class="modal-body">
                         <div style="margin-bottom: 10px">
-                            <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL" required>
+                            <input id="input-url" name="videoURL" type="text" class="form-control" placeholder="YouTube URL" required oninput="checkPlaylist()" autocomplete="off">
                         </div>
+                        <div class="import-playlist-container" style="display: none">
+                            <input name="allPlaylist" id="import-playlist" type="checkbox">
+                            <label for="import-playlist">import all videos from playlist</label>
+                        </div>
+                        <input name="playlistId" type="hidden" id="playlist-id">
                         <div>
                             <input name="videoTitle" type="text" class="form-control" placeholder="video title (optional)">
                         </div>
@@ -213,6 +218,20 @@
         }, 500);
     }
 
+    function checkPlaylist() {
+        var a = $("#input-url").val().split("?list=")[1];
+        if (a == undefined) a = $("#input-url").val().split("&list=")[1];
+        if (a != undefined) {
+//            $("#import-playlist").prop('checked', true);
+            $(".import-playlist-container").css('display', 'block');
+            $("#playlist-id").val(a);
+        } else {
+//        alert("changed")
+            $("#import-playlist").prop('checked', false);
+            $(".import-playlist-container").css('display', 'none');
+        }
+    }
+
     // create youtube player
     @if(count($videos) > 0)
         var player;
@@ -238,23 +257,24 @@
             var pos = arrays.indexOf(now);
             switch(event.data) {
                 case 0: //video ended
-                    updateTime('{{$currentVideo->end_time}}');
-                    if (pos < arrays.length - 1) {
-                        window.location = "{{url('home/management/playLesson/'.$currentPlaylist)}}"+"/"+arrays[pos+1];
-                    }
+                    updateTime('Ended', '{{$currentVideo->end_time}}');
+                    location.reload();
+                    {{--if (pos < arrays.length - 1) {--}}
+                        {{--window.location = "{{url('home/management/playLesson/'.$currentPlaylist)}}"+"/"+arrays[pos+1];--}}
+                    {{--}--}}
                 case 1: //video playing from player.getCurrentTime()
-                    updateTime(player.getCurrentTime());
+//                    updateTime(player.getCurrentTime());
                     break;
                 case 2: //video paused at player.getCurrentTime()
-                    updateTime(player.getCurrentTime());
+                    updateTime('Paused', player.getCurrentTime());
             }
         }
 
-        function updateTime(time) {
+        function updateTime(type, time) {
             $.ajax({
                 url: "{{url('updateTime')}}",
                 type: 'post',
-                data: 'lessonId='+'{{$currentVideo->l_id}}'+'&time='+Math.ceil(time)+'&record='+'{{date("F j, Y, g:i a")}}'+' - '+'<strong>{{strlen($currentVideo->title)>40?substr($currentVideo->title,0, 40).'...':$currentVideo->title}}</strong>'+' <i>'+(''+time).toHHMMSS()+'</i><br/>'+'&_token='+'{{csrf_token()}}',
+                data: 'lessonId='+'{{$currentVideo->l_id}}'+'&time='+Math.ceil(time)+'&record='+'{{date("F j, Y, g:i a")}}'+' - '+'<strong>{{strlen($currentVideo->title)>40?substr($currentVideo->title,0, 40).'...':$currentVideo->title}}</strong>'+' <i>'+(''+time).toHHMMSS()+'</i> : '+type+'<br/>'+'&_token='+'{{csrf_token()}}',
                 dataType: 'text',
                 success: function( _response ){
                 },

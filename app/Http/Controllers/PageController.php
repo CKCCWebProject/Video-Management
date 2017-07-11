@@ -70,7 +70,11 @@ class PageController extends Controller
             $done += $video->start_time;
         }
 
-        $percent = ceil($done*100/$total);
+        if ($total > 0) {
+            $percent = ceil($done*100/$total);
+        } else {
+            $percent = 0;
+        }
 
         $data = array(
             'record' => LessonPlaylist::find($id)->record,
