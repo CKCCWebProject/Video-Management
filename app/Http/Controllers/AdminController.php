@@ -74,40 +74,33 @@ class AdminController extends Controller
         if (isset($request->allPlaylist)) {
             $id = $request->playlistId;
             $videos = $this->getVideosFromPlaylist($id);
-//            print_r($videos);
             if($videos == false) {
                 $message = "URL invalid / playlist not exist";
-                return PageController::playLesson($lessonPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playLesson/'.$lessonPlaylist);
             } else {
                 foreach ($videos as $video) {
                     $this->addLesson($video['title'], $video['id'], $lessonPlaylist, $video['duration']);
                 }
                 $message = "New videos added";
-                unset($request);
-                return PageController::playLesson($lessonPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playLesson/'.$lessonPlaylist);
             }
         } else {
             $videoUrl = $request->videoURL;
             $videoTitle = $request->videoTitle;
             if (PageController::validYoutubeUrl($videoUrl)) {
                 $id = PageController::getYoutubeId($videoUrl);
-//            echo $id;
                 $this->addLesson($videoTitle, $id, $lessonPlaylist, PageController::getDurationFromId($id));
-//            $data = array (
-//                'message' => "New video added"
-//            );
-//            return redirect('home/management/playLesson/'.$lessonPlaylist);
                 $message = "New video added";
-                return PageController::playLesson($lessonPlaylist, null, $message);
+                session(['message' => $message]);
+
+                return redirect('home/management/playLesson/'.$lessonPlaylist);
             } else {
-                $data = array(
-                    'message' => "URL invalid"
-                );
-//            $message = "URL invalid";
                 $message = "URL invalid";
-                unset($request);
-//            return redirect('home/management/playLesson/'.$lessonPlaylist);
-                return PageController::playLesson($lessonPlaylist, null, $message);
+                session(['message' => $message]);
+
+                return redirect('home/management/playLesson/'.$lessonPlaylist);
             }
         }
     }
@@ -117,39 +110,31 @@ class AdminController extends Controller
         if(isset($request->allPlaylist)) {
             $id = $request->playlistId;
             $videos = $this->getVideosFromPlaylist($id);
-//            print_r($videos);
             if($videos == false) {
                 $message = "URL invalid / playlist not exist";
-                return PageController::playSong($songPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playSong/'.$songPlaylist);
             } else {
                 foreach ($videos as $video) {
                     $this->addSong($video['title'], $video['id'], $songPlaylist, $video['duration']);
                 }
                 $message = "New videos added";
-                unset($request);
-                return PageController::playSong($songPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playSong/'.$songPlaylist);
             }
         } else {
             $videoUrl = $request->videoURL;
             $videoTitle = $request->videoTitle;
             if (PageController::validYoutubeUrl($videoUrl)) {
                 $id = PageController::getYoutubeId($videoUrl);
-//            echo $id;
                 $this->addSong($videoTitle, $id, $songPlaylist, PageController::getDurationFromId($id));
-//            $data = array (
-//                'message' => "New video added"
-//            );
-//            return redirect('home/management/playSong/'.$songPlaylist);
                 $message = "New video added";
-                return PageController::playSong($songPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playSong/'.$songPlaylist);
             } else {
-//            $data = array (
-//                'message' => "URL invalid"
-//            );
-//            return redirect('home/management/playSong/'.$songPlaylist);
                 $message = "URL invalid";
-                unset($request);
-//                return PageController::playSong($songPlaylist, null, $message);
+                session(['message' => $message]);
+                return redirect('home/management/playSong/'.$songPlaylist);
             }
         }
     }

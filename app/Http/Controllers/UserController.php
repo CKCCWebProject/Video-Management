@@ -75,19 +75,27 @@ class UserController extends Controller
                 $gift->parent_id = $homeId;
                 $gift->save();
 
-                session(['userId', $uid]);
+                session(['userId' => $uid]);
+
+                session(['message' => 'Welcome']);
 
                 return redirect('home');
             }
             else{
 //                echo "already existed";
-                return $this->signupScreenWithMessage("Email is already existed!!");
+
+                session(['message' => 'Email is already used']);
+
+//                return $this->signupScreenWithMessage("Email is already existed!!");
+                return redirect('signup');
 //                return redirect('connection');
             }
         }
         else{
 //            echo "<script>alert('password not match');</script>";
-            return $this->signupScreenWithMessage("Password is not match!!");
+//            return $this->signupScreenWithMessage("Password is not match!!");
+            session(['message' => 'Password not match']);
+            return redirect('signup');
         }
     }
 
@@ -120,11 +128,12 @@ class UserController extends Controller
 
         if($request->hasFile('imageProfile')){
             $this->validate($request, [
-                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg,JPEG,PNG,JPG,GIF,SVG|max:10240',
             ]);
             $profile = $request->file('imageProfile');
 
-            $image = Image::make($profile)->resize(300,500);//try this
+//            $image = Image::make($profile)->resize(300,500);//try this
+//            $profile = $this->resizeImage(realpath($profile), 120, 120, Imagick::FILTER_LANCZOS, 1, true, true);
 
             $filename = time()."id".$uid.".".$profile->getClientOriginalExtension();
             $profilePath = $profile->move('img/photo', $filename);
@@ -133,9 +142,9 @@ class UserController extends Controller
             $user->profile = $profilePath;
             $user->save();
 //            echo $profilePath;
-            return PageController::nav($request->currentPosition);
-
         }
+
+        return PageController::nav($request->currentPosition);
     }
 
     public function signout(){
@@ -148,4 +157,35 @@ class UserController extends Controller
     public function isLoggedIn(){
         return true;
     }
+
+//    private function resizeImage($imagePath, $width, $height, $filterType, $blur, $bestFit, $cropZoom) {
+//        //The blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
+//        $imagick = new \Imagick(realpath($imagePath));
+//
+//        $imagick->resizeImage($width, $height, $filterType, $blur, $bestFit);
+//
+//        $cropWidth = $imagick->getImageWidth();
+//        $cropHeight = $imagick->getImageHeight();
+//
+//        if ($cropZoom) {
+//            $newWidth = $cropWidth / 2;
+//            $newHeight = $cropHeight / 2;
+//
+//            $imagick->cropimage(
+//                $newWidth,
+//                $newHeight,
+//                ($cropWidth - $newWidth) / 2,
+//                ($cropHeight - $newHeight) / 2
+//            );
+//
+//            $imagick->scaleimage(
+//                $imagick->getImageWidth() * 4,
+//                $imagick->getImageHeight() * 4
+//            );
+//        }
+//
+//
+//        header("Content-Type: image/jpg");
+//        return $imagick->getImageBlob();
+//    }
 }

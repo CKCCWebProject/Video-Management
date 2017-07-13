@@ -27,9 +27,10 @@ class User extends Model implements Authenticatable
             new DateTime(),
             $user -> username,
             $user -> email,
-            $user -> password
+            $user -> password,
+            $user -> profile
         );
-        DB::insert('INSERT INTO users(created_at, updated_at, username, email, password) VALUES (?,?,?,?,?)', $data);
+        DB::insert('INSERT INTO users(created_at, updated_at, username, email, password, profile) VALUES (?,?,?,?,?,?)', $data);
     }
 
     public static function checkExistedUser($email){

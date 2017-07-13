@@ -1,3 +1,6 @@
+<?php
+    $user = \App\User::find(session('userId'));
+?>
 <div class="setting-container">
     <table class="setting-table table table-striped">
         <tbody>
@@ -6,7 +9,7 @@
                     Username
                 </td>
                 <td>
-                    Channimol
+                    {{$user->username}}
                 </td>
             </tr>
             <tr>
@@ -14,7 +17,7 @@
                     E-mail
                 </td>
                 <td>
-                    channimolsar@gmail.com
+                    {{$user->email}}
                 </td>
             </tr>
             <tr>

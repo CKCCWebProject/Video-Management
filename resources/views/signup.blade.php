@@ -57,12 +57,20 @@
     </div>
 </div>
 
+@if($message != '')
+    <div class="show" id="snackbar">{{$message}}</div>
+@endif
+
 </body>
 
     <script>
 
-        @if(isset($message))
-            alert('{{$message}}');
+        @if($message != '')
+        $(window).on('load', function () {
+            var x = document.getElementById("snackbar");
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
+        });
         @endif
     </script>
 

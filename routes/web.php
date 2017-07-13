@@ -13,8 +13,15 @@
 
 Route::group(['middleware' => ['checkloggedin']], function (){
     Route::get('signup', function (){
-        return view('signup');
+        $message = '';
+        if (session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+        return view('signup', ['message' => $message]);
     });
+
+    Route::post('/signup', 'UserController@signup');
 });
 
 Route::group(['middleware' => ['checkuser']], function (){
@@ -36,7 +43,7 @@ Route::group(['middleware' => ['checkuser']], function (){
 });
 
 Route::post('/uploadProfile', 'UserController@uploadProfile');
-Route::post('/signup', 'UserController@signup');
+
 Route::post('/signin', 'UserController@signin');
 Route::post('/folders', 'AdminController@insertFolder');
 Route::post('/playlists', 'AdminController@insertPlaylist');

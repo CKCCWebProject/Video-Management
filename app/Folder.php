@@ -12,5 +12,4 @@ class Folder extends Model
     {
         return $this->belongsTo('App\User');
     }
-
 }

@@ -49,11 +49,17 @@ class PageController extends Controller
     }
 
     public static function playLesson($id, $vid = null, $message = '') {
+        $userId = session('userId');
 //        $json_output = self::getInfoFromId('tq3itlILfn4');
 //        echo $json_output['items'][0]['contentDetails']['duration'];
 //        echo $json_output['items'][0]['snippet']['title'];
 
-        $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
+        if (session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
+        $videos = Lesson::where('lp_id', $id)->where('u_id', $userId)->orderBy('title', 'asc')->get();
         if (count($videos) > 0) {
             if ($vid == null) {
                 $currentVideo = $videos[0];
@@ -92,12 +98,18 @@ class PageController extends Controller
     }
 
     public static function playSong($id, $vid = null, $message = '') {
+        $userId = session('userId');
 //        $data = array(
 //            'currentPlaylist' => $id,
 //            'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
 //        );
 //        return view('playSong', $data);
-        $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
+        if (session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
+        $videos = Song::where('sp_id', $id)->where('u_id', $userId)->orderBy('title', 'asc')->get();
         if (count($videos) > 0) {
             if ($vid == null) {
                 $currentVideo = $videos[0];
@@ -208,14 +220,22 @@ class PageController extends Controller
         $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=contentDetails";
         $json_source = file_get_contents($jsonUrl,true);
         $response = json_decode($json_source,true);
-        return $response['items'][0]['contentDetails']['duration'];
+        if (count($response['items']) == 1) {
+            return $response['items'][0]['contentDetails']['duration'];
+        } else {
+            return 'PT0S';
+        }
     }
 
     public static function getTitleFromId ($id) {
         $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet";
         $json_source = file_get_contents($jsonUrl,true);
         $response = json_decode($json_source,true);
-        return $response['items'][0]['snippet']['title'];
+        if (count($response['items']) == 1) {
+            return $response['items'][0]['snippet']['title'];
+        } else {
+            return 'Unknown';
+        }
     }
 
 
