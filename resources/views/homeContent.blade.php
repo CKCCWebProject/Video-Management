@@ -24,16 +24,16 @@
                         created at {{$folder->created_at}}
                     </div>
                 </div>
-                <div class="folder-setting dropdown">
-                    <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
-                    <ul class="dropdown-menu setting-option">
-                        <li class="set-opt"><a href="#">rename</a></li>
-                        <li class="set-opt"><a href="#">share setting</a></li>
-                        @if($folder->if_deletable)
+                @if($folder->if_deletable)
+                    <div class="folder-setting dropdown">
+                        <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
+                        <ul class="dropdown-menu setting-option">
+                            <li class="set-opt"><a href="#">rename</a></li>
+                            <li class="set-opt"><a href="#">share setting</a></li>
                             <li class="set-opt delete-color"><a data-toggle="modal" data-target="#deleteFolder" onclick="formDelete('folder', '{{$folder->f_id}}')">delete</a></li>
-                        @endif
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                @endif
             </li>
 
         @endforeach

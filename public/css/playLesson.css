@@ -140,6 +140,7 @@ html {
 
 .each-lesson:hover, .each-lesson:focus, .each-lesson:active {
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.82);
+    background-color: #c9d9f3;
 }
 
 .lesson-i {

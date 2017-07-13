@@ -89,7 +89,9 @@
                     <li id="lesson{{$key}}" class="each-lesson {{$video->l_id==$currentVideo->l_id?'playing':''}}">
                             <div class="lesson-i">
                                 <a href="{{url('home/management/playLesson/'.$currentPlaylist.'/'.$video->l_id)}}" style="display: flex; align-items: center">
-
+                                    <div style="color: #000069">
+                                        {{$key+1}}&nbsp;
+                                    </div>
                                     <div class="lesson-watched">
                                         @if($video->end_time - $video->start_time < 5)
                                             <i class="fa fa-check"></i>
@@ -103,7 +105,7 @@
                                             {{$video->title}}
                                         </div>
                                         <div class="lesson-note-short">
-                                            {{substr($video->note, 20)}}
+                                            {{substr($video->note, 0, 20).'...'}}
                                         </div>
                                         <div class="lesson-duration">
                                             {{sprintf('%02d:%02d:%02d', floor($video->end_time / 3600), floor($video->end_time / 60 % 60), floor($video->end_time % 60))}}
@@ -198,7 +200,7 @@
     }
 
     function editNote($id) {
-        var data = 'id='+$id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
+        var data = 'id='+$id+"&note="+document.getElementById('note').innerText+"&_token="+'{{csrf_token()}}';
         $.ajax({
             url: "{{url('editNote')}}",
             type: 'post',

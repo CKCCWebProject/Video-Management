@@ -21,8 +21,10 @@ class PageController extends Controller
     }
 
     public function home($tab) {
+        $userId = session('userId');
+
         if ($tab == 'management') {
-            $homes = Folder::where('u_id', User::currentUser()->id)->where('folderName', 'home')->where('if_deletable', 0)->get();
+            $homes = Folder::where('u_id', $userId)->where('folderName', 'home')->where('if_deletable', 0)->get();
             return redirect('home/management/'.$homes[0]->f_id);
         }
         $data = array(
@@ -30,13 +32,13 @@ class PageController extends Controller
             'position' => 'home'
         );
         if ($tab == 'favorite') {
-            $favoriteVideos = DB::table('songs')->join('song_playlists', 'songs.sp_id', '=', 'song_playlists.sp_id')->where('u_id', User::currentUser()->id)->where('if_favorite', true)->get();
+            $favoriteVideos = Song::where('u_id', $userId)->where('if_favorite', true)->get();
             $data['favoriteVideos'] = $favoriteVideos;
         }
         return view ('home', $data);
     }
 
-    public function nav($nav) {
+    public static function nav($nav) {
         if ($nav == 'home') {
             return redirect("home/management");
         }
@@ -102,20 +104,20 @@ class PageController extends Controller
             } else {
                 $currentVideo = Song::find($vid);
             }
-            $duration = PageController::duration(PageController::getInfoFromId($currentVideo->url)['items'][0]['contentDetails']['duration']);
+//            $duration = PageController::duration(PageController::getDurationInfoFromId($currentVideo->url)['items'][0]['contentDetails']['duration']);
         } else {
             $currentVideo = null;
             $duration = 0;
         }
 
-        $setting = Setting::where('u_id', User::currentUser()->id)->get()[0];
+        $setting = Setting::where('u_id', session('userId'))->get()[0];
 
         $data = array(
             'setting' => $setting,
             'message' => $message,
             'currentVideo' => $currentVideo,
             'videos' => $videos,
-            'duration' => $duration,
+//            'duration' => $duration,
             'currentPlaylist' => $id,
             'autoplay' => $vid == null?false:true,
             'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
@@ -131,11 +133,12 @@ class PageController extends Controller
 //    }
 
     public function folder($id) {
+        $userId = session('userId');
 
         $directories = array();
         $now = $id;
         do {
-            $folder_i = Folder::where('f_id', $now)->where('u_id', User::currentUser()->id)->get();
+            $folder_i = Folder::where('f_id', $now)->where('u_id', $userId)->get();
             if (count($folder_i) != 1) {
                 return redirect('invalid_folder');
             }
@@ -143,9 +146,9 @@ class PageController extends Controller
             array_unshift($directories, $folder_i[0]);
         } while ($folder_i[0]->folderName != 'home' || $folder_i[0]->if_deletable != false);
 
-        $folders = Folder::where('u_id', User::currentUser()->id)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
-        $songPlaylists = SongPlaylist::where('u_id', User::currentUser()->id)->where('f_id', $id)->get();
-        $lessonPlaylists = LessonPlaylist::where('u_id', User::currentUser()->id)->where('f_id', $id)->get();
+        $folders = Folder::where('u_id', $userId)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
+        $songPlaylists = SongPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
+        $lessonPlaylists = LessonPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
         $data = array (
             'directories' => $directories,
             'pwd' => $id,
@@ -201,11 +204,21 @@ class PageController extends Controller
         return $has_match;
     }
 
-    public static function getInfoFromId ($id) {
-        $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet,contentDetails,statistics,status";
+    public static function getDurationFromId ($id) {
+        $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=contentDetails";
         $json_source = file_get_contents($jsonUrl,true);
-        return json_decode($json_source,true);
+        $response = json_decode($json_source,true);
+        return $response['items'][0]['contentDetails']['duration'];
     }
+
+    public static function getTitleFromId ($id) {
+        $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet";
+        $json_source = file_get_contents($jsonUrl,true);
+        $response = json_decode($json_source,true);
+        return $response['items'][0]['snippet']['title'];
+    }
+
+
 
     public static function valideId($id) {
         $jsonUrl = "https://www.googleapis.com/youtube/v3/videos?id=".$id."&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA&part=snippet,contentDetails,statistics,status";

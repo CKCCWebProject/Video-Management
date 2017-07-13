@@ -17,10 +17,11 @@ use DateTime;
 class AdminController extends Controller
 {
     public function insertFolder(Request $request) {
+        $userId = session('userId');
         $folderName = $request->folderName;
         $folder = new Folder();
 
-        $folder->u_id = User::currentUser()->id;
+        $folder->u_id = $userId;
         $folder->created_at = new DateTime();
         $folder->updated_at = new DateTime();
         $folder->folderName = $folderName;
@@ -34,10 +35,11 @@ class AdminController extends Controller
     }
 
     public function insertPlaylist(Request $request) {
+        $userId = session('userId');
         $playlistName = $request->playlistName;
         $playlist = new SongPlaylist();
 
-        $playlist->u_id = User::currentUser()->id;
+        $playlist->u_id = $userId;
         $playlist->created_at = new DateTime();
         $playlist->updated_at = new DateTime();
         $playlist->sp_name = $playlistName;
@@ -50,10 +52,11 @@ class AdminController extends Controller
     }
 
     public function insertLesson(Request $request) {
+        $userId = session('userId');
         $lessonName = $request->lessonName;
         $lesson = new LessonPlaylist();
 
-        $lesson->u_id = User::currentUser()->id;
+        $lesson->u_id = $userId;
         $lesson->created_at = new DateTime();
         $lesson->updated_at = new DateTime();
         $lesson->l_name = $lessonName;
@@ -77,9 +80,10 @@ class AdminController extends Controller
                 return PageController::playLesson($lessonPlaylist, null, $message);
             } else {
                 foreach ($videos as $video) {
-                    $this->addLesson('', $video, $lessonPlaylist);
+                    $this->addLesson($video['title'], $video['id'], $lessonPlaylist, $video['duration']);
                 }
                 $message = "New videos added";
+                unset($request);
                 return PageController::playLesson($lessonPlaylist, null, $message);
             }
         } else {
@@ -88,7 +92,7 @@ class AdminController extends Controller
             if (PageController::validYoutubeUrl($videoUrl)) {
                 $id = PageController::getYoutubeId($videoUrl);
 //            echo $id;
-                $this->addLesson($videoTitle, $id, $lessonPlaylist);
+                $this->addLesson($videoTitle, $id, $lessonPlaylist, PageController::getDurationFromId($id));
 //            $data = array (
 //                'message' => "New video added"
 //            );
@@ -101,6 +105,7 @@ class AdminController extends Controller
                 );
 //            $message = "URL invalid";
                 $message = "URL invalid";
+                unset($request);
 //            return redirect('home/management/playLesson/'.$lessonPlaylist);
                 return PageController::playLesson($lessonPlaylist, null, $message);
             }
@@ -118,9 +123,10 @@ class AdminController extends Controller
                 return PageController::playSong($songPlaylist, null, $message);
             } else {
                 foreach ($videos as $video) {
-                    $this->addSong('', $video, $songPlaylist);
+                    $this->addSong($video['title'], $video['id'], $songPlaylist, $video['duration']);
                 }
                 $message = "New videos added";
+                unset($request);
                 return PageController::playSong($songPlaylist, null, $message);
             }
         } else {
@@ -129,7 +135,7 @@ class AdminController extends Controller
             if (PageController::validYoutubeUrl($videoUrl)) {
                 $id = PageController::getYoutubeId($videoUrl);
 //            echo $id;
-                $this->addSong($videoTitle, $id, $songPlaylist);
+                $this->addSong($videoTitle, $id, $songPlaylist, PageController::getDurationFromId($id));
 //            $data = array (
 //                'message' => "New video added"
 //            );
@@ -142,7 +148,8 @@ class AdminController extends Controller
 //            );
 //            return redirect('home/management/playSong/'.$songPlaylist);
                 $message = "URL invalid";
-                return PageController::playSong($songPlaylist, null, $message);
+                unset($request);
+//                return PageController::playSong($songPlaylist, null, $message);
             }
         }
     }
@@ -172,7 +179,7 @@ class AdminController extends Controller
 
     public function changePlayFavorite(Request $request) {
         $checked = $request->checked;
-        $setting = Setting::find(User::currentUser()->id);
+        $setting = Setting::find(session('userId'));
         $setting->play_favorite = $checked;
         $setting->save();
         echo $checked;
@@ -180,7 +187,7 @@ class AdminController extends Controller
 
     public function changeSequence(Request $request) {
         $sequence = $request->sequence;
-        $setting = Setting::find(User::currentUser()->id);
+        $setting = Setting::find(session('userId'));
         $setting->sq_id = $sequence;
         $setting->save();
         echo $sequence;
@@ -286,52 +293,86 @@ class AdminController extends Controller
     }
 
     public static function Gift() {
-        $gifts = SendTo::where('receiver_id', User::currentUser()->id)->get();
+        $gifts = SendTo::where('receiver_id', session('userId'))->get();
         return $gifts;
     }
 
     private function getVideosFromPlaylist($playlistId) {
-//        https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=PLwAKR305CRO-Q90J---jXVzbOd4CDRbVx&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA
+//        https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=PLwAKR305CRO-Q90J---jXVzbOd4CDRbVx&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA
         $api_key = 'AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA';
-        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlistId . '&key=' . $api_key;
-
-        $playlist = json_decode(file_get_contents($api_url));
+        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=10&playlistId='. $playlistId . '&key=' . $api_key;
+//        $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlistId . '&key=' . $api_key;
 
 //        if (isset($playlist->error)) {
 //            echo 'what';
 //            return false;
 //        }
 
+        $file_headers = @get_headers($api_url);
+        if($file_headers[0] == 'HTTP/1.1 404 Not Found' || $file_headers[0] == 'HTTP/1.0 404 Not Found') {
+            return false;
+        } else if($file_headers[0] == 'HTTP/1.1 503 Service Unavailable' || $file_headers[0] == 'HTTP/1.0 503 Service Unavailable') {
+            return false;
+        }
+
         $list = [];
+
+        $playlist = json_decode(file_get_contents($api_url));
+
         foreach ($playlist->items AS $item) {
-            array_push($list, $item->snippet->resourceId->videoId);
+            $oneId = $item->snippet->resourceId->videoId;
+            $one = array(
+                'title' => $item->snippet->title,
+                'id' => $oneId,
+                'duration' => PageController::getDurationFromId($oneId)
+            );
+            array_push($list, $one);
+        }
+
+        while (count($list) < $playlist->pageInfo->totalResults) {
+            $api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId='. $playlistId . '&pageToken=' . $playlist->nextPageToken . '&key=' . $api_key;
+            $playlist = json_decode(file_get_contents($api_url));
+            foreach ($playlist->items AS $item) {
+                $oneId = $item->snippet->resourceId->videoId;
+                $one = array(
+                    'title' => $item->snippet->title,
+                    'id' => $oneId,
+                    'duration' => PageController::getDurationFromId($oneId)
+                );
+                array_push($list, $one);
+            }
         }
         return $list;
     }
 
-    private function addLesson($videoTitle, $id, $lessonPlaylist) {
+    private function addLesson($videoTitle, $id, $lessonPlaylist, $duration) {
+        $userId = session('userId');
         $lesson = new Lesson();
         $lesson->created_at = new DateTime();
         $lesson->updated_at = new DateTime();
         $lesson->title =($videoTitle != '')?($videoTitle):
-            (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
+            (PageController::getTitleFromId($id));
         $lesson->lp_id = $lessonPlaylist;
         $lesson->url = $id;
+        $lesson->u_id = $userId;
         $lesson->start_time = 0;
-        $lesson->end_time = PageController::duration(PageController::getInfoFromId($id)['items'][0]['contentDetails']['duration']);
+        $lesson->end_time = PageController::duration($duration);
         $lesson->note = '';
         $lesson->save();
     }
 
-    private function addSong($videoTitle, $id, $songPlaylist) {
+    private function addSong($videoTitle, $id, $songPlaylist, $duration) {
+        $userId = session('userId');
         $song = new Song();
         $song->created_at = new DateTime();
         $song->updated_at = new DateTime();
-        $song->title =($videoTitle != '')?($videoTitle):
-            (PageController::getInfoFromId($id)['items'][0]['snippet']['title']);
+        $song->title = ($videoTitle != '')?($videoTitle):
+            (PageController::getTitleFromId($id));
         $song->sp_id = $songPlaylist;
         $song->url = $id;
+        $song->u_id = $userId;
         $song->if_favorite = false;
+        $song->duration = PageController::duration($duration);
         $song->save();
     }
 

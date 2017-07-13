@@ -6,6 +6,9 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use DateTime;
+use app\config;
+
+define('SALT', 'q5kBq8F4GAHqA');
 
 class User extends Model implements Authenticatable
 {
@@ -38,8 +41,15 @@ class User extends Model implements Authenticatable
     }
 
     public static function validSignIn($email, $password){
-        $user = DB::table('users')->where('email', $email)->where('password',$password )->get();
-        return $user;
+        $encPassword = crypt($password, SALT);
+        $user = User::where('email', $email)->where('password', $encPassword)->take(1)->get();
+//        var_dump($encPassword);
+//        var_dump($email);
+        if (count($user) == 0) {
+            return false;
+        } else {
+            return $user;
+        }
     }
 
     public static function getUserId($email, $password){

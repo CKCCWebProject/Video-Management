@@ -69,6 +69,9 @@
             @foreach($videos as $key=>$video)
                 <li id="index{{$key}}" class="{{$video->s_id==$currentVideo->s_id?'playing':''}}">
                     <div class="each-song">
+                        <div style="color: white">
+                            {{$key+1}}&nbsp;
+                        </div>
                         <div class="heart" onclick="return favorite({{$video->s_id}})">
                             <i id="heart{{$video->s_id}}" style="color: {{$video->if_favorite?'red':'white'}}" class="fa fa-heart"></i>
                         </div>
@@ -79,7 +82,7 @@
                                     {{$video->title}}
                                 </div>
                                 <div class="song-info">
-                                    {{sprintf('%02d:%02d:%02d', floor($duration / 3600), floor($duration / 60 % 60), floor($duration % 60))}}
+                                    {{sprintf('%02d:%02d:%02d', floor($video->duration / 3600), floor($video->duration / 60 % 60), floor($video->duration % 60))}}
                                 </div>
                             </div>
                         </a>

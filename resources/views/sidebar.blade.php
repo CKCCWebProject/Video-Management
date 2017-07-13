@@ -1,19 +1,27 @@
 <?php
     $gifts = \App\Http\Controllers\AdminController::Gift();
+    $user = \App\User::find(session('userId'));
 ?>
 
     <div class="mediumScroll" id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand" style="text-indent: 0px">
                 <div class="user-display">
-                    <div class="profile-preview display-profile" style="background-image: url('{{asset('img/giphy.gif')}}')"></div>
-                    <div class="display-name" style="font-weight: bold">Sar Channimol</div>
+                    <div class="profile-preview display-profile" id="show-profile" style="background-image: url('{{asset($user->profile)}}')"></div>
+                    <div class="display-name" style="font-weight: bold">{{$user->username}}</div>
                     <div class="btn-edit">
-                        <form enctype="multipart/form-data" method="post" action="/uploadProfile">
+                        <form id="profile-form" enctype="multipart/form-data" method="post" action="/uploadProfile">
                             {{csrf_field()}}
-                            <a href=""><i class="fa fa-edit"> </i> edit</a>
-                            <input type="file" name="imageProfile">
-                            <input type="submit">Upload
+                            <div class="edit-profile">
+                                <label for="upload-profile">
+                                    <i class="fa fa-edit"> </i> edit
+                                </label>
+                            </div>
+                            <input name="currentPosition" type="hidden" value="{{$position}}">
+                            <input style="display: none" id="upload-profile" type="file" name="imageProfile">
+                            <div>
+                                {{--<input class="btn btn-default" type="submit" value="upload">--}}
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -87,4 +95,8 @@
                 $(".blocker").toggleClass("fadeOut");
             }
         }
+
+        $("#upload-profile").change(function () {
+            $('#profile-form').submit();
+        });
     </script>

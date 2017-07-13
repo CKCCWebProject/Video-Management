@@ -22,6 +22,7 @@ class CreateLessonsTable extends Migration
             $table->integer('start_time');
             $table->integer('end_time');
             $table->text('note');
+            $table->integer('u_id');
         });
     }
 

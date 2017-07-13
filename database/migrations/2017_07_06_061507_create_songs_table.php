@@ -20,6 +20,8 @@ class CreateSongsTable extends Migration
             $table->integer('sp_id');
             $table->string('url');
             $table->boolean('if_favorite');
+            $table->integer('duration');
+            $table->integer('u_id');
         });
     }
 

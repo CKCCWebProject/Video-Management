@@ -92,10 +92,29 @@ body {
     font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.sidebar-nav > li .edit-profile {
+    height: 40px;
+}
+
 .sidebar-nav li a:hover {
     text-decoration: none;
     color: #000000;
     background: rgba(175, 175, 175, 0.2);
+    cursor: pointer;
+}
+
+.sidebar-nav > li .edit-profile > label:hover {
+    cursor: pointer;
+    background: rgba(175, 175, 175, 0.2);
+    color: black;
+}
+
+.sidebar-nav > li .edit-profile > label:active {
+    background: rgba(175, 175, 175, 0.49);
+}
+
+.sidebar-nav > li .edit-profile > label {
+    width: 100%;
 }
 
 .sidebar-nav li a:active,

@@ -9,6 +9,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Image;
 use Session;
+
 class UserController extends Controller
 {
     public function signupScreenWithMessage($message){
@@ -33,7 +34,8 @@ class UserController extends Controller
                 $user = new User();
                 $user->username = $username;
                 $user->email = $email;
-                $user->password = bcrypt($password);
+                $user->profile = "img/photo/default.png";
+                $user->password = crypt($password, SALT);
                 User::createUser($user);
 
                 $uid = User::where('email', $email)->get()[0]->id;
@@ -73,6 +75,8 @@ class UserController extends Controller
                 $gift->parent_id = $homeId;
                 $gift->save();
 
+                session(['userId', $uid]);
+
                 return redirect('home');
             }
             else{
@@ -89,19 +93,21 @@ class UserController extends Controller
 
     public function signin(Request $request){
         //try to log in
-        $email=$request->email;
-        $password=bcrypt($request->password);
+        $email = $request->email;
+        $password = $request->password;
 
         $currentUser = User::validSignIn($email, $password);
-        if($currentUser == null) {
+//        var_dump($currentUser);
+        if($currentUser == false) {
             //error
             return redirect('signup');
         }else{
-            $uid = User::where('email', $email)->get()[0]->id;
-            if($request->session()->has('id', $uid)){
-                $request->session()->get('id');
-            }
-            else $request->session()->put('id', $uid);
+            $uid = $currentUser[0]->id;
+//            if($request->session()->has('id', $uid)){
+//                $request->session()->get('id');
+//            }
+//            else $request->session()->put('id', $uid);
+            session(['userId' => $uid]);
 
 //            $request->session()->put('id', $id);
             return redirect('home');
@@ -109,28 +115,33 @@ class UserController extends Controller
     }
 //upload file
     public function uploadProfile(Request $request){
-        $user = User::currentUser();
+        $user = User::find(session('userId'));
         $uid = User::where('email', $user->email)->get()[0]->id;
 
         if($request->hasFile('imageProfile')){
             $this->validate($request, [
-                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'imageProfile' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             ]);
             $profile = $request->file('imageProfile');
 
             $image = Image::make($profile)->resize(300,500);//try this
 
             $filename = time()."id".$uid.".".$profile->getClientOriginalExtension();
-            $profilePath = $profile->move('img', $filename);
+            $profilePath = $profile->move('img/photo', $filename);
 
-            $user = User::where('email', $user->email)->update(['profile' => $profilePath]);
-            echo "<img src='img/$filename'>";
+            $user = User::find(session('userId'));
+            $user->profile = $profilePath;
+            $user->save();
+//            echo $profilePath;
+            return PageController::nav($request->currentPosition);
+
         }
     }
 
     public function signout(){
 //        User::currentUser();
-        session()->forget('id');
+        session()->forget('userId');
+        session()->flush();
         return redirect('/');
     }
 
