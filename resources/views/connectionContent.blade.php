@@ -25,7 +25,7 @@
                     Batista
                 </div>
                 <div class="connection-description">
-                    You're suppose to be my friend
+                    You're suppose to be...
                 </div>
             </div>
         </div>

@@ -27,7 +27,15 @@ class PageController extends Controller
             $homes = Folder::where('u_id', $userId)->where('folderName', 'home')->where('if_deletable', 0)->get();
             return redirect('home/management/'.$homes[0]->f_id);
         }
+
+        $message = '';
+        if(session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
         $data = array(
+            'message' => $message,
             'activeNav' => $tab,
             'position' => 'home'
         );
@@ -42,7 +50,15 @@ class PageController extends Controller
         if ($nav == 'home') {
             return redirect("home/management");
         }
+
+        $message = '';
+        if(session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
         $data = array(
+            'message' => $message,
             'position' => $nav
         );
         return view ('home', $data);
@@ -161,6 +177,13 @@ class PageController extends Controller
         $folders = Folder::where('u_id', $userId)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
         $songPlaylists = SongPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
         $lessonPlaylists = LessonPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
+
+        $message = '';
+        if(session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
         $data = array (
             'directories' => $directories,
             'pwd' => $id,
@@ -168,6 +191,7 @@ class PageController extends Controller
             'position' => 'home',
             'folders' => $folders,
             'playlists' => $songPlaylists,
+            'message' => $message,
             'lessons' => $lessonPlaylists
         );
 

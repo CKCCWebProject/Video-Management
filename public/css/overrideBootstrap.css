@@ -33,3 +33,7 @@
 .form-control {
     font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+a:hover, a:focus, a:active {
+    text-decoration: rgba(0, 0, 0, 0.26) underline;
+}

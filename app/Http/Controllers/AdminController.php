@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Connection;
 use App\Folder;
+use App\GiftBox;
 use App\Lesson;
 use App\LessonPlaylist;
 use App\SendTo;
@@ -13,6 +15,9 @@ use App\User;
 use Illuminate\Http\Request;
 use DB;
 use DateTime;
+
+//define('SALT', 'q5kBq8F4GAHqA');
+//reallocate in the function destroy
 
 class AdminController extends Controller
 {
@@ -277,9 +282,95 @@ class AdminController extends Controller
         }
     }
 
+    public function rename(Request $request) {
+        $id = $request->id;
+        $type = $request->type;
+        $newName = $request->newName;
+        $currentFolder = $request->currentFolder;
+
+        if ($type == 'fd') {
+            $folder = Folder::find($id);
+            $folder->folderName = $newName;
+            $folder->save();
+        } elseif ($type == 'sp') {
+            $songPlaylist = SongPlaylist::find($id);
+            $songPlaylist->sp_name = $newName;
+            $songPlaylist->save();
+        } elseif ($type == 'lp') {
+            $lessonPlaylist = LessonPlaylist::find($id);
+            $lessonPlaylist->l_name = $newName;
+            $lessonPlaylist->save();
+        } else {
+            session(['message'=>'Rename failed']);
+        }
+
+        return redirect('home/management/'.$currentFolder);
+    }
+
     public static function Gift() {
         $gifts = SendTo::where('receiver_id', session('userId'))->get();
         return $gifts;
+    }
+
+    public function deleteAccount(Request $request) {
+        $salt = 'q5kBq8F4GAHqA';
+        $uid = session('userId');
+        $password = $request->password;
+        $confirm = $request->confirmPassword;
+        if ($password !== $confirm) {
+            session(['message'=>'We know you were kidding']);
+            return redirect('setting');
+        } else {
+            if (crypt($password, $salt) != User::find($uid)->password) {
+                session(['message'=>'You are not the owner of this account, right?']);
+                return redirect('setting');
+            } else {
+                $connections = Connection::where('u_id', $uid)->get();
+                foreach ($connections as $connection) {
+                    $connection->delete();
+                }
+                $connections = Connection::where('connectWith', $uid)->get();
+                foreach ($connections as $connection) {
+                    $connection->delete();
+                }
+                $folders = Folder::where('u_id', $uid)->get();
+                foreach ($folders as $folder) {
+                    $folder->delete();
+                }
+                $gifts = GiftBox::join('send_tos', 'gift_boxes.g_id', '=', 'send_tos.g_id');
+                $giftsSender = $gifts->where('sender_id', $uid)->get();
+                foreach ($giftsSender as $giftSender) {
+                    $giftSender->delete();
+                }
+                $giftsReceiver = $gifts->where('receiver_id', $uid)->get();
+                foreach ($giftsReceiver as $giftReceiver) {
+                    $giftReceiver->delete();
+                }
+                $songs = Song::where('u_id', $uid)->get();
+                foreach ($songs as $song) {
+                    $song->delete();
+                }
+                $lessons = Lesson::where('u_id', $uid)->get();
+                foreach ($lessons as $lesson) {
+                    $lesson->delete();
+                }
+                $lessonPlaylists = LessonPlaylist::where('u_id', $uid)->get();
+                foreach ($lessonPlaylists as $lessonPlaylist) {
+                    $lessonPlaylist->delete();
+                }
+                $setting = Setting::find($uid);
+                $setting->delete();
+                $songPlaylists = SongPlaylist::where('u_id', $uid)->get();
+                foreach ($songPlaylists as $songPlaylist) {
+                    $songPlaylist->delete();
+                }
+                $user = User::find($uid);
+                $user->delete();
+                session()->forget('userId');
+                session()->flush();
+                return redirect('signup');
+            }
+        }
     }
 
     private function getVideosFromPlaylist($playlistId) {

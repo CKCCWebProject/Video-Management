@@ -43,7 +43,6 @@ Route::group(['middleware' => ['checkuser']], function (){
 });
 
 Route::post('/uploadProfile', 'UserController@uploadProfile');
-
 Route::post('/signin', 'UserController@signin');
 Route::post('/folders', 'AdminController@insertFolder');
 Route::post('/playlists', 'AdminController@insertPlaylist');
@@ -57,3 +56,5 @@ Route::post('changeSequence', 'AdminController@changeSequence');
 Route::post('home/favorite/removeFavorite', 'AdminController@removeFavorite');
 Route::post('deleteFolder', 'AdminController@deleteFolder');
 Route::post('updateTime', 'AdminController@updateTime');
+Route::post('renameFolder', 'AdminController@rename');
+Route::post('deleteAccount', 'AdminController@deleteAccount');

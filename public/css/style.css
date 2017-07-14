@@ -469,6 +469,10 @@ nav {
     padding-left: 0px;
 }
 
+.suicide > a:hover {
+    cursor: pointer;
+}
+
 .logout {
     font-size: 1.5em;
     font-weight: lighter;
@@ -523,7 +527,6 @@ nav {
 
 .lesson-record {
     max-height: 250px;
-    overflow-y: scroll;
 }
 
 /* On small screens, set height to 'auto' for sidenav and grid */
