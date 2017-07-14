@@ -1,5 +1,5 @@
 <?php
-    $gifts = \App\Http\Controllers\AdminController::Gift();
+    $gifts = [];
     $user = \App\User::find(session('userId'));
 ?>
 
@@ -33,7 +33,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a {{$position=='gift'?'class=active':''}} href="{{url('gift')}}">
                     <i class="fa fa-gift icon"> </i>
                     <span> Gift box</span>
                     <span class="count-gift">{{count($gifts)}}</span>

@@ -1,14 +1,18 @@
 <div class="col-lg-4 col-md-4 col-sm-6 col-lg-12 each-connection">
     <div class="connection-container">
-        <div class="connection-action">&times;</div>
-        <div class="connection-profile profile-preview" style="background-image: url('http://www.50-best.com/images/cute_animal_pictures/funny_cat.jpg')">
+        <?php
+            $res = \App\Connection::where('u_id',$userId)->where('connectWith', $person->id)->get();
+            $isConnected = count($res) == 1;
+        ?>
+        <div class="connection-action">{{$isConnected?'&times;':'+'}}</div>
+        <div class="connection-profile profile-preview" style="background-image: url('{{asset($person->profile)}}')">
         </div>
         <div class="connection-text">
             <div class="connection-name">
-                Rey Mysterio
+                {{$person->username}}
             </div>
             <div class="connection-description">
-                619
+                {{substr($person->description, 0, 20).(strlen($person->description)>20?'...':'')}}
             </div>
         </div>
     </div>

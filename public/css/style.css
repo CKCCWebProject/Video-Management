@@ -499,9 +499,19 @@ nav {
 
 .connection-action {
     position: absolute;
-    top: 11px;
-    right: 20px;
+    top: 10px;
+    right: 15px;
     font-size: 20px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+.connection-action:hover {
+    font-weight: bolder;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.17);
 }
 
 .connection-profile {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Folder;
+use App\GiftBox;
 use App\Lesson;
 use App\LessonPlaylist;
 use App\Setting;
@@ -51,6 +52,8 @@ class PageController extends Controller
             return redirect("home/management");
         }
 
+        $userId = session('userId');
+
         $message = '';
         if(session()->has('message') != null) {
             $message = session('message');
@@ -59,8 +62,16 @@ class PageController extends Controller
 
         $data = array(
             'message' => $message,
-            'position' => $nav
+            'position' => $nav,
+            'userId' => $userId
         );
+
+        if ($nav == 'connection') {
+            $data['people'] = User::all();
+        } elseif ($nav == 'gift') {
+            $gifts = GiftBox::where('receiver_id', $userId)->get();
+            $data['gifts'] = $gifts;
+        }
         return view ('home', $data);
     }
 
@@ -75,7 +86,7 @@ class PageController extends Controller
             session()->forget('message');
         }
 
-        $videos = Lesson::where('lp_id', $id)->where('u_id', $userId)->orderBy('title', 'asc')->get();
+        $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
         if (count($videos) > 0) {
             if ($vid == null) {
                 $currentVideo = $videos[0];
@@ -125,7 +136,7 @@ class PageController extends Controller
             session()->forget('message');
         }
 
-        $videos = Song::where('sp_id', $id)->where('u_id', $userId)->orderBy('title', 'asc')->get();
+        $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
         if (count($videos) > 0) {
             if ($vid == null) {
                 $currentVideo = $videos[0];
@@ -162,40 +173,46 @@ class PageController extends Controller
 
     public function folder($id) {
         $userId = session('userId');
+        $checkFolderPossession = Folder::where('f_id', $id)->where('u_id', $userId)->get();
+        if (count($checkFolderPossession) != 1) {
+            return redirect('home');
+        } else {
+            $userId = session('userId');
 
-        $directories = array();
-        $now = $id;
-        do {
-            $folder_i = Folder::where('f_id', $now)->where('u_id', $userId)->get();
-            if (count($folder_i) != 1) {
-                return redirect('invalid_folder');
+            $directories = array();
+            $now = $id;
+            do {
+                $folder_i = Folder::where('f_id', $now)->where('u_id', $userId)->get();
+                if (count($folder_i) != 1) {
+                    return redirect('invalid_folder');
+                }
+                $now = $folder_i[0]->parent_id;
+                array_unshift($directories, $folder_i[0]);
+            } while ($folder_i[0]->folderName != 'home' || $folder_i[0]->if_deletable != false);
+
+            $folders = Folder::where('u_id', $userId)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
+            $songPlaylists = SongPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
+            $lessonPlaylists = LessonPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
+
+            $message = '';
+            if (session()->has('message') != null) {
+                $message = session('message');
+                session()->forget('message');
             }
-            $now = $folder_i[0]->parent_id;
-            array_unshift($directories, $folder_i[0]);
-        } while ($folder_i[0]->folderName != 'home' || $folder_i[0]->if_deletable != false);
 
-        $folders = Folder::where('u_id', $userId)->where('parent_id', $id)->where('f_id', '!=', $id)->get();
-        $songPlaylists = SongPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
-        $lessonPlaylists = LessonPlaylist::where('u_id', $userId)->where('f_id', $id)->get();
+            $data = array(
+                'directories' => $directories,
+                'pwd' => $id,
+                'activeNav' => 'management',
+                'position' => 'home',
+                'folders' => $folders,
+                'playlists' => $songPlaylists,
+                'message' => $message,
+                'lessons' => $lessonPlaylists
+            );
 
-        $message = '';
-        if(session()->has('message') != null) {
-            $message = session('message');
-            session()->forget('message');
+            return view('home', $data);
         }
-
-        $data = array (
-            'directories' => $directories,
-            'pwd' => $id,
-            'activeNav' => 'management',
-            'position' => 'home',
-            'folders' => $folders,
-            'playlists' => $songPlaylists,
-            'message' => $message,
-            'lessons' => $lessonPlaylists
-        );
-
-        return view('home', $data);
     }
 
 //    public static function getYoutubeId ($url) {

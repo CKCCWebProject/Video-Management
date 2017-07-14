@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: {{$position=='home'?'#FF7C7C':($position=='connection'?'#7B94FD':"#FFD27C")}}; border: 0px;">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: {{$position=='home'?'#FF7C7C':($position=='connection'?'#7B94FD':($position=='gift'?'#86DA6D':($position=='about'?'#8BAEE1':"#FFD27C")))}}; border: 0px;">
     <div class="container-fluid">
         <div class="navbar-header" style="padding-bottom: 5px; float: left">
             <div class="navbar-brand" style="padding: 0px">

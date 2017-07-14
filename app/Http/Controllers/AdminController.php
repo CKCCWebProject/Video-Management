@@ -307,10 +307,10 @@ class AdminController extends Controller
         return redirect('home/management/'.$currentFolder);
     }
 
-    public static function Gift() {
-        $gifts = SendTo::where('receiver_id', session('userId'))->get();
-        return $gifts;
-    }
+//    public static function Gift() {
+//        $gifts = SendTo::where('receiver_id', session('userId'))->get();
+//        return $gifts;
+//    }
 
     public function deleteAccount(Request $request) {
         $salt = 'q5kBq8F4GAHqA';

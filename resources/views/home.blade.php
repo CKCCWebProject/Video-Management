@@ -41,6 +41,8 @@
                         @include('aboutContent')
                     @elseif($position == 'setting')
                         @include('settingContent')
+                    @elseif($position == 'gift')
+                        @include('giftContent')
 
                     @endif
                 </div>
@@ -177,6 +179,44 @@
                         <input type="submit" class="btn btn-info" value="Save">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="share-setting" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog" style="width: 350px;">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form id="rename-form" method="post" action="{{url('sendGift')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <input name="currentFolder" type="hidden" value="{{$pwd}}">
+                    <input id="rename-folder-type" name="type" type="hidden">
+                    <input id="rename-folder-id" name="id" type="hidden">
+                    <div class="modal-header" style="background-color: #808085; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Share
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="margin-bottom: 20px">
+                            <button class="btn btn-default" style="width: 100%">
+                                to public
+                                <span style="color: #67ed76; float: right"><i class="fa fa-check"></i></span>
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button class="btn btn-default" style="width: 100%">
+                                as gift
+                                <span style="color: white; float: right"><i class="fa fa-chevron-right"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    {{--<div class="modal-footer">--}}
+                        {{--<input type="submit" class="btn btn-info" value="Save">--}}
+                        {{--<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>--}}
+                    {{--</div>--}}
                 </form>
             </div>
 

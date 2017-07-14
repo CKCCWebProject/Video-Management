@@ -17,9 +17,9 @@ class CreateGiftBoxesTable extends Migration
             $table->increments('g_id');
             $table->timestamps();
             $table->integer('sender_id');
-            $table->integer('f_id');
-            $table->integer('sp_id');
-            $table->integer('lp_id');
+            $table->integer('receiver_id');
+            $table->integer('item_type');
+            $table->integer('item_td');
         });
     }
 
