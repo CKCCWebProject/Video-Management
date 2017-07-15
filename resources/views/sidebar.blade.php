@@ -1,5 +1,5 @@
 <?php
-    $gifts = [];
+    $gifts = \App\GiftBox::where('receiver_id', session('userId'))->get();
     $user = \App\User::find(session('userId'));
 ?>
 
@@ -36,7 +36,9 @@
                 <a {{$position=='gift'?'class=active':''}} href="{{url('gift')}}">
                     <i class="fa fa-gift icon"> </i>
                     <span> Gift box</span>
-                    <span class="count-gift">{{count($gifts)}}</span>
+                    @if(count($gifts) > 0)
+                        <span class="count-gift">{{count($gifts)}}</span>
+                    @endif
                 </a>
             </li>
             <li>
@@ -62,23 +64,41 @@
             </li>
         </ul>
     </div>
+    <div id="javascript-code"></div>
 
     <script>
-//        var smallScreenSize = window.matchMedia( "(max-width: 768px)" );
+        var smallScreenSize = window.matchMedia( "(max-width: 768px)" );
 
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             toggleSidebar();
         });
 
-        $(document).on("swipeleft",function(){
-//            if screen is small
-            if($(window).width()<769) {
-                if ($("#wrapper").hasClass("toggled")) {
-                    toggleSidebar();
-                }
+        if($(window).width()<769) {
+            addSwipe();
+        }
+
+        smallScreenSize.addListener(function(changed) {
+            if(changed.matches) {
+                addSwipe()
+            } else {
+                $('#javascript-code').html('');
             }
         });
+
+        function addSwipe() {
+            $('#javascript-code').html('' +
+                '<script>' +
+                '$(document).on("swipeleft",function(){' +
+                'if($(window).width()<769) {' +
+                'if ($("#wrapper").hasClass("toggled")) {' +
+                'toggleSidebar();' +
+                '}' +
+                '}' +
+                '});' +
+                '<\/script>'
+            );
+        }
 
 //        $(document).on("swiperight",function(){
 //            if (!$("#wrapper").hasClass("toggled")) {

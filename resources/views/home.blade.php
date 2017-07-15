@@ -186,37 +186,78 @@
     </div>
 
     <div id="share-setting" class="modal fade" role="dialog" style="z-index: 1050">
-        <div class="modal-dialog" style="width: 350px;">
+        <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
-                <form id="rename-form" method="post" action="{{url('sendGift')}}" style="margin-bottom: 0px">
+{{--                {{csrf_field()}}--}}
+                <input class="share-folder-type" name="type" type="hidden">
+                <input class="share-folder-id" name="id" type="hidden">
+                <input type="hidden" name="public" id="if-public">
+                <div class="modal-header" style="background-color: #808085; color: white; font-size: 20px; font-weight: bolder">
+                    <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                    Share as
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 20px">
+                        <button class="btn btn-default" style="width: 100%" onclick="makePublic()">
+                            public
+                            <span id="check-share-public" style="color: #67ed76; float: right"></span>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-default" style="width: 100%" data-dismiss="modal" data-toggle="modal" data-target="#send-gift">
+                            gift
+                            <span style="color: white; float: right"><i class="fa fa-chevron-right"></i></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="send-gift" class="modal fade" role="dialog" style="z-index: 1050;">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('sendGift')}}" style="margin-bottom: 0px;">
                     {{csrf_field()}}
                     <input name="currentFolder" type="hidden" value="{{$pwd}}">
-                    <input id="rename-folder-type" name="type" type="hidden">
-                    <input id="rename-folder-id" name="id" type="hidden">
+                    <input class="share-folder-type" name="type" type="hidden">
+                    <input class="share-folder-id" name="id" type="hidden">
+                    <input type="hidden" name="public" id="if-public">
                     <div class="modal-header" style="background-color: #808085; color: white; font-size: 20px; font-weight: bolder">
-                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
-                        Share
-                    </div>
-                    <div class="modal-body">
-                        <div class="row" style="margin-bottom: 20px">
-                            <button class="btn btn-default" style="width: 100%">
-                                to public
-                                <span style="color: #67ed76; float: right"><i class="fa fa-check"></i></span>
-                            </button>
-                        </div>
-                        <div class="row">
-                            <button class="btn btn-default" style="width: 100%">
-                                as gift
-                                <span style="color: white; float: right"><i class="fa fa-chevron-right"></i></span>
-                            </button>
+                        <div class="pointer" style="float: left" data-dismiss="modal" data-toggle="modal" data-target="#share-setting"><i class="fa fa-chevron-left"></i></div>
+                        <div style="float: right">
+                            <button type="submit" class="btn btn-info">send <i class="fa fa-send"></i></button>
                         </div>
                     </div>
-                    {{--<div class="modal-footer">--}}
-                        {{--<input type="submit" class="btn btn-info" value="Save">--}}
-                        {{--<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>--}}
-                    {{--</div>--}}
+                    <div class="modal-body" style="max-height: 80vh; padding: 10px">
+                        <div style="text-align: center; margin: auto; font-weight: bold; font-size: 20px">Choose people</div>
+                        <ul class="gift-people-list" style="list-style: none; padding-left: 0px">
+                            @if(count($connections) == 0)
+                                <li style="text-align: center; margin-top: 20px">
+                                    <i>You haven't connect with anyone yet</i>
+                                </li>
+                            @endif
+                            @foreach($connections as $connection)
+                                <li style="padding: 10px">
+                                    <label style="display: flex; align-items: center">
+                                        <input name="receivers[]" id="connection{{$connection->id}}" value="{{$connection->id}}" type="checkbox" style="margin: 10px">
+                                        <div style="display: flex; align-items: center">
+                                            <div class="profile-preview gift-profile" style="background-image: url('{{asset($connection->profile)}}')">
+                                            </div>
+                                            <div class="gift-name" style="margin: 10px">
+                                                {{$connection->username}}
+                                            </div>
+                                        </div>
+                                    </label>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </form>
             </div>
 
@@ -225,6 +266,11 @@
 @endif
 
 @if($position == 'setting')
+
+    <?php
+        $user = \App\User::find(session('userId'));
+    ?>
+
     <div id="deleteAccount" class="modal fade" role="dialog" style="z-index: 1050">
         <div class="modal-dialog">
 
@@ -257,6 +303,108 @@
                     <div class="modal-footer">
                         <input id="destroy" type="button" class="btn btn-danger" value="Destroy" onclick="moreTry()">
                         <button type="button" class="btn btn-success" data-dismiss="modal">move back to safe</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div id="edit-username" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('editUsername')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <div class="modal-header" style="background-color: #6f7ba2; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Edit username
+                    </div>
+                    <div class="modal-body">
+                        <input name="value" type="text" class="form-control" placeholder="Your new username" value="{{$user->username}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">save</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div id="edit-email" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('editEmail')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <div class="modal-header" style="background-color: #6f7ba2; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Edit e-mail
+                    </div>
+                    <div class="modal-body">
+                        <input name="value" type="text" class="form-control" placeholder="Your new e-mail" value="{{$user->email}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">save</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div id="edit-description" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('editDescription')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <div class="modal-header" style="background-color: #6f7ba2; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Edit description
+                    </div>
+                    <div class="modal-body">
+                        <div id="input-tmp-description" oninput="updateTemp()" style="overflow-y: scroll; height: auto; max-height: 500px" class="form-control" placeholder="Write your description" contenteditable="">
+                            {!! $user->description !!}
+                        </div>
+                        <script>
+                            function updateTemp() {
+                                $('#input-description').val($('#input-tmp-description').html());
+                            }
+                        </script>
+                        <input id="input-description" name="value" type="hidden">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">save</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div id="change-password" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('changePassword')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <div class="modal-header" style="background-color: #6f7ba2; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Change password
+                    </div>
+                    <div class="modal-body">
+                        <input style="margin: 10px" placeholder="old password" class="form-control" type="password" name="oldPassword">
+                        <input style="margin: 10px" placeholder="new password" class="form-control" type="password" name="newPassword">
+                        <input style="margin: 10px" placeholder="confirm new password" class="form-control" type="password" name="confirmNewPassword">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-info">change</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
                     </div>
                 </form>
             </div>
@@ -332,6 +480,84 @@
         } else if($('.confirm-destroy').css('display') == 'block') {
             $('#destroy').attr('type', 'submit');
         }
+    }
+
+    function makePublic() {
+        var type = $('.share-folder-type').val();
+        var id = $('.share-folder-id').val();
+        var data = 'type='+type
+            +'&id='+id
+            +'&state='+$('#if-public').val()
+            +'&_token={{csrf_token()}}';
+        $.ajax({
+            url: "{{url('sharePublic')}}",
+            type: 'post',
+            data: data,
+            dataType: 'text',
+            success: function( _response ){
+                $('#if-public').val(_response);
+                if (_response == 1) {
+                    $('#check-share-public').html('<i class="fa fa-check"></i>');
+                    if (type == 'sp') {
+                        $('#globesp'+id).css('display', 'inline');
+                    } else if (type == 'lp') {
+                        $('#globelp'+id).css('display', 'inline');
+                    }
+                } else {
+                    $('#check-share-public').html('');
+                    if (type == 'sp') {
+                        $('#globesp'+id).css('display', 'none');
+                    } else if (type == 'lp') {
+                        $('#globelp'+id).css('display', 'none');
+                    }
+                }
+
+            },
+            error: function( _response ){
+            }
+        });
+    }
+
+    function changeConnection(purpose, personId) {
+        var data = 'purpose='+purpose+'&personId='+personId+'&_token={{csrf_token()}}';
+        $.ajax({
+            url: "{{url('connect')}}",
+            type: 'post',
+            data: data,
+            dataType: 'text',
+            success: function( _response ){
+                if(purpose == 'end') {
+                    $('#action'+personId).html('+');
+                    $('#action'+personId).attr('onclick', "changeConnection('add', "+personId+")");
+                } else if (purpose == 'add'){
+                    $('#action'+personId).html('&times;');
+                    $('#action'+personId).attr('onclick', "changeConnection('end', "+personId+")");
+                }
+            },
+            error: function( _response ){
+            }
+        });
+    }
+
+    function changeConnectionOnSearch(purpose, personId) {
+        var data = 'purpose='+purpose+'&personId='+personId+'&_token={{csrf_token()}}';
+        $.ajax({
+            url: "{{url('connect')}}",
+            type: 'post',
+            data: data,
+            dataType: 'text',
+            success: function( _response ){
+                if(purpose == 'end') {
+                    $('#actionSearch'+personId).html('+');
+                    $('#actionSearch'+personId).attr('onclick', "changeConnectionOnSearch('add', "+personId+")");
+                } else if (purpose == 'add'){
+                    $('#actionSearch'+personId).html('&times;');
+                    $('#actionSearch'+personId).attr('onclick', "changeConnectionOnSearch('end', "+personId+")");
+                }
+            },
+            error: function( _response ){
+            }
+        });
     }
 
 </script>

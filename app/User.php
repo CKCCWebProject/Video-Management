@@ -53,6 +53,14 @@ class User extends Model implements Authenticatable
         }
     }
 
+    public static function existUsername($username) {
+        $check = DB::table('users')->where('username', $username)->get();
+        if(count($check) > 0){
+            return true;
+        }
+        else return false;
+    }
+
     public static function getUserId($email, $password){
         $id = DB::table('users')->select('id')->where('email', $email)->where('password',$password )->get();
         return $id;

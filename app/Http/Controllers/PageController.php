@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Connection;
 use App\Folder;
 use App\GiftBox;
 use App\Lesson;
@@ -67,7 +68,7 @@ class PageController extends Controller
         );
 
         if ($nav == 'connection') {
-            $data['people'] = User::all();
+            $data['people'] = Connection::where('u_id', $userId)->join('users', 'users.id', '=', 'connections.connect_with')->get();
         } elseif ($nav == 'gift') {
             $gifts = GiftBox::where('receiver_id', $userId)->get();
             $data['gifts'] = $gifts;
@@ -77,91 +78,117 @@ class PageController extends Controller
 
     public static function playLesson($id, $vid = null, $message = '') {
         $userId = session('userId');
-//        $json_output = self::getInfoFromId('tq3itlILfn4');
-//        echo $json_output['items'][0]['contentDetails']['duration'];
-//        echo $json_output['items'][0]['snippet']['title'];
 
-        if (session()->has('message') != null) {
-            $message = session('message');
-            session()->forget('message');
+        $playlist = LessonPlaylist::find($id);
+        if ($playlist == null) {
+            session(['message' => 'Playlist not exist']);
+            return redirect('home');
         }
+        $publicVideo = $playlist->if_public;
+        $gift = GiftBox::where('item_id', $id)->where('item_type', 2)->where('receiver_id', $userId)->get();
+        $giftVideo = count($gift) > 0;
+        $ownerVideo = $playlist->u_id == $userId;
 
-        $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
-        if (count($videos) > 0) {
-            if ($vid == null) {
-                $currentVideo = $videos[0];
-            } else {
-                $currentVideo = Lesson::find($vid);
+        if ($publicVideo || $giftVideo ||$ownerVideo) {
+            if (session()->has('message') != null) {
+                $message = session('message');
+                session()->forget('message');
             }
+
+            $videos = Lesson::where('lp_id', $id)->orderBy('title', 'asc')->get();
+            if (count($videos) > 0) {
+                if ($vid == null) {
+                    $currentVideo = $videos[0];
+                } else {
+                    $currentVideo = Lesson::find($vid);
+                }
+            } else {
+                $currentVideo = null;
+            }
+
+            $total = 0;
+            $done = 0;
+
+            foreach ($videos as $video) {
+                $total += $video->end_time;
+                $done += $video->start_time;
+            }
+
+            if ($total > 0) {
+                $percent = ceil($done * 100 / $total);
+            } else {
+                $percent = 0;
+            }
+
+            $data = array(
+                'record' => LessonPlaylist::find($id)->record,
+                'message' => $message,
+                'currentVideo' => $currentVideo,
+                'videos' => $videos,
+                'percent' => $percent,
+                'currentPlaylist' => $id,
+                'autoplay' => $vid == null ? false : true,
+                'parentId' => LessonPlaylist::where('l_id', $id)->get()[0]->f_id
+            );
+            return view('playLesson', $data);
         } else {
-            $currentVideo = null;
+            session(['message'=>'You do not have permission to open this']);
+            return redirect('home');
         }
-
-        $total = 0;
-        $done = 0;
-
-        foreach ($videos as $video) {
-            $total += $video->end_time;
-            $done += $video->start_time;
-        }
-
-        if ($total > 0) {
-            $percent = ceil($done*100/$total);
-        } else {
-            $percent = 0;
-        }
-
-        $data = array(
-            'record' => LessonPlaylist::find($id)->record,
-            'message' => $message,
-            'currentVideo' => $currentVideo,
-            'videos' => $videos,
-            'percent' => $percent,
-            'currentPlaylist' => $id,
-            'autoplay' => $vid == null?false:true,
-            'parentId' => LessonPlaylist::where('l_id', $id)->get()[0]->f_id
-        );
-        return view('playLesson', $data);
     }
 
     public static function playSong($id, $vid = null, $message = '') {
         $userId = session('userId');
-//        $data = array(
-//            'currentPlaylist' => $id,
-//            'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
-//        );
-//        return view('playSong', $data);
-        if (session()->has('message') != null) {
-            $message = session('message');
-            session()->forget('message');
+
+        $playlist = SongPlaylist::find($id);
+
+        if ($playlist == null) {
+            session(['message' => 'Playlist not exist']);
+            return redirect('home');
         }
 
-        $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
-        if (count($videos) > 0) {
-            if ($vid == null) {
-                $currentVideo = $videos[0];
-            } else {
-                $currentVideo = Song::find($vid);
+        $publicVideo = $playlist->if_public;
+        $gift = GiftBox::where('item_id', $id)->where('item_type', 1)->where('receiver_id', $userId)->get();
+        $giftVideo = count($gift) > 0;
+        $ownerVideo = $playlist->u_id == $userId;
+
+        if ($publicVideo || $giftVideo ||$ownerVideo) {
+
+            if (session()->has('message') != null) {
+                $message = session('message');
+                session()->forget('message');
             }
+
+            $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
+            if (count($videos) > 0) {
+                if ($vid == null) {
+                    $currentVideo = $videos[0];
+                } else {
+                    $currentVideo = Song::find($vid);
+                }
 //            $duration = PageController::duration(PageController::getDurationInfoFromId($currentVideo->url)['items'][0]['contentDetails']['duration']);
-        } else {
-            $currentVideo = null;
-            $duration = 0;
-        }
+            } else {
+                $currentVideo = null;
+                $duration = 0;
+            }
 
-        $setting = Setting::where('u_id', session('userId'))->get()[0];
+            $setting = Setting::where('u_id', session('userId'))->get()[0];
 
-        $data = array(
-            'setting' => $setting,
-            'message' => $message,
-            'currentVideo' => $currentVideo,
-            'videos' => $videos,
+            $data = array(
+                'setting' => $setting,
+                'message' => $message,
+                'currentVideo' => $currentVideo,
+                'videos' => $videos,
 //            'duration' => $duration,
-            'currentPlaylist' => $id,
-            'autoplay' => $vid == null?false:true,
-            'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
-        );
-        return view('playSong', $data);
+                'currentPlaylist' => $id,
+                'autoplay' => $vid == null ? false : true,
+                'parentId' => SongPlaylist::where('sp_id', $id)->get()[0]->f_id
+            );
+            return view('playSong', $data);
+        } else {
+            session(['message'=>'You do not have permission to open this']);
+            return redirect('home');
+        }
     }
 
 //    public function edit($id) {
@@ -200,6 +227,8 @@ class PageController extends Controller
                 session()->forget('message');
             }
 
+            $connections = Connection::join('users', 'id', '=', 'connect_with')->where('u_id', $userId)->get();
+
             $data = array(
                 'directories' => $directories,
                 'pwd' => $id,
@@ -208,7 +237,8 @@ class PageController extends Controller
                 'folders' => $folders,
                 'playlists' => $songPlaylists,
                 'message' => $message,
-                'lessons' => $lessonPlaylists
+                'lessons' => $lessonPlaylists,
+                'connections' => $connections
             );
 
             return view('home', $data);

@@ -1,10 +1,14 @@
-<div class="col-lg-4 col-md-4 col-sm-6 col-lg-12 each-connection">
+<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 each-connection">
     <div class="connection-container">
         <?php
-            $res = \App\Connection::where('u_id',$userId)->where('connectWith', $person->id)->get();
+            $res = \App\Connection::where('u_id',$userId)->where('connect_with', $person->id)->get();
             $isConnected = count($res) == 1;
         ?>
-        <div class="connection-action">{{$isConnected?'&times;':'+'}}</div>
+        @if($isConnected)
+            <div id="action{{$person->id}}" class="connection-action" onclick="changeConnection('end', '{{$person->id}}')">&times;</div>
+        @else
+            <div id="action{{$person->id}}" class="connection-action" onclick="changeConnection('add', '{{$person->id}}')">+</div>
+        @endif
         <div class="connection-profile profile-preview" style="background-image: url('{{asset($person->profile)}}')">
         </div>
         <div class="connection-text">
@@ -12,7 +16,12 @@
                 {{$person->username}}
             </div>
             <div class="connection-description">
-                {{substr($person->description, 0, 20).(strlen($person->description)>20?'...':'')}}
+                <?php
+                    $desc = str_replace('<div>', '', $person->description);
+                    $desc = str_replace('</div>', '', $desc);
+                    $desc = str_replace('<br>', '', $desc);
+                ?>
+                {{substr($desc, 0, 20).(strlen($desc)>20?'...':'')}}
             </div>
         </div>
     </div>

@@ -89,7 +89,7 @@
                         <div class="folder-setting dropdown">
                             <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                             <ul class="dropdown-menu setting-option" style="top: 0px">
-                                <li class="set-opt"><a href="#">rename</a></li>
+                                <li class="set-opt"><a href="#" data-toggle="modal" data-target="#rename" onclick="startRename('{{$video->s_id}}', '{{$video->title}}')">rename</a></li>
                                 <li class="set-opt delete-color"><a href="{{url('deletesong/'.$currentPlaylist.'/'.$video->s_id)}}">delete</a></li>
                             </ul>
                         </div>
@@ -131,6 +131,32 @@
                 </div>
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-default" value="Ok">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<div id="rename" class="modal fade" role="dialog" style="z-index: 1050">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <form id="rename-form" method="post" action="{{url('renameSong')}}" style="margin-bottom: 0px">
+                {{csrf_field()}}
+                <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
+                <input id="rename-song-id" name="id" type="hidden">
+                <div class="modal-header" style="background-color: #808085; color: white; font-size: 20px; font-weight: bolder">
+                    <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                    Type the new name
+                </div>
+                <div class="modal-body">
+                    <input id="oldname" name="newName"  type="text" class="form-control" placeholder="Type the new name" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-info" value="Save">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </form>
@@ -237,6 +263,11 @@
             $("#import-playlist").prop('checked', false);
             $(".import-playlist-container").css('display', 'none');
         }
+    }
+
+    function startRename(sid, oldname) {
+        $('#rename-song-id').val(sid);
+        $('#oldname').val(oldname);
     }
 
     // create youtube player

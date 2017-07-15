@@ -373,6 +373,285 @@ class AdminController extends Controller
         }
     }
 
+    public function sharePublic(Request $request) {
+//        $currentFolder = $request->currentFolder;
+        $type = $request->type;
+        $id = $request->id;
+        $state = $request->state;
+
+        if ($type == 'sp') {
+            $change = $state==0?1:0;
+            $playlist = SongPlaylist::find($id);
+            $playlist->if_public = $change;
+            $playlist->save();
+            echo $change;
+        } elseif ($type == 'lp') {
+            $change = $state==0?1:0;
+            $playlist = LessonPlaylist::find($id);
+            $playlist->if_public = $change;
+            $playlist->save();
+            echo $change;
+        }
+    }
+
+    public function connect(Request $request) {
+        $now = new DateTime();
+        $uid = session('userId');
+        $purpose = $request->purpose;
+        $personId = $request->personId;
+        if ($purpose == 'add') {
+            $connection1 = new Connection();
+            $connection1->created_at = $now;
+            $connection1->updated_at = $now;
+            $connection1->u_id = $uid;
+            $connection1->connect_with = $personId;
+            $connection2 = new Connection();
+            $connection2->created_at = $now;
+            $connection2->updated_at = $now;
+            $connection2->u_id = $personId;
+            $connection2->connect_with = $uid;
+            $connection1->save();
+            $connection2->save();
+        } elseif ($purpose == 'end') {
+            $connection1 = Connection::where('u_id', $uid)->where('connect_with', $personId);
+            $connection2 = Connection::where('connect_with', $uid)->where('u_id', $personId);
+            $connection1->delete();
+            $connection2->delete();
+        }
+    }
+
+    public function searchPeople(Request $request) {
+        $userId = session('userId');
+        $peopleName = $request->peopleName;
+        $people = User::where('email', $peopleName)
+            ->orWhere('username', 'like', '%' . $peopleName . '%')->where('id', '!=', $userId)->get();
+        foreach ($people as $person) {
+            echo "<div class='col-lg-4 col-md-4 col-sm-6 col-xs-12 each-connection'>";
+            echo "<div class='connection-container'>";
+            $res = Connection::where('u_id',$userId)->where('connect_with', $person->id)->get();
+            $isConnected = count($res) == 1;
+            if($isConnected){
+                echo "<div id=\"actionSearch".$person->id."\" class=\"connection-action\" onclick=\"changeConnectionOnSearch('end', '".$person->id."')\">&times;</div>";
+            }else{
+                echo "<div id=\"actionSearch".$person->id."\" class=\"connection-action\" onclick=\"changeConnectionOnSearch('add', '".$person->id."')\">+</div>";
+            }
+            echo "<div class=\"connection-profile profile-preview\" style=\"background-image: url('".asset($person->profile)."')\">";
+            echo "</div>";
+            echo "<div class=\"connection-text\">";
+            echo "<div class=\"connection-name\">";
+            echo $person->username;
+            echo "</div>";
+            echo "<div class=\"connection-description\">";
+            $desc = str_replace('<div>', '', $person->description);
+            $desc = str_replace('</div>', '', $desc);
+            $desc = str_replace('<br>', '', $desc);
+            echo substr($desc, 0, 20).(strlen($desc)>20?'...':'');
+            echo "</div>";
+            echo "</div>";
+            echo "</div>";
+            echo "</div>";
+        }
+    }
+
+    public function sendGift(Request $request) {
+        $userId = session('userId');
+        $currentFolder = $request->currentFolder;
+        $receivers = $request->receivers;
+        $type = $request->type;
+        $id = $request->id;
+        $now = new DateTime();
+        if (isset($receivers)) {
+            foreach ($receivers as $receiver) {
+                $findGift = GiftBox::where('sender_id', $userId)->where('receiver_id', $receiver)
+                    ->where('item_type', $type=='sp'?1:2)->where('item_id', $id)->get();
+                if (count($findGift) > 0) {
+                    session(['message'=>'You already send this']);
+                } else {
+                    $gift = new GiftBox();
+                    $gift->created_at = $now;
+                    $gift->updated_at = $now;
+                    $gift->sender_id = $userId;
+                    $gift->receiver_id = $receiver;
+                    $gift->item_type = $type=='sp'?1:2;
+                    $gift->item_id = $id;
+                    $gift->save();
+                }
+            }
+        }
+        return redirect('home/management/'.$currentFolder);
+    }
+
+    public function receiveGift(Request $request) {
+        $userId = session('userId');
+        $gid = $request->gId;
+        $gift = GiftBox::find($gid);
+        if ($gift == null) {
+            session(['message' => 'There is no such gift']);
+            return redirect('gift');
+        } else {
+            if ($gift->receiver_id != $userId) {
+                session(['message' => 'You do not own this gift']);
+                return redirect('gift');
+            } else {
+                //send message to $gift->sender_id
+                $type = $gift->item_type;
+                $id = $gift->item_id;
+
+                if ($type == 1) {
+                    $now = new DateTime();
+                    $myGiftFolder = Folder::where('u_id', $userId)->where('folderName', 'gift')->where('if_deletable', false)->get()[0]->f_id;
+                    $newPlaylist = new SongPlaylist();
+                    $oldPlaylist = SongPlaylist::find($id);
+                    $newPlaylist->created_at = $now;
+                    $newPlaylist->updated_at = $now;
+                    $newPlaylist->sp_name = $oldPlaylist->sp_name;
+                    $newPlaylist->u_id = $userId;
+                    $newPlaylist->f_id = $myGiftFolder;
+                    $newPlaylist->if_public = false;
+                    $newPlaylist->save();
+
+                    $songs = Song::where('sp_id', $id)->get();
+                    foreach ($songs as $song) {
+                        $oldSong = Song::find($song->s_id);
+                        $newSong = new Song();
+                        $newSong->created_at = $now;
+                        $newSong->updated_at = $now;
+                        $newSong->title = $oldSong->title;
+                        $newSong->sp_id = $newPlaylist->sp_id;
+                        $newSong->url = $oldSong->url;
+                        $newSong->if_favorite = false;
+                        $newSong->duration = $oldSong->duration;
+                        $newSong->u_id = $userId;
+                        $newSong->save();
+                    }
+                } else if ($type == 2) {
+                    $now = new DateTime();
+                    $myGiftFolder = Folder::where('u_id', $userId)->where('folderName', 'gift')->where('if_deletable', false)->get()[0]->f_id;
+                    $newPlaylist = new LessonPlaylist();
+                    $oldPlaylist = LessonPlaylist::find($id);
+                    $newPlaylist->created_at = $now;
+                    $newPlaylist->updated_at = $now;
+                    $newPlaylist->l_name = $oldPlaylist->l_name;
+                    $newPlaylist->u_id = $userId;
+                    $newPlaylist->f_id = $myGiftFolder;
+                    $newPlaylist->record = '';
+                    $newPlaylist->if_public = false;
+                    $newPlaylist->save();
+
+                    $lessons = Lesson::where('lp_id', $id)->get();
+                    foreach ($lessons as $lesson) {
+                        $oldLesson = Lesson::find($lesson->l_id);
+                        $newLesson = new Lesson();
+                        $newLesson->created_at = $now;
+                        $newLesson->updated_at = $now;
+                        $newLesson->title = $oldLesson->title;
+                        $newLesson->lp_id = $newPlaylist->l_id;
+                        $newLesson->url = $oldLesson->url;
+                        $newLesson->start_time = 0;
+                        $newLesson->end_time = $oldLesson->end_time;
+                        $newLesson->note = $oldLesson->note;
+                        $newLesson->u_id = $userId;
+                        $newLesson->save();
+                    }
+                }
+
+                $gift->delete();
+
+                return redirect('gift');
+            }
+        }
+    }
+
+    public function rejectGift(Request $request) {
+        $userId = session('userId');
+        $gid = $request->gId;
+        $gift = GiftBox::find($gid);
+        if ($gift == null) {
+            session(['message' => 'There is no such gift']);
+            return redirect('gift');
+        } else {
+            if ($gift->receiver_id != $userId) {
+                session(['message' => 'You do not own this gift']);
+                return redirect('gift');
+            } else {
+                //send message to $gift->sender_id
+                $gift->delete();
+                return redirect('gift');
+            }
+        }
+
+    }
+
+    public function renameSong (Request $request) {
+        $currentPlaylist = $request->currentPlaylist;
+        $id = $request->id;
+        $newName = $request->newName;
+
+        $song = Song::find($id);
+        if ($song == null) {
+            session(['message' => 'video not exist']);
+        } else {
+            $song->title = $newName;
+            $song->save();
+        }
+        return redirect('home/management/playSong/'.$currentPlaylist);
+    }
+
+    public function renameLesson (Request $request) {
+        $currentPlaylist = $request->currentPlaylist;
+        $id = $request->id;
+        $newName = $request->newName;
+
+        $lesson = Lesson::find($id);
+        if ($lesson == null) {
+            session(['message' => 'video not exist']);
+        } else {
+            $lesson->title = $newName;
+            $lesson->save();
+        }
+        return redirect('home/management/playLesson/'.$currentPlaylist);
+    }
+
+    public function editUsername(Request $request) {
+        $userId = session('userId');
+        $value = $request->value;
+        if (User::existUsername($value) == false) {
+            $user = User::find($userId);
+            $user->username = $value;
+            $user->save();
+            session(['message'=>'Username changed']);
+            return redirect('setting');
+        } else {
+            session(['message'=>'Username not available']);
+            return redirect('setting');
+        }
+    }
+
+    public function editEmail(Request $request) {
+        $userId = session('userId');
+        $value = $request->value;
+        if (User::checkExistedUser($value) == false) {
+            $user = User::find($userId);
+            $user->email = $value;
+            $user->save();
+            session(['message'=>'Email changed']);
+            return redirect('setting');
+        } else {
+            session(['message'=>'E-mail not available']);
+            return redirect('setting');
+        }
+    }
+
+    public function editDescription(Request $request) {
+        $userId = session('userId');
+        $value = $request->value;
+        $user = User::find($userId);
+        $user->description = $value;
+        $user->save();
+        session(['message'=>'Description edited']);
+        return redirect('setting');
+    }
+
     private function getVideosFromPlaylist($playlistId) {
 //        https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=PLwAKR305CRO-Q90J---jXVzbOd4CDRbVx&key=AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA
         $api_key = 'AIzaSyB95ggxhaa_dCCntXeHDF0c6y1bj_YKAgA';

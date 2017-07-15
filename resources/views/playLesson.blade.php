@@ -8,15 +8,20 @@
         {{--main--}}
         @if(count($videos) > 0)
             <div class="lesson-main">
-                {{--top--}}
+                top
+                <div class="visible-xs" style="position: absolute; top: 10px; right: 10px">
+                    <button class="btn" style="background: transparent; color: white; border-radius: 4px; border: 1px solid white" onclick="on()">
+                        <i class="fa fa-sticky-note"> </i> note
+                    </button>
+                </div>
                 <div  class="lesson-top">
                     {{--video--}}
                     <div class="lesson-video-container">
                         <iframe id="video" class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}?start={{$currentVideo->start_time==$currentVideo->end_time?0:$currentVideo->start_time}}&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
                     </div>
                     {{--note--}}
-                    <div id="note" class="notepaper lesson-note mediumScroll overlay" contenteditable="true" onkeyup="return editNote({{$currentVideo->l_id}})">
-                        {{$currentVideo->note}}
+                    <div id="note" class="notepaper lesson-note mediumScroll" contenteditable="true" oninput="return editNote('b', '{{$currentVideo->l_id}}')">
+                        {!! $currentVideo->note !!}
                     </div>
                 </div>
             </div>
@@ -52,7 +57,7 @@
                             </div>
                         </div>
 
-                        <div class="wmediumScroll lesson-record" id="lesson-record" style="color: white; width: 70%; float: right; border: 1px solid red">
+                        <div class="wmediumScroll lesson-record" id="lesson-record" style="color: white; width: 70%; float: right">
                             <?php
                                 echo $record;
                             ?>
@@ -105,7 +110,7 @@
                                             {{$video->title}}
                                         </div>
                                         <div class="lesson-note-short">
-                                            {{substr($video->note, 0, 20).'...'}}
+                                            {!! strlen($video->note)>0?'<i>(contains note)</i>':'' !!}
                                         </div>
                                         <div class="lesson-duration">
                                             {{sprintf('%02d:%02d:%02d', floor($video->end_time / 3600), floor($video->end_time / 60 % 60), floor($video->end_time % 60))}}
@@ -115,7 +120,7 @@
                                 <div class="folder-setting dropdown">
                                     <i class="tree-dots fa fa-ellipsis-v" type="button" data-toggle="dropdown"></i>
                                     <ul class="dropdown-menu setting-option" style="top: 0px">
-                                        <li class="set-opt"><a href="#">rename</a></li>
+                                        <li class="set-opt"><a href="#"  data-toggle="modal" data-target="#rename" onclick="startRename('{{$video->l_id}}', '{{$video->title}}')">rename</a></li>
                                         <li class="set-opt delete-color"><a href="{{url('deletelesson/'.$currentPlaylist.'/'.$video->l_id)}}">delete</a></li>
                                     </ul>
                                 </div>
@@ -169,11 +174,42 @@
         <div class="show" id="snackbar">{{$message}}</div>
     @endif
 
+    <div id="rename" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form id="rename-form" method="post" action="{{url('renameLesson')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
+                    <input id="rename-lesson-id" name="id" type="hidden">
+                    <div class="modal-header" style="background-color: #808085; color: white; font-size: 20px; font-weight: bolder">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        Type the new name
+                    </div>
+                    <div class="modal-body">
+                        <input id="oldname" name="newName"  type="text" class="form-control" placeholder="Type the new name" autocomplete="off">
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-info" value="Save">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
 </body>
 
 <script src="http://www.youtube.com/player_api"></script>
 
 <script>
+
+    function startRename(lid, oldname) {
+        $('#rename-lesson-id').val(lid);
+        $('#oldname').val(oldname);
+    }
 
     @if($message != '')
         $(window).on('load', function () {
@@ -199,8 +235,13 @@
         $(".overlay").css('width', '0%');
     }
 
-    function editNote($id) {
-        var data = 'id='+$id+"&note="+document.getElementById('note').innerText+"&_token="+'{{csrf_token()}}';
+    function editNote(kind, id) {
+        var data = 'id='+id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
+        if (kind == 'b') {
+            $('#smallNote').html($('#note').html());
+        } else if (kind == 's') {
+            $('#note').html($('#smallNote').html());
+        }
         $.ajax({
             url: "{{url('editNote')}}",
             type: 'post',
@@ -299,7 +340,24 @@
         return hours+':'+minutes+':'+seconds;
     }
 
+    function on() {
+        $('.overlayNote').css('display', 'block');
+    }
+
+    function off() {
+        $('.overlayNote').css('display', 'none');
+    }
+
 
 </script>
+
+<div class="overlayNote hidden-lg hidden-md hidden-sm">
+    <div style="position: absolute; top: -25px; left: 5px; z-index: 11; font-size: 50px" onclick="off()">
+        &times;
+    </div>
+    <div id="smallNote" class="notepaper lesson-small-note mediumScroll" contenteditable="true" oninput="return editNote('s', '{{$currentVideo->l_id}}')">
+        {!! $currentVideo->note !!}
+    </div>
+</div>
 
 </html>

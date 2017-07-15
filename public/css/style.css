@@ -9,6 +9,10 @@ body {
     border-radius: 0;
 }
 
+.pointer:hover {
+    cursor: pointer;
+}
+
 /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 .row.content {height: 450px}
 
@@ -20,6 +24,10 @@ footer {
     background-color: #cccccc;
     color: white;
     padding: 15px;
+}
+
+a:hover {
+    cursor: pointer;
 }
 
 .top-margin {
@@ -539,6 +547,35 @@ nav {
     max-height: 250px;
 }
 
+.gift-profile {
+    width: 45px;
+    height: 45px;
+    border-radius: 25px;
+}
+
+.gift-name {
+    font-size: 20px;
+}
+
+.gift-people-list > li:hover {
+    background-color: rgba(0, 0, 0, 0.13);
+}
+
+.gift-people-list  label {
+    cursor: pointer;
+}
+
+.respond-gift {
+    width: 200px;
+}
+
+.each-folder.gift {
+    padding: 20px;
+}
+
+.each-folder.gift:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+}
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     nav {
@@ -676,6 +713,49 @@ nav {
 
     .lesson-record {
         max-height: 150px;
+    }
+
+    .gift-profile {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+    }
+
+    .gift-name {
+        font-size: 15px;
+    }
+
+    .connection-profile {
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+    }
+
+    .connection-text {
+        margin-left: 10px;
+    }
+
+    .connection-name {
+        font-family: raleway;
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .connection-description {
+        font-weight: lighter;
+        font-size: 12px;
+    }
+
+    .connection-container {
+        padding: 9px;
+    }
+
+    .respond-gift {
+        width: 100px;
+    }
+
+    .reject-gift {
+        width: 100%;
     }
 }
 

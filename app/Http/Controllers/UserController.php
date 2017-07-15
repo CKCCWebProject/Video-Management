@@ -31,55 +31,64 @@ class UserController extends Controller
 
         if($password == $confirmPassword){
             if((User::checkExistedUser($email)) == false){
-                $user = new User();
-                $user->username = $username;
-                $user->email = $email;
-                $user->profile = "img/photo/default.png";
-                $user->password = crypt($password, SALT);
-                User::createUser($user);
+                if(User::existUsername($username) == false) {
+                    $user = new User();
+                    $user->username = $username;
+                    $user->email = $email;
+                    $user->profile = "img/photo/default.png";
+                    $user->password = crypt($password, SALT);
+                    User::createUser($user);
 
-                $uid = User::where('email', $email)->get()[0]->id;
+                    $uid = User::where('email', $email)->get()[0]->id;
 
-                $request->session()->put('id', $uid);
+                    $request->session()->put('id', $uid);
 
-                $home = new Folder();
-                $home->created_at = new DateTime();
-                $home->updated_at = new DateTime();
-                $home->u_id = $uid;
-                $home->folderName = "home";
-                $home->if_deletable = false;
-                $home->if_public = false;
-                $home->parent_id = 0;
-                $home->save();
+                    $home = new Folder();
+                    $home->created_at = new DateTime();
+                    $home->updated_at = new DateTime();
+                    $home->u_id = $uid;
+                    $home->folderName = "home";
+                    $home->if_deletable = false;
+                    $home->if_public = false;
+                    $home->parent_id = 0;
+                    $home->save();
 
-                $homeId = Folder::where('folderName', 'home')->where('u_id', $uid)->get()[0]->f_id;
-                $home1 = Folder::find($homeId);
-                $home1->parent_id = $homeId;
-                $home1->save();
+                    $homeId = Folder::where('folderName', 'home')->where('u_id', $uid)->get()[0]->f_id;
+                    $home1 = Folder::find($homeId);
+                    $home1->parent_id = $homeId;
+                    $home1->save();
 
-                $setting = new Setting();
-                $setting->created_at = new DateTime();
-                $setting->updated_at = new DateTime();
-                $setting->u_id = $uid;
-                $setting->play_favorite = false;
-                $setting->sq_id = 1;
-                $setting->save();
+                    $setting = new Setting();
+                    $setting->created_at = new DateTime();
+                    $setting->updated_at = new DateTime();
+                    $setting->u_id = $uid;
+                    $setting->play_favorite = false;
+                    $setting->sq_id = 1;
+                    $setting->save();
 
-                $gift = new Folder();
-                $gift->created_at = new DateTime();
-                $gift->updated_at = new DateTime();
-                $gift->u_id = $uid;
-                $gift->folderName = 'gift';
-                $gift->if_deletable = false;
-                $gift->if_public = false;
-                $gift->parent_id = $homeId;
-                $gift->save();
+                    $gift = new Folder();
+                    $gift->created_at = new DateTime();
+                    $gift->updated_at = new DateTime();
+                    $gift->u_id = $uid;
+                    $gift->folderName = 'gift';
+                    $gift->if_deletable = false;
+                    $gift->if_public = false;
+                    $gift->parent_id = $homeId;
+                    $gift->save();
 
-                session(['userId' => $uid]);
+                    session(['userId' => $uid]);
 
-                session(['message' => 'Welcome']);
+                    session(['message' => 'Welcome']);
 
-                return redirect('home');
+                    return redirect('home');
+                } else {
+                    $i = 0;
+                    do {
+                        $RecUsername = $username.$i;
+                    } while (User::existUsername($RecUsername));
+                    session(['message' => 'Username already used. `'.$RecUsername.'` is recommended']);
+                    return redirect('signup');
+                }
             }
             else{
 //                echo "already existed";
@@ -124,7 +133,7 @@ class UserController extends Controller
 //upload file
     public function uploadProfile(Request $request){
         $user = User::find(session('userId'));
-        $uid = User::where('email', $user->email)->get()[0]->id;
+//        $uid = User::where('email', $user->email)->get()[0]->id;
 
         if($request->hasFile('imageProfile')){
             $this->validate($request, [
@@ -135,7 +144,7 @@ class UserController extends Controller
 //            $image = Image::make($profile)->resize(300,500);//try this
 //            $profile = $this->resizeImage(realpath($profile), 120, 120, Imagick::FILTER_LANCZOS, 1, true, true);
 
-            $filename = time()."id".$uid.".".$profile->getClientOriginalExtension();
+            $filename = time()."id".session('userId').".".$profile->getClientOriginalExtension();
             $profilePath = $profile->move('img/photo', $filename);
 
             $user = User::find(session('userId'));
@@ -156,6 +165,32 @@ class UserController extends Controller
 
     public function isLoggedIn(){
         return true;
+    }
+
+    public function changePassword(Request $request) {
+        $userId = session('userId');
+        $old = $request->oldPassword;
+        $new = $request->newPassword;
+        $confirm = $request->confirmNewPassword;
+
+        if ($new != $confirm) {
+            session(['message'=>'Password not match']);
+            return redirect('setting');
+        } else {
+            $user = User::find($userId);
+            $salt = 'q5kBq8F4GAHqA';
+            $oldCrypt = crypt($old, $salt);
+            if ($user->password != $oldCrypt) {
+                session(['message' => 'Old password is incorrect']);
+                return redirect('setting');
+            } else {
+                $newCrypt = crypt($new, $salt);
+                $user->password = $newCrypt;
+                $user->save();
+                session(['message' => 'Password is reset']);
+                return redirect('setting');
+            }
+        }
     }
 
 //    private function resizeImage($imagePath, $width, $height, $filterType, $blur, $bestFit, $cropZoom) {
