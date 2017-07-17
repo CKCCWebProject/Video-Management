@@ -10,7 +10,7 @@
                 Sar Channimol
             </h1>
             <p>
-                Srey sart
+                nimol&#64;gmail.com
             </p>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 S&acirc;r Thyrith
             </h1>
             <p>
-                Pros akrok
+                thyrith&#64;gmail.com
             </p>
         </div>
 

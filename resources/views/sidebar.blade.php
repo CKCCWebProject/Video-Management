@@ -27,7 +27,7 @@
                 </div>
             </li>
             <li>
-                <a {{$position=='home'?'class=active':''}} href="{{url('home/management')}}">
+                <a {{$position=='home'&&!isset($search)?'class=active':''}} href="{{url('home/management')}}">
                     <i class="fa fa-home icon"> </i>
                     <span> Home</span>
                 </a>
@@ -42,7 +42,7 @@
                 </a>
             </li>
             <li>
-                <a {{$position=='connection'?'class=active':''}} href="{{url('/connection')}}">
+                <a {{$position=='connection'&&!isset($search)?'class=active':''}} href="{{url('/connection')}}">
                     <i class="fa fa-chain icon"> </i>
                     <span> Your connections</span>
                 </a>
@@ -76,11 +76,15 @@
 
         if($(window).width()<769) {
             addSwipe();
+            $("#wrapper").removeClass("toggled");
         }
 
         smallScreenSize.addListener(function(changed) {
             if(changed.matches) {
-                addSwipe()
+                addSwipe();
+                if ($("#wrapper").hasClass("toggled")) {
+                    toggleSidebar();
+                }
             } else {
                 $('#javascript-code').html('');
             }
@@ -100,20 +104,30 @@
             );
         }
 
-//        $(document).on("swiperight",function(){
+        //        $(document).on("swiperight",function(){
 //            if (!$("#wrapper").hasClass("toggled")) {
 //                toggleSidebar();
 //            }
 //        });
 
         var toggleSidebar = function () {
+            $("#wrapper").addClass('sidebar-transition');
+            $("#sidebar-wrapper").addClass('sidebar-transition');
             $("#wrapper").toggleClass("toggled");
-            if (!$(".blocker").hasClass("fadeIn") && !$(".blocker").hasClass("fadeOut")) {
-                $(".blocker").toggleClass("fadeIn");
+            if ($("#wrapper").hasClass("toggled")) {
+                $(".blocker").addClass('fadeIn');
+                $(".blocker").removeClass('fadeOut');
             } else {
-                $(".blocker").toggleClass("fadeIn");
-                $(".blocker").toggleClass("fadeOut");
+                $(".blocker").addClass('fadeOut');
+                $(".blocker").removeClass('fadeIn');
             }
+
+//            if (!$(".blocker").hasClass("fadeIn") && !$(".blocker").hasClass("fadeOut")) {
+//                $(".blocker").toggleClass("fadeIn");
+//            } else {
+//                $(".blocker").toggleClass("fadeIn");
+//                $(".blocker").toggleClass("fadeOut");
+//            }
         }
 
         $("#upload-profile").change(function () {

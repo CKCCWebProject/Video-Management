@@ -147,8 +147,29 @@
 
 @media only screen and (max-width : 979px) {
     .song-video {
-        width: 47vw;
-        height: 280px;
+        width: 550px;
+        height: 350px;
+    }
+
+    .song-main {
+        height: 480px;
+    }
+
+    .song-list {
+        height: calc(100vh - 430px);
+    }
+
+    .song-close {
+        top: -5px;
+        left: 10px;
+    }
+
+    .song-title {
+        font-size: 13px;
+    }
+
+    .song-info {
+        font-size: 10px;
     }
 }
 
@@ -184,6 +205,7 @@
     .song-video {
         width: 95vw;
         height: 250px;
+        margin: auto;
     }
 
     .song-main {

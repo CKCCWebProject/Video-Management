@@ -23,6 +23,9 @@ class PageController extends Controller
     }
 
     public function home($tab) {
+        if(session()->has('searchUrl') != null) {
+            session()->forget('searchUrl');
+        }
         $userId = session('userId');
 
         if ($tab == 'management') {
@@ -49,6 +52,10 @@ class PageController extends Controller
     }
 
     public static function nav($nav) {
+        if(session()->has('searchUrl') != null) {
+            session()->forget('searchUrl');
+        }
+
         if ($nav == 'home') {
             return redirect("home/management");
         }
@@ -64,11 +71,11 @@ class PageController extends Controller
         $data = array(
             'message' => $message,
             'position' => $nav,
-            'userId' => $userId
+            'userId' => $userId,
         );
 
         if ($nav == 'connection') {
-            $data['people'] = Connection::where('u_id', $userId)->join('users', 'users.id', '=', 'connections.connect_with')->get();
+            $data['people'] = Connection::where('u_id', $userId)->join('users', 'users.id', '=', 'connections.connect_with')->paginate(12);
         } elseif ($nav == 'gift') {
             $gifts = GiftBox::where('receiver_id', $userId)->get();
             $data['gifts'] = $gifts;
@@ -160,6 +167,7 @@ class PageController extends Controller
             }
 
             $videos = Song::where('sp_id', $id)->orderBy('title', 'asc')->get();
+            $favoriteVideos = Song::where('sp_id', $id)->where('if_favorite', true)->orderBy('title', 'asc')->get();
             if (count($videos) > 0) {
                 if ($vid == null) {
                     $currentVideo = $videos[0];
@@ -179,6 +187,7 @@ class PageController extends Controller
                 'message' => $message,
                 'currentVideo' => $currentVideo,
                 'videos' => $videos,
+                'favoriteVideos' => $favoriteVideos,
 //            'duration' => $duration,
                 'currentPlaylist' => $id,
                 'autoplay' => $vid == null ? false : true,
@@ -199,6 +208,9 @@ class PageController extends Controller
 //    }
 
     public function folder($id) {
+        if(session()->has('searchUrl') != null) {
+            session()->forget('searchUrl');
+        }
         $userId = session('userId');
         $checkFolderPossession = Folder::where('f_id', $id)->where('u_id', $userId)->get();
         if (count($checkFolderPossession) != 1) {
@@ -238,7 +250,7 @@ class PageController extends Controller
                 'playlists' => $songPlaylists,
                 'message' => $message,
                 'lessons' => $lessonPlaylists,
-                'connections' => $connections
+                'connections' => $connections,
             );
 
             return view('home', $data);

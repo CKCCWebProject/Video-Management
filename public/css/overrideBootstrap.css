@@ -66,3 +66,38 @@ a:hover, a:focus, a:active {
     z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
 }
+
+.nav-tabs > .sp > a {
+    color: black;
+    font-weight: bolder;
+}
+
+.nav-tabs > .lp > a {
+    color: black;
+    font-weight: bolder;
+}
+
+.nav-tabs > .active.sp > a {
+    background-color: #9a3d3d;
+}
+
+.nav-tabs > .active.lp > a {
+    background-color: #586bce;
+}
+
+.nav-tabs > .sp > a:hover, .nav-tabs > .lp > a:hover {
+    color: white;
+}
+
+.nav-tabs > .active.sp > a:hover, .nav-tabs > .active.sp > a:focus {
+    background-color: #9a3d3d;
+}
+
+.nav-tabs > .active.lp > a:hover, .nav-tabs > .active.lp > a:focus {
+    background-color: #586bce;
+}
+
+.nav-tabs > .sp, .nav-tabs > .lp {
+    background-color: transparent;
+    padding: 0px;
+}

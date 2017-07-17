@@ -3,7 +3,7 @@
 
 @include('nav')
 
-<div id="wrapper">
+<div id="wrapper" class="toggled">
 
 <!-- Sidebar -->
     @include('sidebar')
@@ -23,7 +23,6 @@
                     <div class="top-margin"></div>
 
                     @if($position == 'home')
-
                         <div class="row" style="margin-bottom: 10px">
                             @include('homeNavigation')
                         </div>
@@ -45,6 +44,7 @@
                         @include('giftContent')
 
                     @endif
+
                 </div>
             </div>
         </div>
@@ -73,6 +73,44 @@
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="btn btn-default" value="Ok">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="move" class="modal fade" role="dialog" style="z-index: 1050">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="{{url('move')}}" style="margin-bottom: 0px">
+                    {{csrf_field()}}
+                    <input name="currentFolder" type="hidden" value="{{$pwd}}">
+                    <input id="move-type" name="type" type="hidden">
+                    <input id="move-id" name="id" type="hidden">
+                    <input id="last-dir" type="hidden" value="">
+                    <div class="modal-header"  style="background-color: #676880">
+                        <button type="button" class="close" data-dismiss="modal" style="color: white">&times;</button>
+                        <h4 class="modal-title">Move</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>type the directory path to move</div>
+                        <div class="form-control" style="background-color: transparent"><strong><i>For example : </i></strong>
+                            <code>/My lesson/Physics</code>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">move to </span>
+                            <input id="destination-folder" name="path" type="text" class="form-control" placeholder="destination path" value="" onkeydown="checkPath()" onkeyup="insertLastDir()">
+                        </div>
+                        <div class="row" style="text-align: right; padding-right: 10px"><i><code>/</code> : defines home <br/><code>./</code> : defines current directory
+                                <br/><code>../</code> : defines parent directory</i></div>
+                        <div class="row" style="text-align: right; padding-right: 10px"><i>press `Tab` for auto completion and check error</i></div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-default" value="move">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -398,9 +436,9 @@
                         Change password
                     </div>
                     <div class="modal-body">
-                        <input style="margin: 10px" placeholder="old password" class="form-control" type="password" name="oldPassword">
-                        <input style="margin: 10px" placeholder="new password" class="form-control" type="password" name="newPassword">
-                        <input style="margin: 10px" placeholder="confirm new password" class="form-control" type="password" name="confirmNewPassword">
+                        <input style="margin: 5px" placeholder="old password" class="form-control" type="password" name="oldPassword">
+                        <input style="margin: 5px" placeholder="new password" class="form-control" type="password" name="newPassword">
+                        <input placeholder="confirm new password" class="form-control" type="password" name="confirmNewPassword">
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-info">change</button>
@@ -559,6 +597,42 @@
             }
         });
     }
+
+    function insertLastDir(evt) {
+        var e = event || evt; // for trans-browser compatibility
+        var charCode = e.which || e.keyCode;
+        if (charCode == 9 ) {
+            e.preventDefault();
+        } else {
+            var input = $('#destination-folder').val();
+            var slash = input.lastIndexOf('/');
+            $('#last-dir').val(input.substring(slash+1));
+        }
+    }
+
+    @if($position == 'home' && $activeNav == 'management')
+    //move-type move-id destination-folder
+    function checkPath(evt) {
+        var e = event || evt; // for trans-browser compatibility
+        var charCode = e.which || e.keyCode;
+        if (charCode == 9 ) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{url('checkPath')}}",
+                type: 'post',
+                data: 'id='+$('#move-id').val()+'&type='+$('#move-type').val()+'&path='+$('#destination-folder').val()+'&currentFolder={{$pwd}}&lastType='+$('#last-dir').val()+'&_token={{csrf_token()}}',
+                dataType: 'json',
+                success: function( _response ){
+                    $('#destination-folder').css('color', _response[0]==true?'black':'red');
+                    $('#destination-folder').val(_response[1]);
+//                    alert(_response[2]);
+                },
+                error: function( _response ){
+                }
+            });
+        }
+    }
+    @endif
 
 </script>
 </body>

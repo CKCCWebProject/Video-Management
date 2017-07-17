@@ -9,13 +9,19 @@ body {
 }
 
 /* Toggle Styles */
-
-#wrapper {
-    padding-left: 0;
+.sidebar-transition {
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
+}
+
+#wrapper {
+    padding-left: 0;
+    /*-webkit-transition: all 0.5s ease;*/
+    /*-moz-transition: all 0.5s ease;*/
+    /*-o-transition: all 0.5s ease;*/
+    /*transition: all 0.5s ease;*/
 }
 
 #wrapper.toggled {
@@ -33,10 +39,10 @@ body {
     margin-left: -250px;
     overflow-y: auto;
     background: #ebebeb;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+    /*-webkit-transition: all 0.5s ease;*/
+    /*-moz-transition: all 0.5s ease;*/
+    /*-o-transition: all 0.5s ease;*/
+    /*transition: all 0.5s ease;*/
     padding-bottom: 50px;
 }
 

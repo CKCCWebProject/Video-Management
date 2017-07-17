@@ -76,6 +76,16 @@ class UserController extends Controller
                     $gift->parent_id = $homeId;
                     $gift->save();
 
+                    $fromPublic = new Folder();
+                    $fromPublic->created_at = new DateTime();
+                    $fromPublic->updated_at = new DateTime();
+                    $fromPublic->u_id = $uid;
+                    $fromPublic->folderName = 'from public';
+                    $fromPublic->if_deletable = false;
+                    $fromPublic->if_public = false;
+                    $fromPublic->parent_id = $homeId;
+                    $fromPublic->save();
+
                     session(['userId' => $uid]);
 
                     session(['message' => 'Welcome']);
