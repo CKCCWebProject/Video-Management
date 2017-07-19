@@ -27,9 +27,7 @@
                             @include('homeNavigation')
                         </div>
 
-                        @if($activeNav == 'help')
-                            @include('homeHelp')
-                        @elseif($activeNav == 'favorite')
+                        @if($activeNav == 'favorite')
                             @include('homeFavorite')
                         @else
                             @include('homeContent')
@@ -42,7 +40,8 @@
                         @include('settingContent')
                     @elseif($position == 'gift')
                         @include('giftContent')
-
+                    @elseif($position == 'help')
+                        @include('helpContent')
                     @endif
 
                 </div>

@@ -1,7 +1,7 @@
 <div class="directories" style="text-align: center; margin: auto">
     <div class="back-dir">
     @if(count($directories) > 1)
-            <a href="{{url('home/management/'.($directories[count($directories) - 2]->f_id))}}">
+            <a href="{{url('home/management/'.($directories[count($directories) - 2]->f_id))}}" style="color: grey">
                 <i class="fa fa-arrow-left"></i>
             </a>
     @endif

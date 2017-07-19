@@ -7,6 +7,7 @@ use App\Folder;
 use App\GiftBox;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\QNA;
 use App\Setting;
 use App\Song;
 use App\SongPlaylist;
@@ -79,6 +80,9 @@ class PageController extends Controller
         } elseif ($nav == 'gift') {
             $gifts = GiftBox::where('receiver_id', $userId)->get();
             $data['gifts'] = $gifts;
+        } elseif ($nav == 'help') {
+            $questions = QNA::orderBy('frequency', 'desc')->take(20)->paginate(10);
+            $data['questions'] = $questions;
         }
         return view ('home', $data);
     }

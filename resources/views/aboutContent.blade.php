@@ -10,7 +10,6 @@
                 Sar Channimol
             </h1>
             <p>
-                nimol&#64;gmail.com
             </p>
         </div>
     </div>
@@ -21,10 +20,17 @@
                 S&acirc;r Thyrith
             </h1>
             <p>
-                thyrith&#64;gmail.com
             </p>
         </div>
 
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 person-div profile-preview" style="background-image: url({{asset('img/thyrith.svg')}})"></div>
+    </div>
+    <div class="jumbotron" style="color: white">
+        <h1>
+            Feedback
+        </h1>
+        <h4 style="text-align: right">
+            vdomngmt&#64;gmail.com
+        </h4>
     </div>
 </div>

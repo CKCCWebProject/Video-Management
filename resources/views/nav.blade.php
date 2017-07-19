@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: {{($position=='home' || isset($search))?'#FF7C7C':($position=='connection'?'#7B94FD':($position=='gift'?'#FFA142':($position=='about'?'#8BAEE1':"#f1c130")))}}; border: 0px;">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="background-color: {{($position=='home' || isset($search))?'#FF7C7C':($position=='connection'?/*'#7B94FD'*/'#FF7C7C':($position=='gift'?/*'#FFA142'*/'#FF7C7C':($position=='about'?/*'#8BAEE1'*/'#337AB7':($position=='help'?'337AB7':($position=='setting'?'#337AB7':'#f1c130')))))}}; border: 0px;">
     <div class="container-fluid">
         <div class="navbar-header" style="padding-bottom: 5px; float: left">
             <div class="navbar-brand" style="padding: 0px">
@@ -13,9 +13,15 @@
                     <input class="search-box form-control" type="text" name="item" style="color: white;" placeholder="Search..">
                 </form>
             </div>
-        @elseif($position == 'connection')
+        @elseif($position == 'connection' || isset($searchPeople))
             <div class="search-container">
                 <form method="get" action="{{url('/connection/result')}}">
+                    <input id="search-people" class="search-box form-control" type="text" name="name" style="color: white;" placeholder="Search.." {{--oninput="getTempPeople()"--}}>
+                </form>
+            </div>
+        @elseif($position == 'help' || isset($searchQuestion))
+            <div class="search-container">
+                <form method="get" action="{{url('/help/result')}}">
                     <input id="search-people" class="search-box form-control" type="text" name="name" style="color: white;" placeholder="Search.." {{--oninput="getTempPeople()"--}}>
                 </form>
             </div>

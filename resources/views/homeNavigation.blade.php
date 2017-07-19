@@ -6,8 +6,5 @@
         <li class="{{$activeNav=='favorite'?'active-nav':''}}">
             <a href="{{url('home/favorite')}}">Favorites</a>
         </li>
-        <li class="{{$activeNav=='help'?'active-nav':''}}">
-            <a href="{{url('home/help')}}">Help</a>
-        </li>
     </ul>
 </div>

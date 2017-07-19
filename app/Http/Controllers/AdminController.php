@@ -522,7 +522,7 @@ class AdminController extends Controller
             'position' => 'connection',
             'userId' => $userId,
             'people' => $people,
-            'search' => true
+            'searchPeople' => true
         );
 
         return view ('home', $data);

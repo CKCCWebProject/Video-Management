@@ -42,7 +42,7 @@
                 </a>
             </li>
             <li>
-                <a {{$position=='connection'&&!isset($search)?'class=active':''}} href="{{url('/connection')}}">
+                <a {{$position=='connection'&&!isset($searchPeople)?'class=active':''}} href="{{url('/connection')}}">
                     <i class="fa fa-chain icon"> </i>
                     <span> Your connections</span>
                 </a>
@@ -62,6 +62,16 @@
                     <span> Settings</span>
                 </a>
             </li>
+            <li>
+                <a {{$position=='help'?'class=active':''}} href="{{url('/help')}}">
+                    <i class="fa fa-question icon"> </i>
+                    <span> Help</span>
+                </a>
+            </li>
+
+            {{--<li class="{{$activeNav=='help'?'active-nav':''}}">--}}
+                {{--<a href="{{url('home/help')}}">Help</a>--}}
+            {{--</li>--}}
         </ul>
     </div>
     <div id="javascript-code"></div>
