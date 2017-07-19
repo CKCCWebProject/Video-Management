@@ -215,6 +215,8 @@
 <!-- Menu Toggle Script -->
 <script>
 
+    $('form').attr('onsubmit', "$.LoadingOverlay('show')");
+
     @if($message != '')
         $(window).on('load', function () {
         var x = document.getElementById("snackbar");

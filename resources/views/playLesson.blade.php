@@ -24,9 +24,14 @@
                         <iframe id="video" class="lesson-video" src="https://www.youtube.com/embed/{{$currentVideo->url}}?start={{$currentVideo->start_time==$currentVideo->end_time?0:$currentVideo->start_time}}&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
                     </div>
                     {{--note--}}
-                    <div id="note" class="notepaper lesson-note mediumScroll" {!! $playlistOwner==session('userId')?'contenteditable="true" oninput="return editNote(\'b\', \'{{$currentVideo->l_id}}\')"':'onclick="alert(\'Cannot touch the note\')"' !!} >
+                    <div id="note" class="notepaper lesson-note mediumScroll" {!! $playlistOwner==session('userId')?'contenteditable="true" oninput="editNote(\'b\', \'{{$currentVideo->l_id}}\')"':'onclick="alert(\'Cannot touch the note\')"' !!} >
                         {!! $currentVideo->note !!}
                     </div>
+                    @if($playlistOwner==session('userId'))
+                        <div class="hidden-xs hidden-sm" style="position: absolute; top: 5px; right: 5px;">
+                            <button class="btn btn-success" onclick="saveNote('{{$currentVideo->l_id}}')">Save</button>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="row" style="text-align: center; padding-bottom: 10px">
@@ -144,7 +149,7 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-                    <form method="post" action="{{url('/home/management/playLesson/'.$currentPlaylist)}}" style="margin-bottom: 0px" onsubmit="$.LoadingOverlay('show')">
+                    <form method="post" action="{{url('/home/management/playLesson/'.$currentPlaylist)}}" style="margin-bottom: 0px">
                         {{csrf_field()}}
                         <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
                         @if(count($videos) > 0)
@@ -180,6 +185,8 @@
 
     @if($message != '')
         <div class="show" id="snackbar">{{$message}}</div>
+    @else
+        <div class="" id="snackbar"></div>
     @endif
 
     <div id="rename" class="modal fade" role="dialog" style="z-index: 1050">
@@ -214,6 +221,8 @@
 
 <script>
 
+    $('form').attr('onsubmit', "$.LoadingOverlay('show')");
+
     function startRename(lid, oldname) {
         $('#rename-lesson-id').val(lid);
         $('#oldname').val(oldname);
@@ -244,23 +253,29 @@
     }
 
     function editNote(kind, id) {
-        var data = 'id='+id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
         if (kind == 'b') {
             $('#smallNote').html($('#note').html());
         } else if (kind == 's') {
             $('#note').html($('#smallNote').html());
         }
+    }
+
+    function saveNote(id) {
+        var data = 'id='+id+"&note="+$('#note').html()+"&_token="+'{{csrf_token()}}';
         $.ajax({
             url: "{{url('editNote')}}",
             type: 'post',
             data: data,
-            dataType: 'json',
             success: function( _response ){
+                $('#snackbar').html('saved');
+                $('#snackbar').addClass('show');
+                setTimeout(function(){
+                    $('#snackbar').removeClass('show');
+                }, 2500);
             },
             error: function( _response ){
             }
         });
-        return false;
     }
 
     function focusUrl() {
@@ -356,10 +371,12 @@
 
     function on() {
         $('.overlayNote').css('display', 'block');
+        $('.btn-save').css('display', 'block');
     }
 
     function off() {
         $('.overlayNote').css('display', 'none');
+        $('.btn-save').css('display', 'none');
     }
 
 
@@ -371,8 +388,11 @@
             <div style="position: absolute; top: -25px; left: 5px; z-index: 11; font-size: 50px" onclick="off()">
                 &times;
             </div>
-            <div id="smallNote" class="notepaper lesson-small-note mediumScroll" contenteditable="true" oninput="return editNote('s', '{{$currentVideo->l_id}}')">
+            <div style="padding-top: 60px" id="smallNote" class="notepaper lesson-small-note mediumScroll" contenteditable="true" oninput="editNote('s', '{{$currentVideo->l_id}}')">
                 {!! $currentVideo->note !!}
+            </div>
+            <div style="position: absolute; top: 5px; right: 5px;">
+                <button class="btn-save btn btn-success" onclick="saveNote('{{$currentVideo->l_id}}')">save</button>
             </div>
         </div>
     @endif

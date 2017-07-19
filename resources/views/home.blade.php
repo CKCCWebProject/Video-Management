@@ -459,6 +459,8 @@
 <!-- Menu Toggle Script -->
 <script>
 
+    $('form').attr('onsubmit', "$.LoadingOverlay('show')");
+
     @if($message != '')
         $(window).on('load', function () {
         var x = document.getElementById("snackbar");
@@ -480,6 +482,7 @@
 
     function checkDelete() {
         if($('#confirm-delete').val() == 'confirm') {
+            $.LoadingOverlay('show');
             return true;
         } else {
             return false;

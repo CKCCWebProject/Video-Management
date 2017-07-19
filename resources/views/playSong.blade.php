@@ -118,7 +118,7 @@
 
             <!-- Modal content-->
             <div class="modal-content">
-                <form method="post" action="{{url('/home/management/playSong/'.$currentPlaylist)}}" style="margin-bottom: 0px"  onsubmit="$.LoadingOverlay('show')">
+                <form method="post" action="{{url('/home/management/playSong/'.$currentPlaylist)}}" style="margin-bottom: 0px">
                     {{csrf_field()}}
                     <input name="currentPlaylist" type="hidden" value="{{$currentPlaylist}}">
                     @if(count($videos) > 0)
@@ -186,6 +186,8 @@
 <script src="http://www.youtube.com/player_api"></script>
 
 <script>
+
+    $('form').attr('onsubmit', "$.LoadingOverlay('show')");
 
     var array = [@foreach($videos as $video){{$video->s_id}},@endforeach];
     @if($playlistOwner==session('userId'))
