@@ -19,7 +19,7 @@ class CreateGiftBoxesTable extends Migration
             $table->integer('sender_id');
             $table->integer('receiver_id');
             $table->integer('item_type');
-            $table->integer('item_td');
+            $table->integer('item_id');
         });
     }
 

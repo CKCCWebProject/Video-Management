@@ -576,6 +576,7 @@ nav {
 .each-folder.gift:hover {
     background-color: rgba(0, 0, 0, 0.07);
 }
+
 /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px) {
     nav {

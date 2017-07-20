@@ -84,6 +84,10 @@ class PageController extends Controller
             $questions = QNA::orderBy('frequency', 'desc')->take(20)->paginate(10);
             $data['questions'] = $questions;
         }
+
+//        foreach ($questions as $question) {
+//            echo $question.'<br><br>';
+//        }
         return view ('home', $data);
     }
 

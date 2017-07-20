@@ -41,6 +41,7 @@ Route::group(['middleware' => ['checkuser']], function (){
     Route::get('/deletelesson/{id}/{vid}', 'AdminController@deleteLesson');
     Route::get('/home/search/result', 'AdminController@searchItem');
     Route::get('/connection/result', 'AdminController@searchPeople');
+    Route::get('/help/result', 'AdminController@searchQuestion');
 });
 
 Route::post('/uploadProfile', 'UserController@uploadProfile');

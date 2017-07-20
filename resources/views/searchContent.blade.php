@@ -24,48 +24,52 @@
 
                     <div class="row" style="text-align: center">
                         <ul class="nav nav-tabs" style="width: 380px; margin: auto; padding-left: 50px">
-                            <li class="sp active"><a data-toggle="pill" href="#menu1">Song playlists</a></li>
-                            <li class="lp"><a data-toggle="pill" href="#menu2">Lesson playlists</a></li>
+                            <li class="sp {{ $type == 'sp'?'active':'' }}"><a href="{{ $type == 'lp'?url($searchUrl.'&type=sp'):'' }}">Song playlists</a></li>
+                            <li class="lp {{ $type == 'lp'?'active':'' }}"><a href="{{ $type == 'sp'?url($searchUrl.'&type=lp'):'' }}">Lesson playlists</a></li>
                         </ul>
                     </div>
 
                     <div class="tab-content">
-                        <div id="menu1" class="tab-pane fade in active">
+                        @if($type == 'sp')
+                            <div id="menu1" class="tab-pane in active">
 
-                            <ul class="folder-group">
-                                @foreach($ownSP/*->getCollection()->all()*/ as $playlist)
+                                <ul class="folder-group">
+                                    @foreach($results/*->getCollection()->all()*/ as $playlist)
 
-                                    <?php
-                                    $gift = \App\GiftBox::where('item_id', $playlist->sp_id)->where('item_type', 1)->where('receiver_id', session('userId'))->get();
-                                    ?>
+                                        <?php
+                                        $gift = \App\GiftBox::where('item_id', $playlist->sp_id)->where('item_type', 1)->where('receiver_id', session('userId'))->get();
+                                        ?>
 
-                                    {!! view('viewItem', ['playlist' => $playlist, 'search' => true, 'mode'
-                                        => ($playlist->u_id==session('userId')?'user':(count($gift)>0?'gift':'globe')),
-                                        'gift'=>count($gift)>0?$gift[0]:[]]) !!}
+                                        {!! view('viewItem', ['playlist' => $playlist, 'search' => true, 'mode'
+                                            => ($playlist->u_id==session('userId')?'user':(count($gift)>0?'gift':'globe')),
+                                            'gift'=>count($gift)>0?$gift[0]:[]]) !!}
 
-                                @endforeach
-                            </ul>
+                                    @endforeach
+                                </ul>
 
-{{--                            {{$ownSP->links()}}--}}
-                        </div>
-                        <div id="menu2" class="tab-pane fade">
+                                {{$results->links()}}
+                            </div>
+                        @elseif($type == 'lp')
+                            <div id="menu2" class="tab-pane in active">
 
-                            <ul class="folder-group">
-                                @foreach($ownLP as $lesson)
+                                <ul class="folder-group">
+                                    @foreach($results as $lesson)
 
-                                    <?php
-                                    $gift = \App\GiftBox::where('item_id', $lesson->l_id)->where('item_type', 2)->where('receiver_id', session('userId'))->get();
-                                    ?>
+                                        <?php
+                                        $gift = \App\GiftBox::where('item_id', $lesson->l_id)->where('item_type', 2)->where('receiver_id', session('userId'))->get();
+                                        ?>
 
-                                    {!! view('viewItem', ['lesson' => $lesson, 'search' => true, 'mode'
-                                        => ($lesson->u_id==session('userId')?'user':(count($gift)>0?'gift':'globe')),
-                                        'gift'=>count($gift)>0?$gift[0]:[]]) !!}
+                                        {!! view('viewItem', ['lesson' => $lesson, 'search' => true, 'mode'
+                                            => ($lesson->u_id==session('userId')?'user':(count($gift)>0?'gift':'globe')),
+                                            'gift'=>count($gift)>0?$gift[0]:[]]) !!}
 
-                                @endforeach
-                            </ul>
+                                    @endforeach
+                                </ul>
 
-                            {{--{{$ownLP->links()}}--}}
-                        </div>
+                                {{$results->links()}}
+                            </div>
+                        @endif
+
                     </div>
 
                 </div>

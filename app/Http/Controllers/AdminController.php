@@ -7,14 +7,17 @@ use App\Folder;
 use App\GiftBox;
 use App\Lesson;
 use App\LessonPlaylist;
+use App\QNA;
 use App\SendTo;
 use App\Setting;
 use App\Song;
 use App\SongPlaylist;
 use App\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use DB;
 use DateTime;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
 
 //define('SALT', 'q5kBq8F4GAHqA');
@@ -757,6 +760,7 @@ class AdminController extends Controller
     public function searchItem(Request $request) {
         $userId = session('userId');
         $item = $request->item;
+        $type = $request->type;
 //        if ($item == '' && !isset($page)) {
 //            return redirect('home');
 //        }
@@ -767,21 +771,35 @@ class AdminController extends Controller
             session()->forget('message');
         }
 
-        $publicLP = LessonPlaylist::where('u_id', '!=', $userId)->where('if_public', true)
-            ->where('l_name', 'like', '%' . $item . '%');
-        $giftLP = LessonPlaylist::join('gift_boxes', 'item_id', '=', 'l_id')->where('item_type', '2')
-            ->where('receiver_id', $userId)->where('l_name', 'like', '%' . $item . '%')
-            ->select('l_id', 'lesson_playlists.created_at as created_at', 'lesson_playlists.updated_at as updated_at', 'l_name', 'u_id', 'f_id', 'record', 'if_public');
-        $ownLP = LessonPlaylist::where('u_id', $userId)->where('l_name', 'like', '%' . $item . '%')
-            ->union($giftLP)->union($publicLP)->get();
 
-        $publicSP = SongPlaylist::where('u_id', '!=', $userId)->where('if_public', true)
-            ->where('sp_name', 'like', '%' . $item . '%');
-        $giftSP = SongPlaylist::join('gift_boxes', 'item_id', '=', 'sp_id')->where('item_type', '1')
-            ->where('receiver_id', $userId)->where('sp_name', 'like', '%' . $item . '%')
-            ->select('sp_id', 'song_playlists.created_at as created_at', 'song_playlists.updated_at as updated_at', 'sp_name', 'u_id', 'f_id', 'if_public');
-        $ownSP = SongPlaylist::where('u_id', $userId)->where('sp_name', 'like', '%' . $item . '%')
-            ->union($giftSP)->union($publicSP)->get();
+        $results = array();
+
+        if ($type == 'lp') {
+            $publicLP = LessonPlaylist::where('u_id', '!=', $userId)->where('if_public', true)
+                ->where('l_name', 'like', '%' . $item . '%');
+            $giftLP = LessonPlaylist::join('gift_boxes', 'item_id', '=', 'l_id')->where('item_type', '2')
+                ->where('receiver_id', $userId)->where('l_name', 'like', '%' . $item . '%')
+                ->select('l_id', 'lesson_playlists.created_at as created_at', 'lesson_playlists.updated_at as updated_at', 'l_name', 'u_id', 'f_id', 'record', 'if_public');
+            $ownLP = LessonPlaylist::where('u_id', $userId)->where('l_name', 'like', '%' . $item . '%')
+                ->union($giftLP)->union($publicLP)->get();
+
+            foreach ($ownLP as $lp) {
+                array_push($results, $lp);
+            }
+        } elseif ($type == 'sp') {
+            $publicSP = SongPlaylist::where('u_id', '!=', $userId)->where('if_public', true)
+                ->where('sp_name', 'like', '%' . $item . '%');
+            $giftSP = SongPlaylist::join('gift_boxes', 'item_id', '=', 'sp_id')->where('item_type', '1')
+                ->where('receiver_id', $userId)->where('sp_name', 'like', '%' . $item . '%')
+                ->select('sp_id', 'song_playlists.created_at as created_at', 'song_playlists.updated_at as updated_at', 'sp_name', 'u_id', 'f_id', 'if_public');
+            $ownSP = SongPlaylist::where('u_id', $userId)->where('sp_name', 'like', '%' . $item . '%')
+                ->union($giftSP)->union($publicSP)->get();
+
+            foreach ($ownSP as $sp) {
+                array_push($results, $sp);
+            }
+        }
+
 
         $connections = Connection::join('users', 'id', '=', 'connect_with')->where('u_id', $userId)->get();
         $searchUrl = 'home/search/result?item='.$item;
@@ -792,9 +810,13 @@ class AdminController extends Controller
             'search' => true,
             'position' => 'home',
             'message' => $message,
-            'ownLP' => $ownLP,
-            'ownSP' => $ownSP,
+            'type' => $type,
+//            'ownLP' => $ownLP,
+//            'ownSP' => $ownSP,
+//            'ownLP' => self::paginateArray($LPs, $request, 1),
+            'results' => self::paginateArray($results, $request, 10),
             'connections' => $connections,
+            'searchUrl' => $searchUrl
 //            'ownSP' => SongPlaylist::paginate(1)
         );
 //        echo 1;
@@ -1224,4 +1246,193 @@ class AdminController extends Controller
         return true;
     }
 
+    public function searchQuestion(Request $request) {
+        $userId = session('userId');
+        $question = $request->question;
+        $wordList = self::getWordList($question);
+        $countRecord = QNA::count();
+        $arrayResults = array();
+        for ($i = 0; $i < $countRecord; $i++) {
+            $data = QNA::take(1)->skip($i)->get();
+//            echo $i.'---'.$data->get()[0]['question'].'<br>';
+            if (count($data) > 0) {
+                $dataRaw = $data[0]['keyword'];
+                $dataArr = explode(',', $dataRaw);
+                $score = self::getCompareScore($wordList, $dataArr);
+                $getQ = QNA::find($data[0]->id);
+                $getQ->frequency = $getQ->frequency + $score;
+                $getQ->save();
+//                echo $score.'<br>';
+                $assocData = [
+                    'data' => $data[0],
+                    'score' => $score
+                ];
+                $arrayResults = self::addElementTopN($arrayResults, $assocData, 20);
+            }
+        }
+
+        usort($arrayResults, 'self::compare_score');
+
+//        foreach ($arrayResults as $arrayResult) {
+//            echo $arrayResult['data']['id'].'<br/>';
+//        }
+
+        $collectionResults = array();
+        foreach ($arrayResults as $arrayResult) {
+            $q = new QNA();
+            $q->id = $arrayResult['data']['id'];
+            $q->created_at = $arrayResult['data']['created_at'];
+            $q->updated_at = $arrayResult['data']['updated_at'];
+            $q->question = $arrayResult['data']['question'];
+            $q->answer = $arrayResult['data']['answer'];
+            $q->frequency = $arrayResult['data']['frequency'];
+            $q->keyword = $arrayResult['data']['keyword'];
+            $q->category = $arrayResult['data']['category'];
+            array_push($collectionResults, $q);
+//            $collectionResults->push($q);
+        }
+
+
+//        //pagination on array
+//        $page = Input::get('page', 1); // Get the ?page=1 from the url
+//        $perPage = 10; // Number of items per page
+//        $offset = ($page * $perPage) - $perPage;
+//
+//        $paginateResult = new LengthAwarePaginator(
+//            array_slice($collectionResults, $offset, $perPage, true), // Only grab the items we need
+//            count($collectionResults), // Total items
+//            $perPage, // Items per page
+//            $page, // Current page
+//            ['path' => $request->url(), 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
+//        );
+
+        $paginateResult = self::paginateArray($collectionResults, $request, 10);
+
+
+        $message = '';
+        if(session()->has('message') != null) {
+            $message = session('message');
+            session()->forget('message');
+        }
+
+        $data = array(
+            'message' => $message,
+            'position' => 'help',
+            'userId' => $userId,
+            'questions' => $paginateResult,
+            'question' => $question,
+            'searchQuestion' => true
+        );
+
+//        foreach ($arrayResults as $arrayResult) {
+//            echo $arrayResult['data']['question'].'<br/>';
+//        }
+
+
+        return view ('home', $data);
+    }
+
+    public static function getWordList($sentence) {
+//        $stopWords = array("a", "about", "above", "above", "across", "after", "afterwards", "again", "against", "all", "almost", "alone", "along", "already", "also","although","always","am","among", "amongst", "amoungst", "amount",  "an", "and", "another", "any","anyhow","anyone","anything","anyway", "anywhere", "are", "around", "as",  "at", "back","be","became", "because","become","becomes", "becoming", "been", "before", "beforehand", "behind", "being", "below", "beside", "besides", "between", "beyond", "bill", "both", "bottom","but", "by", "call", "can", "cannot", "cant", "co", "con", "could", "couldnt", "cry", "de", "describe", "detail", "do", "done", "down", "due", "during", "each", "eg", "eight", "either", "eleven","else", "elsewhere", "empty", "enough", "etc", "even", "ever", "every", "everyone", "everything", "everywhere", "except", "few", "fifteen", "fify", "fill", "find", "fire", "first", "five", "for", "former", "formerly", "forty", "found", "four", "from", "front", "full", "further", "get", "give", "go", "had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter", "hereby", "herein", "hereupon", "hers", "herself", "him", "himself", "his", "how", "however", "hundred", "ie", "if", "in", "inc", "indeed", "interest", "into", "is", "it", "its", "itself", "keep", "last", "latter", "latterly", "least", "less", "ltd", "made", "many", "may", "me", "meanwhile", "might", "mill", "mine", "more", "moreover", "most", "mostly", "move", "much", "must", "my", "myself", "name", "namely", "neither", "never", "nevertheless", "next", "nine", "no", "nobody", "none", "noone", "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on", "once", "one", "only", "onto", "or", "other", "others", "otherwise", "our", "ours", "ourselves", "out", "over", "own","part", "per", "perhaps", "please", "put", "rather", "re", "same", "see", "seem", "seemed", "seeming", "seems", "serious", "several", "she", "should", "show", "side", "since", "sincere", "six", "sixty", "so", "some", "somehow", "someone", "something", "sometime", "sometimes", "somewhere", "still", "such", "system", "take", "ten", "than", "that", "the", "their", "them", "themselves", "then", "thence", "there", "thereafter", "thereby", "therefore", "therein", "thereupon", "these", "they", "thickv", "thin", "third", "this", "those", "though", "three", "through", "throughout", "thru", "thus", "to", "together", "too", "top", "toward", "towards", "twelve", "twenty", "two", "un", "under", "until", "up", "upon", "us", "very", "via", "was", "we", "well", "were", "what", "whatever", "when", "whence", "whenever", "where", "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose", "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the");
+        $stopWords = array('a','able','about','above','abroad','according','accordingly','across','actually','adj','after','afterwards','again','against','ago','ahead','ain\'t','all','allow','allows','almost','alone','along','alongside','already','also','although','always','am','amid','amidst','among','amongst','an','and','another','any','anybody','anyhow','anyone','anything','anyway','anyways','anywhere','apart','appear','appreciate','appropriate','are','aren\'t','around','as','a\'s','aside','ask','asking','associated','at','available','away','awfully','b','back','backward','backwards','be','became','because','become','becomes','becoming','been','before','beforehand','begin','behind','being','believe','below','beside','besides','best','better','between','beyond','both','brief','but','by','c','came','can','cannot','cant','can\'t','caption','cause','causes','certain','certainly','changes','clearly','c\'mon','co','co.','com','come','comes','concerning','consequently','consider','considering','contain','containing','contains','corresponding','could','couldn\'t','course','c\'s','currently','d','dare','daren\'t','definitely','described','despite','did','didn\'t','different','directly','do','does','doesn\'t','doing','done','don\'t','down','downwards','during','e','each','edu','eg','eight','eighty','either','else','elsewhere','end','ending','enough','entirely','especially','et','etc','even','ever','evermore','every','everybody','everyone','everything','everywhere','ex','exactly','example','except','f','fairly','far','farther','few','fewer','fifth','first','five','followed','following','follows','for','forever','former','formerly','forth','forward','found','four','from','further','furthermore','g','get','gets','getting','given','gives','go','goes','going','gone','got','gotten','greetings','h','had','hadn\'t','half','happens','hardly','has','hasn\'t','have','haven\'t','having','he','he\'d','he\'ll','hello','help','hence','her','here','hereafter','hereby','herein','here\'s','hereupon','hers','herself','he\'s','hi','him','himself','his','hither','hopefully','how','howbeit','however','hundred','i','i\'d','ie','if','ignored','i\'ll','i\'m','immediate','in','inasmuch','inc','inc.','indeed','indicate','indicated','indicates','inner','inside','insofar','instead','into','inward','is','isn\'t','it','it\'d','it\'ll','its','it\'s','itself','i\'ve','j','just','k','keep','keeps','kept','know','known','knows','l','last','lately','later','latter','latterly','least','less','lest','let','let\'s','like','liked','likely','likewise','little','look','looking','looks','low','lower','ltd','m','made','mainly','make','makes','many','may','maybe','mayn\'t','me','mean','meantime','meanwhile','merely','might','mightn\'t','mine','minus','miss','more','moreover','most','mostly','mr','mrs','much','must','mustn\'t','my','myself','n','name','namely','nd','near','nearly','necessary','need','needn\'t','needs','neither','never','neverf','neverless','nevertheless','new','next','nine','ninety','no','nobody','non','none','nonetheless','noone','no-one','nor','normally','not','nothing','notwithstanding','novel','now','nowhere','o','obviously','of','off','often','oh','ok','okay','old','on','once','one','ones','one\'s','only','onto','opposite','or','other','others','otherwise','ought','oughtn\'t','our','ours','ourselves','out','outside','over','overall','own','p','particular','particularly','past','per','perhaps','placed','please','plus','possible','presumably','probably','provided','provides','q','que','quite','qv','r','rather','rd','re','really','reasonably','recent','recently','regarding','regardless','regards','relatively','respectively','right','round','s','said','same','saw','say','saying','says','second','secondly','see','seeing','seem','seemed','seeming','seems','seen','self','selves','sensible','sent','serious','seriously','seven','several','shall','shan\'t','she','she\'d','she\'ll','she\'s','should','shouldn\'t','since','six','so','some','somebody','someday','somehow','someone','something','sometime','sometimes','somewhat','somewhere','soon','sorry','specified','specify','specifying','still','sub','such','sup','sure','t','take','taken','taking','tell','tends','th','than','thank','thanks','thanx','that','that\'ll','thats','that\'s','that\'ve','the','their','theirs','them','themselves','then','thence','there','thereafter','thereby','there\'d','therefore','therein','there\'ll','there\'re','theres','there\'s','thereupon','there\'ve','these','they','they\'d','they\'ll','they\'re','they\'ve','thing','things','think','third','thirty','this','thorough','thoroughly','those','though','three','through','throughout','thru','thus','till','to','together','too','took','toward','towards','tried','tries','truly','try','trying','t\'s','twice','two','u','un','under','underneath','undoing','unfortunately','unless','unlike','unlikely','until','unto','up','upon','upwards','us','use','used','useful','uses','using','usually','v','value','various','versus','very','via','viz','vs','w','want','wants','was','wasn\'t','way','we','we\'d','welcome','well','we\'ll','went','were','we\'re','weren\'t','we\'ve','what','whatever','what\'ll','what\'s','what\'ve','when','whence','whenever','where','whereafter','whereas','whereby','wherein','where\'s','whereupon','wherever','whether','which','whichever','while','whilst','whither','who','who\'d','whoever','whole','who\'ll','whom','whomever','who\'s','whose','why','will','willing','wish','with','within','without','wonder','won\'t','would','wouldn\'t','x','y','yes','yet','you','you\'d','you\'ll','your','you\'re','yours','yourself','yourselves','you\'ve','z','zero');
+        $sentence = preg_replace('/\b('.implode('|',$stopWords).')\b/','',$sentence);
+        $sentence = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $sentence);
+        $sentence = strtolower ( $sentence );
+        $sentence = preg_replace('/'.implode('\s|\s',$stopWords).'/u', 'a',$sentence);
+        $sentence = preg_replace('/\s+/', ' ', $sentence);
+        $sentence = explode( ' ', $sentence );
+        if (in_array( $sentence[0], $stopWords)) {
+            unset($sentence[0]);
+        }
+        if (in_array( $sentence[count($sentence)-1], $stopWords)) {
+            unset($sentence[count($sentence)-1]);
+        }
+        $final = array();
+        foreach ($sentence as $word) {
+            array_push($final, $word);
+        }
+        return $final;
+    }
+
+
+    public static function getCompareScore($sentence /*array*/, $keyword /*array*/) {
+        $count = 0;
+        for ($i = 0; $i < count($sentence); $i++) {
+            if (in_array($sentence[$i], $keyword)) {
+                $count++;
+            }
+        }
+//        var_dump($sentence);
+//        echo '<br>';
+//        echo $count;
+        return $count/(float)count($sentence);
+    }
+
+    //    $sentence = array(
+    //        searchResult,
+    //        score
+    //    );
+    public static function addElementTopN($array, $newElement, $limit = 20) {
+        if (count($array) >= $limit) {
+            $arr = array_column($array, 'score');
+            $min = min($arr);
+            $pos = array_search($min, $arr);
+            if ($newElement['score'] > $min) {
+                unset($array[$pos]);
+                array_push($array, $newElement);
+            }
+        } else {
+            array_push($array, $newElement);
+        }
+        return $array;
+    }
+
+    //sort descend
+    public static function compare_score($a, $b)
+    {
+        if ($a['score'] > $b['score']) {
+            return -1;
+        }
+        elseif ($a['score'] < $b['score']) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function addItem($obj, $key = null) {
+        if ($key == null) {
+            $this->items[] = $obj;
+        }
+        else {
+            if (isset($this->items[$key])) {
+                throw new KeyHasUseException("Key $key already in use.");
+            }
+            else {
+                $this->items[$key] = $obj;
+            }
+        }
+    }
+
+    public static function paginateArray($array, $request, $perPage, $isArray = true) {
+        //pagination on array
+        $page = Input::get('page', 1); // Get the ?page=1 from the url
+        $offset = ($page * $perPage) - $perPage;
+
+        if ($isArray) {
+            $arr = $array;
+        } else {
+            $arr = $array->toArray();
+        }
+
+        $paginateResult = new LengthAwarePaginator(
+            array_slice($arr, $offset, $perPage, true), // Only grab the items we need
+            count($array), // Total items
+            $perPage, // Items per page
+            $page, // Current page
+            ['path' => $request->url(), 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
+        );
+
+        return $paginateResult;
+    }
 }
