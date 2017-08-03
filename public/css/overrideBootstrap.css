@@ -101,3 +101,19 @@ a:hover, a:focus, a:active {
     background-color: transparent;
     padding: 0px;
 }
+
+.pagination>li>a, .pagination>li>span {
+    background-color: #2a88bd;
+}
+
+.pagination>li>a:hover, .pagination>li>span:hover {
+    background-color: #236f9a;
+}
+
+.pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {
+    background-color: #236F9A;
+}
+
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {
+    background-color: #5bc0de;
+}

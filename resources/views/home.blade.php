@@ -453,6 +453,8 @@
 
 @if($message != '')
     <div class="show" id="snackbar">{{$message}}</div>
+@elseif(session()->has('message') != null)
+    <div class="show" id="snackbar">{{session('message')}}</div>
 @endif
 
 <!-- Menu Toggle Script -->
@@ -635,6 +637,10 @@
         }
     }
     @endif
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 
 </script>
 </body>

@@ -82,6 +82,7 @@
 .song-list {
     background-color: #3b3b3b;
     height: 100vh;
+    min-height: 200px;
     overflow: scroll;
     padding: 0px;
 }

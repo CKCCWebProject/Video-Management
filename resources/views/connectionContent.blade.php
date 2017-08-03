@@ -1,8 +1,12 @@
 <div id="connection-content" class="container">
 
-    @foreach($people->getCollection()->all() as $person)
+    @forelse($people->getCollection()->all() as $person)
         @include('people')
-    @endforeach
+    @empty
+        <div style="min-height: 80vh; display: flex; align-items: center;">
+            <h1 style="margin: auto">You are alone</h1>
+        </div>
+    @endforelse
 
 </div>
     {{$people->links()}}

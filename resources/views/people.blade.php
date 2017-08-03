@@ -15,11 +15,12 @@
             <div class="connection-name">
                 {{$person->username}}
             </div>
-            <div class="connection-description">
+            <div class="connection-description" data-toggle="tooltip"  data-placement="bottom" title="{!! strip_tags($person->description) !!}">
                 <?php
-                    $desc = str_replace('<div>', '', $person->description);
-                    $desc = str_replace('</div>', '', $desc);
-                    $desc = str_replace('<br>', '', $desc);
+//                    $desc = str_replace('<div>', '', $person->description);
+//                    $desc = str_replace('</div>', '', $desc);
+//                    $desc = str_replace('<br>', '', $desc);
+                    $desc = strip_tags($person->description);
                 ?>
                 {{substr($desc, 0, 20).(strlen($desc)>20?'...':'')}}
             </div>

@@ -814,7 +814,7 @@ class AdminController extends Controller
 //            'ownLP' => $ownLP,
 //            'ownSP' => $ownSP,
 //            'ownLP' => self::paginateArray($LPs, $request, 1),
-            'results' => self::paginateArray($results, $request, 10),
+            'results' => self::paginateArray($results, $request, 1),
             'connections' => $connections,
             'searchUrl' => $searchUrl
 //            'ownSP' => SongPlaylist::paginate(1)
@@ -1075,6 +1075,8 @@ class AdminController extends Controller
                         $goal->save();
                     }
                     session(['message'=>'Move successfully']);
+                } else {
+                    session(['message' => 'Path incorrect']);
                 }
                 return redirect('home/management/'.$currentFolder);
 //                return redirect('home/management/'.$dest[0]->f_id);
