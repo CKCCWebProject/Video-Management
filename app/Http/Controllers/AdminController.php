@@ -814,7 +814,7 @@ class AdminController extends Controller
 //            'ownLP' => $ownLP,
 //            'ownSP' => $ownSP,
 //            'ownLP' => self::paginateArray($LPs, $request, 1),
-            'results' => self::paginateArray($results, $request, 1),
+            'results' => self::paginateArray($results, $request, 10),
             'connections' => $connections,
             'searchUrl' => $searchUrl
 //            'ownSP' => SongPlaylist::paginate(1)
