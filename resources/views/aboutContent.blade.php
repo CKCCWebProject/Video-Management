@@ -32,5 +32,6 @@
         <h4 style="text-align: right">
             vdomngmt&#64;gmail.com
         </h4>
+        <div>&copy; 2017. All rights reserved</div>
     </div>
 </div>
